@@ -8,6 +8,7 @@
     </parent>
     <artifactId>example</artifactId>
     <name>example</name>
+    <version>${openai-java.version}</version>
     <url>http://maven.apache.org</url>
 
     <dependencies>

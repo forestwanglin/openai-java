@@ -8,7 +8,8 @@
         <artifactId>openai-java</artifactId>
         <version>${openai-java.version}</version>
     </parent>
-
+    <packaging>jar</packaging>
+    <version>${openai-java.version}</version>
     <artifactId>service</artifactId>
 
     <properties>
