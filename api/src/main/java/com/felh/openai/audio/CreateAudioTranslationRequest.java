@@ -1,6 +1,6 @@
 package com.felh.openai.audio;
 
-import com.felh.openai.IOpenAiRequest;
+import com.felh.openai.IOpenAiApiRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateAudioTranslationRequest implements IOpenAiRequest {
+public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
 
     /**
      * Required

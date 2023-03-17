@@ -1,10 +1,7 @@
 package com.felh.openai.image.edit;
 
 import com.felh.openai.image.BaseCreateImageRequest;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Data
@@ -19,6 +16,7 @@ public class CreateImageEditRequest extends BaseCreateImageRequest {
      * The image to edit. Must be a valid PNG file, less than 4MB, and square. If mask is not provided,
      * image must have transparency, which will be used as the mask.
      */
+    @NonNull
     private String image;
 
     /**
@@ -32,6 +30,7 @@ public class CreateImageEditRequest extends BaseCreateImageRequest {
      * Required
      * A text description of the desired image(s). The maximum length is 1000 characters.
      */
+    @NonNull
     private String prompt;
 
 }

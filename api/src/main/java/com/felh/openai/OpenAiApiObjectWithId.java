@@ -6,7 +6,7 @@ import lombok.Data;
  * An abstract class of OpenAi API Response
  */
 @Data
-public abstract class ApiEntityWithId implements IApiEntity {
+public abstract class OpenAiApiObjectWithId implements IOpenAiApiObject {
 
     /**
      * An identifier for this model, used to specify the model when making completions, etc
@@ -15,13 +15,7 @@ public abstract class ApiEntityWithId implements IApiEntity {
 
     /**
      * The type of object returned
-     * list or others
      */
     private String object;
-
-    /**
-     * The creation time in epoch seconds.
-     */
-    public long created;
 
 }

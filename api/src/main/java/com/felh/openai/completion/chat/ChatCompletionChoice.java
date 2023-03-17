@@ -1,10 +1,10 @@
 package com.felh.openai.completion.chat;
 
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiObject;
 import lombok.Data;
 
 @Data
-public class ChatCompletionChoice implements IApiEntity {
+public class ChatCompletionChoice implements IOpenAiApiObject {
 
     private Integer index;
 

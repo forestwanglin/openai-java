@@ -1,12 +1,10 @@
 package com.felh.openai.completion;
 
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiObject;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class CompletionChoice implements IApiEntity {
+public class CompletionChoice implements IOpenAiApiObject {
 
     private String text;
 

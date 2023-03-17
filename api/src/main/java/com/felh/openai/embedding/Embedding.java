@@ -1,12 +1,12 @@
 package com.felh.openai.embedding;
 
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiObject;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class Embedding implements IApiEntity {
+public class Embedding implements IOpenAiApiObject {
 
     private String object;
 

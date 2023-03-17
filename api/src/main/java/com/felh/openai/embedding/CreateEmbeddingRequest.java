@@ -1,13 +1,13 @@
 package com.felh.openai.embedding;
 
-import com.felh.openai.IOpenAiRequest;
+import com.felh.openai.IOpenAiApiRequest;
 import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateEmbeddingRequest implements IOpenAiRequest {
+public class CreateEmbeddingRequest implements IOpenAiApiRequest {
 
     /**
      * Required

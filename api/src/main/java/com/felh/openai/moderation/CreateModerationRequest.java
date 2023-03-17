@@ -1,13 +1,13 @@
 package com.felh.openai.moderation;
 
-import com.felh.openai.IOpenAiRequest;
+import com.felh.openai.IOpenAiApiRequest;
 import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateModerationRequest implements IOpenAiRequest {
+public class CreateModerationRequest implements IOpenAiApiRequest {
 
     /**
      * The input text to classify
@@ -25,4 +25,5 @@ public class CreateModerationRequest implements IOpenAiRequest {
      * Accuracy of text-moderation-stable may be slightly lower than for text-moderation-latest.
      */
     private String model;
+
 }

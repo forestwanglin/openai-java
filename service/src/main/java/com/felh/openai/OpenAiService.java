@@ -19,7 +19,7 @@ import com.felh.openai.finetune.CreateFineTuneRequest;
 import com.felh.openai.finetune.FineTune;
 import com.felh.openai.finetune.FineTuneEvent;
 import com.felh.openai.image.CreateImageRequest;
-import com.felh.openai.image.CreateImageResponse;
+import com.felh.openai.image.ImageResponse;
 import com.felh.openai.image.edit.CreateImageEditRequest;
 import com.felh.openai.image.variation.CreateImageVariationRequest;
 import com.felh.openai.model.Model;
@@ -43,8 +43,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class OpenAiService {
 
-    private static final String BASE_URL = "https://api.openai.com/";
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5);
+    private static final String BASE_URL = "https://api.openai.com";
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
     private static final ObjectMapper errorMapper = defaultObjectMapper();
 
     private final OpenAiApi api;
@@ -134,7 +134,7 @@ public class OpenAiService {
     }
 
     public List<Model> listModels() {
-        return execute(api.listModels()).data;
+        return execute(api.listModels()).getData();
     }
 
     public Model getModel(String modelId) {
@@ -172,11 +172,11 @@ public class OpenAiService {
         return execute(api.createEdit(request));
     }
 
-    public CreateImageResponse createImage(CreateImageRequest request) {
+    public ImageResponse createImage(CreateImageRequest request) {
         return execute(api.createImage(request));
     }
 
-    public CreateImageResponse createImageEdit(CreateImageEditRequest request) {
+    public ImageResponse createImageEdit(CreateImageEditRequest request) {
         File image = new File(request.getImage());
         File mask = null;
         if (request.getMask() != null) {
@@ -185,16 +185,20 @@ public class OpenAiService {
         return createImageEdit(request, image, mask);
     }
 
-    private CreateImageResponse createImageEdit(CreateImageEditRequest request, File image, File mask) {
+    private ImageResponse createImageEdit(CreateImageEditRequest request, File image, File mask) {
         RequestBody imageBody = RequestBody.create(MediaType.parse("image"), image);
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("prompt", request.getPrompt())
-                .addFormDataPart("size", request.getSize())
-                .addFormDataPart("response_format", request.getResponseFormat())
                 .addFormDataPart("image", "image", imageBody);
         if (request.getN() != null) {
             builder.addFormDataPart("n", request.getN().toString());
+        }
+        if (request.getSize() != null) {
+            builder.addFormDataPart("size", request.getSize());
+        }
+        if (request.getResponseFormat() != null) {
+            builder.addFormDataPart("response_format", request.getResponseFormat());
         }
         if (mask != null) {
             RequestBody maskBody = RequestBody.create(MediaType.parse("image"), mask);
@@ -203,16 +207,20 @@ public class OpenAiService {
         return execute(api.createImageEdit(builder.build()));
     }
 
-    public CreateImageResponse createImageVariation(CreateImageVariationRequest request) {
+    public ImageResponse createImageVariation(CreateImageVariationRequest request) {
         RequestBody imageBody = RequestBody.create(MediaType.parse("image"), new File(request.getImage()));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
-                .addFormDataPart("size", request.getSize())
-                .addFormDataPart("response_format", request.getResponseFormat())
                 .addFormDataPart("image", "image", imageBody);
 
         if (request.getN() != null) {
             builder.addFormDataPart("n", request.getN().toString());
+        }
+        if (request.getSize() != null) {
+            builder.addFormDataPart("size", request.getSize());
+        }
+        if (request.getResponseFormat() != null) {
+            builder.addFormDataPart("response_format", request.getResponseFormat());
         }
         return execute(api.createImageVariation(builder.build()));
     }
@@ -229,16 +237,18 @@ public class OpenAiService {
 
     /**
      * whisper-1
+     * <p>
+     * TODO only support mp3 so far
      *
      * @param request
      * @return
      */
     public AudioResponse createAudioTranscription(CreateAudioTranscriptionRequest request) {
-        RequestBody audioBody = RequestBody.create(MediaType.parse("audio"), new File(request.getFile()));
+        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), new File(request.getFile()));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("model", request.getModel())
-                .addFormDataPart("file", "audio", audioBody);
+                .addFormDataPart("file", "mp3", audioBody);
         if (request.getPrompt() != null) {
             builder.addFormDataPart("prompt", request.getModel());
         }
@@ -256,16 +266,18 @@ public class OpenAiService {
 
     /**
      * whisper-1
+     * <p>
+     * TODO only support mp3 so far
      *
      * @param request
      * @return
      */
     public AudioResponse createAudioTranslation(CreateAudioTranslationRequest request) {
-        RequestBody audioBody = RequestBody.create(MediaType.parse("audio"), new File(request.getFile()));
+        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), new File(request.getFile()));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("model", request.getModel())
-                .addFormDataPart("file", "audio", audioBody);
+                .addFormDataPart("file", "mp3", audioBody);
         if (request.getPrompt() != null) {
             builder.addFormDataPart("prompt", request.getModel());
         }
@@ -279,7 +291,7 @@ public class OpenAiService {
     }
 
     public List<com.felh.openai.file.File> listFiles() {
-        return execute(api.listFiles()).data;
+        return execute(api.listFiles()).getData();
     }
 
     public com.felh.openai.file.File uploadFile(String filepath, String purpose) {
@@ -298,7 +310,12 @@ public class OpenAiService {
         return execute(api.retrieveFile(fileId));
     }
 
-    // TODO not working
+    /**
+     * TODO This is not for free accounts
+     *
+     * @param fileId
+     * @return
+     */
     public String retrieveFileContent(String fileId) {
         return execute(api.retrieveFileContent(fileId));
     }
@@ -308,7 +325,7 @@ public class OpenAiService {
     }
 
     public List<FineTune> listFineTunes() {
-        return execute(api.listFineTunes()).data;
+        return execute(api.listFineTunes()).getData();
     }
 
     public FineTune retrieveFineTune(String fineTuneId) {
@@ -320,11 +337,11 @@ public class OpenAiService {
     }
 
     public List<FineTuneEvent> listFineTuneEvents(String fineTuneId) {
-        return execute(api.listFineTuneEvents(fineTuneId)).data;
+        return execute(api.listFineTuneEvents(fineTuneId)).getData();
     }
 
-    public DeleteResponse deleteFineTune(String fineTuneId) {
-        return execute(api.deleteFineTune(fineTuneId));
+    public DeleteResponse deleteFineTune(String model, String fineTuneId) {
+        return execute(api.deleteFineTune(String.format("%s:%s", model, fineTuneId)));
     }
 
     /**

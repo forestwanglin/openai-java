@@ -1,13 +1,13 @@
 package com.felh.openai.finetune;
 
-import com.felh.openai.ApiEntityWithId;
+import com.felh.openai.OpenAiApiObjectWithId;
 import com.felh.openai.file.File;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class FineTune extends ApiEntityWithId {
+public class FineTune extends OpenAiApiObjectWithId {
 
     /**
      * The name of the base model.

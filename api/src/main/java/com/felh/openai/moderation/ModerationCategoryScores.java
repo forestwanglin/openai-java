@@ -1,11 +1,11 @@
 package com.felh.openai.moderation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiObject;
 import lombok.Data;
 
 @Data
-public class ModerationCategoryScores implements IApiEntity {
+public class ModerationCategoryScores implements IOpenAiApiObject {
 
     public double hate;
 

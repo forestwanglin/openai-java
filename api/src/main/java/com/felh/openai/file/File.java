@@ -1,12 +1,12 @@
 package com.felh.openai.file;
 
-import com.felh.openai.ApiEntityWithId;
+import com.felh.openai.OpenAiApiObjectWithId;
 import lombok.Data;
 import lombok.ToString;
 
 @Data
 @ToString(callSuper = true)
-public class File extends ApiEntityWithId {
+public class File extends OpenAiApiObjectWithId {
 
     /**
      * File size in bytes.

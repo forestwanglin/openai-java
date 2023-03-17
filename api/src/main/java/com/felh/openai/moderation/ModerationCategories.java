@@ -1,11 +1,11 @@
 package com.felh.openai.moderation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiObject;
 import lombok.Data;
 
 @Data
-public class ModerationCategories implements IApiEntity {
+public class ModerationCategories implements IOpenAiApiObject {
 
     public boolean hate;
 

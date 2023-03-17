@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpenAiError implements IApiEntity {
+public class OpenAiError implements IOpenAiApiObject {
 
     private ErrorDetail error;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ErrorDetail implements IApiEntity {
+    public static class ErrorDetail implements IOpenAiApiObject {
         /**
          * Human-readable error message
          */

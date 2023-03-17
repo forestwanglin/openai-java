@@ -13,7 +13,8 @@ public class ChatMessage {
      * Must be either 'system', 'user', or 'assistant'.<br>
      * You may use {@link ChatMessageRole} enum.
      */
-    private String role;
+    private ChatMessageRole role;
+
     private String content;
 
 }

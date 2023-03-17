@@ -1,6 +1,6 @@
 package com.felh.openai.completion;
 
-import com.felh.openai.IOpenAiRequest;
+import com.felh.openai.IOpenAiApiRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,11 +12,12 @@ import java.util.Map;
 @NoArgsConstructor
 //@Builder
 @SuperBuilder(toBuilder = true)
-public abstract class BaseCreateCompletionRequest implements IOpenAiRequest {
+public abstract class BaseCreateCompletionRequest implements IOpenAiApiRequest {
 
     /**
      * ID of the model to use. Currently, only gpt-3.5-turbo and gpt-3.5-turbo-0301 are supported.
      */
+    @NonNull
     private String model;
 
     /**

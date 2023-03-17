@@ -1,27 +1,27 @@
 package com.felh.openai.model;
 
-import com.felh.openai.ApiEntityWithId;
+import com.felh.openai.OpenAiApiObjectWithId;
 import lombok.Data;
 
 @Data
-public class Permission extends ApiEntityWithId {
+public class Permission extends OpenAiApiObjectWithId {
 
-    public boolean allowCreateEngine;
+    public Boolean allowCreateEngine;
 
-    public boolean allowSampling;
+    public Boolean allowSampling;
 
-    public boolean allowLogprobs;
+    public Boolean allowLogprobs;
 
-    public boolean allowSearchIndices;
+    public Boolean allowSearchIndices;
 
-    public boolean allowView;
+    public Boolean allowView;
 
-    public boolean allowFineTuning;
+    public Boolean allowFineTuning;
 
     public String organization;
 
     public String group;
 
-    public boolean isBlocking;
+    public Boolean isBlocking;
 
 }

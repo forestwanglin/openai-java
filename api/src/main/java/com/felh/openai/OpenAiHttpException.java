@@ -1,5 +1,8 @@
 package com.felh.openai;
 
+/**
+ * Runtime Exception for HTTP
+ */
 public class OpenAiHttpException extends RuntimeException {
 
     /**
@@ -22,7 +25,6 @@ public class OpenAiHttpException extends RuntimeException {
 
     public OpenAiHttpException(OpenAiError error, Exception parent, int statusCode) {
         super(error.getError().getMessage(), parent);
-        // todo error.error looks dumb
         this.statusCode = statusCode;
         this.code = error.getError().getCode();
         this.param = error.getError().getParam();

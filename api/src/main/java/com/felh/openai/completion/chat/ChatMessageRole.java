@@ -1,5 +1,7 @@
 package com.felh.openai.completion.chat;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum ChatMessageRole {
 
     SYSTEM("system"),
@@ -12,6 +14,7 @@ public enum ChatMessageRole {
         this.value = value;
     }
 
+    @JsonValue
     public String value() {
         return value;
     }

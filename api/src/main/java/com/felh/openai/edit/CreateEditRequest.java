@@ -1,22 +1,20 @@
 package com.felh.openai.edit;
 
-import com.felh.openai.IOpenAiRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.felh.openai.IOpenAiApiRequest;
+import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateEditRequest implements IOpenAiRequest {
+public class CreateEditRequest implements IOpenAiApiRequest {
 
     /**
      * string
      * Required
      * ID of the model to use. You can use the text-davinci-edit-001 or code-davinci-edit-001 model with this endpoint.
      */
+    @NonNull
     private String model;
 
     /**
@@ -30,6 +28,7 @@ public class CreateEditRequest implements IOpenAiRequest {
      * Required
      * The instruction that tells the model how to edit the prompt.
      */
+    @NonNull
     private String instruction;
 
     /**

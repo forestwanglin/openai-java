@@ -1,12 +1,12 @@
 package com.felh.openai.moderation;
 
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiResponse;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class CreateModerationResponse implements IApiEntity {
+public class CreateModerationResponse implements IOpenAiApiResponse {
 
     private String id;
 

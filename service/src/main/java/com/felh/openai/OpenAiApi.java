@@ -14,7 +14,7 @@ import com.felh.openai.finetune.CreateFineTuneRequest;
 import com.felh.openai.finetune.FineTune;
 import com.felh.openai.finetune.FineTuneEvent;
 import com.felh.openai.image.CreateImageRequest;
-import com.felh.openai.image.CreateImageResponse;
+import com.felh.openai.image.ImageResponse;
 import com.felh.openai.model.Model;
 import com.felh.openai.moderation.CreateModerationRequest;
 import com.felh.openai.moderation.CreateModerationResponse;
@@ -33,8 +33,8 @@ public interface OpenAiApi {
      *
      * @return
      */
-    @GET("v1/models")
-    Single<OpenAiListResponse<Model>> listModels();
+    @GET("/v1/models")
+    Single<OpenAiApiListResponse<Model>> listModels();
 
     /**
      * Retrieve model
@@ -45,7 +45,7 @@ public interface OpenAiApi {
      * @param modelId
      * @return
      */
-    @GET("v1/models/{model_id}")
+    @GET("/v1/models/{model_id}")
     Single<Model> getModel(@Path("model_id") String modelId);
 
     /**
@@ -57,7 +57,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/completions")
+    @POST("/v1/completions")
     Single<Completion> createCompletion(@Body CreateCompletionRequest request);
 
     /**
@@ -69,7 +69,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/chat/completions")
+    @POST("/v1/chat/completions")
     Single<ChatCompletion> createChatCompletion(@Body CreateChatCompletionRequest request);
 
     /**
@@ -81,7 +81,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/edits")
+    @POST("/v1/edits")
     Single<Edit> createEdit(@Body CreateEditRequest request);
 
     /**
@@ -95,8 +95,8 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/images/generations")
-    Single<CreateImageResponse> createImage(@Body CreateImageRequest request);
+    @POST("/v1/images/generations")
+    Single<ImageResponse> createImage(@Body CreateImageRequest request);
 
     /**
      * Create image editBeta
@@ -107,8 +107,8 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/images/edits")
-    Single<CreateImageResponse> createImageEdit(@Body RequestBody request);
+    @POST("/v1/images/edits")
+    Single<ImageResponse> createImageEdit(@Body RequestBody request);
 
     /**
      * Create image variationBeta
@@ -119,8 +119,8 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/images/variations")
-    Single<CreateImageResponse> createImageVariation(@Body RequestBody request);
+    @POST("/v1/images/variations")
+    Single<ImageResponse> createImageVariation(@Body RequestBody request);
 
     /**
      * Create embeddings
@@ -131,7 +131,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/embeddings")
+    @POST("/v1/embeddings")
     Single<CreateEmbeddingResponse> createEmbedding(@Body CreateEmbeddingRequest request);
 
     /**
@@ -143,7 +143,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/audio/transcriptions")
+    @POST("/v1/audio/transcriptions")
     Single<AudioResponse> createAudioTranscription(@Body RequestBody request);
 
     /**
@@ -155,7 +155,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/audio/translations")
+    @POST("/v1/audio/translations")
     Single<AudioResponse> createAudioTranslation(@Body RequestBody request);
 
     /**
@@ -167,7 +167,7 @@ public interface OpenAiApi {
      * @param request
      * @return
      */
-    @POST("v1/moderations")
+    @POST("/v1/moderations")
     Single<CreateModerationResponse> createModeration(@Body CreateModerationRequest request);
 
     /**
@@ -179,7 +179,7 @@ public interface OpenAiApi {
      * @return
      */
     @GET("/v1/files")
-    Single<OpenAiListResponse<File>> listFiles();
+    Single<OpenAiApiListResponse<File>> listFiles();
 
     /**
      * Upload file
@@ -257,7 +257,7 @@ public interface OpenAiApi {
      * @return
      */
     @GET("/v1/fine-tunes")
-    Single<OpenAiListResponse<FineTune>> listFineTunes();
+    Single<OpenAiApiListResponse<FineTune>> listFineTunes();
 
     /**
      * Retrieve fine-tune
@@ -293,7 +293,7 @@ public interface OpenAiApi {
      * @return
      */
     @GET("/v1/fine-tunes/{fine_tune_id}/events")
-    Single<OpenAiListResponse<FineTuneEvent>> listFineTuneEvents(@Path("fine_tune_id") String fineTuneId);
+    Single<OpenAiApiListResponse<FineTuneEvent>> listFineTuneEvents(@Path("fine_tune_id") String fineTuneId);
 
     /**
      * Delete fine-tune model
@@ -301,11 +301,10 @@ public interface OpenAiApi {
      * https://api.openai.com/v1/models/{model}
      * Delete a fine-tuned model. You must have the Owner role in your organization.
      *
-     * @param fineTuneId
+     * @param modelAndFineTuneId
      * @return
      */
-    @DELETE("/v1/models/{fine_tune_id}")
-    Single<DeleteResponse> deleteFineTune(@Path("fine_tune_id") String fineTuneId);
-
+    @DELETE("/v1/models/{model_and_fine_tune_id}")
+    Single<DeleteResponse> deleteFineTune(@Path("model_and_fine_tune_id") String modelAndFineTuneId);
 
 }

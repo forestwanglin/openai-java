@@ -1,6 +1,6 @@
 package com.felh.openai.image;
 
-import com.felh.openai.IOpenAiRequest;
+import com.felh.openai.IOpenAiApiRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public abstract class BaseCreateImageRequest implements IOpenAiRequest {
+public abstract class BaseCreateImageRequest implements IOpenAiApiRequest {
 
     /**
      * Optional

@@ -1,10 +1,10 @@
 package com.felh.openai.finetune;
 
-import com.felh.openai.IApiEntity;
+import com.felh.openai.IOpenAiApiObject;
 import lombok.Data;
 
 @Data
-public class HyperParameters implements IApiEntity {
+public class HyperParameters implements IOpenAiApiObject {
 
     /**
      * The batch size to use for training.

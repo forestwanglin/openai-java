@@ -5,5 +5,5 @@ import java.io.Serializable;
 /**
  * An interface class for all api return bean
  */
-public interface IApiEntity extends Serializable {
+public interface IOpenAiApiObject extends Serializable {
 }

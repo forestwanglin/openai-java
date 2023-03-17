@@ -3,21 +3,21 @@ package com.felh.openai;
 import lombok.Data;
 
 @Data
-public class Usage implements IApiEntity{
+public class Usage implements IOpenAiApiObject {
 
     /**
      * The number of prompt tokens used.
      */
-    long promptTokens;
+    private Long promptTokens;
 
     /**
      * The number of completion tokens used.
      */
-    long completionTokens;
+    private Long completionTokens;
 
     /**
      * The number of total tokens used
      */
-    long totalTokens;
+    private Long totalTokens;
 
 }
