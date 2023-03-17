@@ -11,6 +11,7 @@ OpenAi GPT4 API for Java
 - [Audio](https://platform.openai.com/docs/api-reference/audio)
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
+- [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
 
 ## License
 Published under the MIT License
