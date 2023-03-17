@@ -15,8 +15,6 @@ public class Model extends ApiEntityWithId {
 
     private String ownedBy;
 
-    private Long created;
-
     private List<Permission> permission;
 
     private String root;

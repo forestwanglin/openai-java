@@ -4,15 +4,30 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.felh.openai.audio.AudioResponse;
+import com.felh.openai.audio.CreateAudioTranscriptionRequest;
+import com.felh.openai.audio.CreateAudioTranslationRequest;
+import com.felh.openai.completion.Completion;
+import com.felh.openai.completion.CreateCompletionRequest;
+import com.felh.openai.completion.chat.ChatCompletion;
+import com.felh.openai.completion.chat.CreateChatCompletionRequest;
+import com.felh.openai.edit.Edit;
+import com.felh.openai.edit.CreateEditRequest;
+import com.felh.openai.embedding.CreateEmbeddingRequest;
+import com.felh.openai.embedding.CreateEmbeddingResponse;
+import com.felh.openai.image.CreateImageRequest;
+import com.felh.openai.image.CreateImageResponse;
+import com.felh.openai.image.edit.CreateImageEditRequest;
+import com.felh.openai.image.variation.CreateImageVariationRequest;
 import com.felh.openai.model.Model;
 import io.reactivex.rxjava3.core.Single;
-import okhttp3.ConnectionPool;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
 import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
@@ -24,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class OpenAiService {
 
     private static final String BASE_URL = "https://api.openai.com/";
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5);
     private static final ObjectMapper errorMapper = defaultObjectMapper();
 
     private final OpenAiApi api;
@@ -121,22 +136,119 @@ public class OpenAiService {
         return execute(api.getModel(modelId));
     }
 
-//    public CompletionResult createCompletion(CompletionRequest request) {
-//        return execute(api.createCompletion(request));
-//    }
-//
-//    public ChatCompletionResult createChatCompletion(ChatCompletionRequest request) {
-//        return execute(api.createChatCompletion(request));
-//    }
-//
-//    public EditResult createEdit(EditRequest request) {
-//        return execute(api.createEdit(request));
-//    }
-//
-//    public EmbeddingResult createEmbeddings(EmbeddingRequest request) {
-//        return execute(api.createEmbeddings(request));
-//    }
-//
+    /**
+     * text-davinci-003, text-davinci-002, text-curie-001, text-babbage-001,
+     * text-ada-001, davinci, curie, babbage, ada
+     *
+     * @param request
+     * @return
+     */
+    public Completion createCompletion(CreateCompletionRequest request) {
+        return execute(api.createCompletion(request));
+    }
+
+    /**
+     * gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301
+     *
+     * @param request
+     * @return
+     */
+    public ChatCompletion createChatCompletion(CreateChatCompletionRequest request) {
+        return execute(api.createChatCompletion(request));
+    }
+
+    public Edit createEdit(CreateEditRequest request) {
+        return execute(api.createEdit(request));
+    }
+
+    public CreateImageResponse createImage(CreateImageRequest request) {
+        return execute(api.createImage(request));
+    }
+
+    public CreateImageResponse createImageEdit(CreateImageEditRequest request) {
+        File image = new File(request.getImage());
+        File mask = null;
+        if (request.getMask() != null) {
+            mask = new File(request.getMask());
+        }
+        return createImageEdit(request, image, mask);
+    }
+
+    private CreateImageResponse createImageEdit(CreateImageEditRequest request, File image, File mask) {
+        RequestBody imageBody = RequestBody.create(MediaType.parse("image"), image);
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MediaType.get("multipart/form-data"))
+                .addFormDataPart("prompt", request.getPrompt())
+                .addFormDataPart("size", request.getSize())
+                .addFormDataPart("response_format", request.getResponseFormat())
+                .addFormDataPart("image", "image", imageBody);
+        if (request.getN() != null) {
+            builder.addFormDataPart("n", request.getN().toString());
+        }
+        if (mask != null) {
+            RequestBody maskBody = RequestBody.create(MediaType.parse("image"), mask);
+            builder.addFormDataPart("mask", "mask", maskBody);
+        }
+        return execute(api.createImageEdit(builder.build()));
+    }
+
+    public CreateImageResponse createImageVariation(CreateImageVariationRequest request) {
+        RequestBody imageBody = RequestBody.create(MediaType.parse("image"), new File(request.getImage()));
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MediaType.get("multipart/form-data"))
+                .addFormDataPart("size", request.getSize())
+                .addFormDataPart("response_format", request.getResponseFormat())
+                .addFormDataPart("image", "image", imageBody);
+
+        if (request.getN() != null) {
+            builder.addFormDataPart("n", request.getN().toString());
+        }
+        return execute(api.createImageVariation(builder.build()));
+    }
+
+    public CreateEmbeddingResponse createEmbeddings(CreateEmbeddingRequest request) {
+        return execute(api.createEmbedding(request));
+    }
+
+    public AudioResponse createAudioTranscription(CreateAudioTranscriptionRequest request) {
+        RequestBody audioBody = RequestBody.create(MediaType.parse("audio"), new File(request.getFile()));
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MediaType.get("multipart/form-data"))
+                .addFormDataPart("model", request.getModel())
+                .addFormDataPart("file", "audio", audioBody);
+        if (request.getPrompt() != null) {
+            builder.addFormDataPart("prompt", request.getModel());
+        }
+        if (request.getResponseFormat() != null) {
+            builder.addFormDataPart("response_format", request.getResponseFormat());
+        }
+        if (request.getTemperature() != null) {
+            builder.addFormDataPart("temperature", request.getTemperature().toString());
+        }
+        if (request.getPrompt() != null) {
+            builder.addFormDataPart("language", request.getLanguage());
+        }
+        return execute(api.createAudioTranscription(builder.build()));
+    }
+
+    public AudioResponse createAudioTranslation(CreateAudioTranslationRequest request) {
+        RequestBody audioBody = RequestBody.create(MediaType.parse("audio"), new File(request.getFile()));
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MediaType.get("multipart/form-data"))
+                .addFormDataPart("model", request.getModel())
+                .addFormDataPart("file", "audio", audioBody);
+        if (request.getPrompt() != null) {
+            builder.addFormDataPart("prompt", request.getModel());
+        }
+        if (request.getResponseFormat() != null) {
+            builder.addFormDataPart("response_format", request.getResponseFormat());
+        }
+        if (request.getTemperature() != null) {
+            builder.addFormDataPart("temperature", request.getTemperature().toString());
+        }
+        return execute(api.createAudioTranslation(builder.build()));
+    }
+
 //    public List<File> listFiles() {
 //        return execute(api.listFiles()).data;
 //    }
@@ -184,62 +296,6 @@ public class OpenAiService {
 //
 //    public DeleteResult deleteFineTune(String fineTuneId) {
 //        return execute(api.deleteFineTune(fineTuneId));
-//    }
-//
-//    public ImageResult createImage(CreateImageRequest request) {
-//        return execute(api.createImage(request));
-//    }
-//
-//    public ImageResult createImageEdit(CreateImageEditRequest request, String imagePath, String maskPath) {
-//        java.io.File image = new java.io.File(imagePath);
-//        java.io.File mask = null;
-//        if (maskPath != null) {
-//            mask = new java.io.File(maskPath);
-//        }
-//        return createImageEdit(request, image, mask);
-//    }
-//
-//    public ImageResult createImageEdit(CreateImageEditRequest request, java.io.File image, java.io.File mask) {
-//        RequestBody imageBody = RequestBody.create(MediaType.parse("image"), image);
-//
-//        MultipartBody.Builder builder = new MultipartBody.Builder()
-//                .setType(MediaType.get("multipart/form-data"))
-//                .addFormDataPart("prompt", request.getPrompt())
-//                .addFormDataPart("size", request.getSize())
-//                .addFormDataPart("response_format", request.getResponseFormat())
-//                .addFormDataPart("image", "image", imageBody);
-//
-//        if (request.getN() != null) {
-//            builder.addFormDataPart("n", request.getN().toString());
-//        }
-//
-//        if (mask != null) {
-//            RequestBody maskBody = RequestBody.create(MediaType.parse("image"), mask);
-//            builder.addFormDataPart("mask", "mask", maskBody);
-//        }
-//
-//        return execute(api.createImageEdit(builder.build()));
-//    }
-//
-//    public ImageResult createImageVariation(CreateImageVariationRequest request, String imagePath) {
-//        java.io.File image = new java.io.File(imagePath);
-//        return createImageVariation(request, image);
-//    }
-//
-//    public ImageResult createImageVariation(CreateImageVariationRequest request, java.io.File image) {
-//        RequestBody imageBody = RequestBody.create(MediaType.parse("image"), image);
-//
-//        MultipartBody.Builder builder = new MultipartBody.Builder()
-//                .setType(MediaType.get("multipart/form-data"))
-//                .addFormDataPart("size", request.getSize())
-//                .addFormDataPart("response_format", request.getResponseFormat())
-//                .addFormDataPart("image", "image", imageBody);
-//
-//        if (request.getN() != null) {
-//            builder.addFormDataPart("n", request.getN().toString());
-//        }
-//
-//        return execute(api.createImageVariation(builder.build()));
 //    }
 //
 //    public ModerationResult createModeration(ModerationRequest request) {

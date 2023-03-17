@@ -19,4 +19,9 @@ public abstract class ApiEntityWithId implements IApiEntity {
      */
     private String object;
 
+    /**
+     * The creation time in epoch seconds.
+     */
+    public long created;
+
 }

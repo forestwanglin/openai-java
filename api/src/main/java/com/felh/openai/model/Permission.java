@@ -6,16 +6,11 @@ import lombok.Data;
 @Data
 public class Permission extends ApiEntityWithId {
 
-    /**
-     * The creation time in epoch seconds.
-     */
-    public long created;
-
     public boolean allowCreateEngine;
 
     public boolean allowSampling;
 
-    public boolean allowLogProbs;
+    public boolean allowLogprobs;
 
     public boolean allowSearchIndices;
 
