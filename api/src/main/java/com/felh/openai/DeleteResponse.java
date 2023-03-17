@@ -1,9 +1,9 @@
-package com.felh.openai.file;
+package com.felh.openai;
 
 import lombok.Data;
 
 @Data
-public class DeleteFileResponse {
+public class DeleteResponse {
     /**
      * The id of the object.
      */

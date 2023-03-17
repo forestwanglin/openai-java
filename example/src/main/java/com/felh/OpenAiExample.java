@@ -1,18 +1,6 @@
 package com.felh;
 
 import com.felh.openai.OpenAiService;
-import com.felh.openai.completion.chat.ChatCompletion;
-import com.felh.openai.completion.chat.ChatMessage;
-import com.felh.openai.completion.chat.CreateChatCompletionRequest;
-import com.felh.openai.embedding.CreateEmbeddingRequest;
-import com.felh.openai.embedding.CreateEmbeddingResponse;
-import com.felh.openai.file.DeleteFileResponse;
-import com.felh.openai.file.File;
-import com.felh.openai.moderation.CreateModerationRequest;
-import com.felh.openai.moderation.CreateModerationResponse;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class OpenAiExample {
 

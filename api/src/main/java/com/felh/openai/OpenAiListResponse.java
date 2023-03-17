@@ -10,7 +10,7 @@ import java.util.List;
  * @param <T>
  */
 @Data
-public class OpenAiListResponse<T extends ApiEntityWithId> extends ApiEntityWithId {
+public class OpenAiListResponse<T extends IApiEntity> extends ApiEntityWithId {
 
     /**
      * A list containing the actual results

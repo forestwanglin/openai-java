@@ -15,7 +15,9 @@ import com.felh.openai.edit.Edit;
 import com.felh.openai.edit.CreateEditRequest;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
-import com.felh.openai.file.DeleteFileResponse;
+import com.felh.openai.finetune.CreateFineTuneRequest;
+import com.felh.openai.finetune.FineTune;
+import com.felh.openai.finetune.FineTuneEvent;
 import com.felh.openai.image.CreateImageRequest;
 import com.felh.openai.image.CreateImageResponse;
 import com.felh.openai.image.edit.CreateImageEditRequest;
@@ -160,6 +162,12 @@ public class OpenAiService {
         return execute(api.createChatCompletion(request));
     }
 
+    /**
+     * text-davinci-edit-001, code-davinci-edit-001
+     *
+     * @param request
+     * @return
+     */
     public Edit createEdit(CreateEditRequest request) {
         return execute(api.createEdit(request));
     }
@@ -209,10 +217,22 @@ public class OpenAiService {
         return execute(api.createImageVariation(builder.build()));
     }
 
+    /**
+     * text-embedding-ada-002, text-search-ada-doc-001
+     *
+     * @param request
+     * @return
+     */
     public CreateEmbeddingResponse createEmbeddings(CreateEmbeddingRequest request) {
         return execute(api.createEmbedding(request));
     }
 
+    /**
+     * whisper-1
+     *
+     * @param request
+     * @return
+     */
     public AudioResponse createAudioTranscription(CreateAudioTranscriptionRequest request) {
         RequestBody audioBody = RequestBody.create(MediaType.parse("audio"), new File(request.getFile()));
         MultipartBody.Builder builder = new MultipartBody.Builder()
@@ -234,6 +254,12 @@ public class OpenAiService {
         return execute(api.createAudioTranscription(builder.build()));
     }
 
+    /**
+     * whisper-1
+     *
+     * @param request
+     * @return
+     */
     public AudioResponse createAudioTranslation(CreateAudioTranslationRequest request) {
         RequestBody audioBody = RequestBody.create(MediaType.parse("audio"), new File(request.getFile()));
         MultipartBody.Builder builder = new MultipartBody.Builder()
@@ -264,7 +290,7 @@ public class OpenAiService {
         return execute(api.uploadFile(body, purposeBody));
     }
 
-    public DeleteFileResponse deleteFile(String fileId) {
+    public DeleteResponse deleteFile(String fileId) {
         return execute(api.deleteFile(fileId));
     }
 
@@ -277,34 +303,36 @@ public class OpenAiService {
         return execute(api.retrieveFileContent(fileId));
     }
 
-//    public FineTuneResult createFineTune(FineTuneRequest request) {
-//        return execute(api.createFineTune(request));
-//    }
-//
-//    public CompletionResult createFineTuneCompletion(CompletionRequest request) {
-//        return execute(api.createFineTuneCompletion(request));
-//    }
-//
-//    public List<FineTuneResult> listFineTunes() {
-//        return execute(api.listFineTunes()).data;
-//    }
-//
-//    public FineTuneResult retrieveFineTune(String fineTuneId) {
-//        return execute(api.retrieveFineTune(fineTuneId));
-//    }
-//
-//    public FineTuneResult cancelFineTune(String fineTuneId) {
-//        return execute(api.cancelFineTune(fineTuneId));
-//    }
-//
-//    public List<FineTuneEvent> listFineTuneEvents(String fineTuneId) {
-//        return execute(api.listFineTuneEvents(fineTuneId)).data;
-//    }
-//
-//    public DeleteResult deleteFineTune(String fineTuneId) {
-//        return execute(api.deleteFineTune(fineTuneId));
-//    }
+    public FineTune createFineTune(CreateFineTuneRequest request) {
+        return execute(api.createFineTune(request));
+    }
 
+    public List<FineTune> listFineTunes() {
+        return execute(api.listFineTunes()).data;
+    }
+
+    public FineTune retrieveFineTune(String fineTuneId) {
+        return execute(api.retrieveFineTune(fineTuneId));
+    }
+
+    public FineTune cancelFineTune(String fineTuneId) {
+        return execute(api.cancelFineTune(fineTuneId));
+    }
+
+    public List<FineTuneEvent> listFineTuneEvents(String fineTuneId) {
+        return execute(api.listFineTuneEvents(fineTuneId)).data;
+    }
+
+    public DeleteResponse deleteFineTune(String fineTuneId) {
+        return execute(api.deleteFineTune(fineTuneId));
+    }
+
+    /**
+     * text-moderation-stable, text-moderation-latest
+     *
+     * @param request
+     * @return
+     */
     public CreateModerationResponse createModeration(CreateModerationRequest request) {
         return execute(api.createModeration(request));
     }
