@@ -15,18 +15,10 @@
     </modules>
 
     <properties>
-        <openai-java.version>0.1.0-SNAPSHOT</openai-java.version>
+        <openai-java.version>0.2.0-SNAPSHOT</openai-java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
-        </dependency>
-    </dependencies>
 
 </project>

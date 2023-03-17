@@ -15,11 +15,14 @@ import com.felh.openai.edit.Edit;
 import com.felh.openai.edit.CreateEditRequest;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
+import com.felh.openai.file.DeleteFileResponse;
 import com.felh.openai.image.CreateImageRequest;
 import com.felh.openai.image.CreateImageResponse;
 import com.felh.openai.image.edit.CreateImageEditRequest;
 import com.felh.openai.image.variation.CreateImageVariationRequest;
 import com.felh.openai.model.Model;
+import com.felh.openai.moderation.CreateModerationRequest;
+import com.felh.openai.moderation.CreateModerationResponse;
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.*;
 import retrofit2.HttpException;
@@ -249,27 +252,31 @@ public class OpenAiService {
         return execute(api.createAudioTranslation(builder.build()));
     }
 
-//    public List<File> listFiles() {
-//        return execute(api.listFiles()).data;
-//    }
-//
-//    public File uploadFile(String purpose, String filepath) {
-//        java.io.File file = new java.io.File(filepath);
-//        RequestBody purposeBody = RequestBody.create(okhttp3.MultipartBody.FORM, purpose);
-//        RequestBody fileBody = RequestBody.create(MediaType.parse("text"), file);
-//        MultipartBody.Part body = MultipartBody.Part.createFormData("file", filepath, fileBody);
-//
-//        return execute(api.uploadFile(purposeBody, body));
-//    }
-//
-//    public DeleteResult deleteFile(String fileId) {
-//        return execute(api.deleteFile(fileId));
-//    }
-//
-//    public File retrieveFile(String fileId) {
-//        return execute(api.retrieveFile(fileId));
-//    }
-//
+    public List<com.felh.openai.file.File> listFiles() {
+        return execute(api.listFiles()).data;
+    }
+
+    public com.felh.openai.file.File uploadFile(String filepath, String purpose) {
+        File file = new File(filepath);
+        RequestBody purposeBody = RequestBody.create(okhttp3.MultipartBody.FORM, purpose);
+        RequestBody fileBody = RequestBody.create(MediaType.parse("text"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", filepath, fileBody);
+        return execute(api.uploadFile(body, purposeBody));
+    }
+
+    public DeleteFileResponse deleteFile(String fileId) {
+        return execute(api.deleteFile(fileId));
+    }
+
+    public com.felh.openai.file.File retrieveFile(String fileId) {
+        return execute(api.retrieveFile(fileId));
+    }
+
+    // TODO not working
+    public String retrieveFileContent(String fileId) {
+        return execute(api.retrieveFileContent(fileId));
+    }
+
 //    public FineTuneResult createFineTune(FineTuneRequest request) {
 //        return execute(api.createFineTune(request));
 //    }
@@ -297,9 +304,9 @@ public class OpenAiService {
 //    public DeleteResult deleteFineTune(String fineTuneId) {
 //        return execute(api.deleteFineTune(fineTuneId));
 //    }
-//
-//    public ModerationResult createModeration(ModerationRequest request) {
-//        return execute(api.createModeration(request));
-//    }
+
+    public CreateModerationResponse createModeration(CreateModerationRequest request) {
+        return execute(api.createModeration(request));
+    }
 
 }

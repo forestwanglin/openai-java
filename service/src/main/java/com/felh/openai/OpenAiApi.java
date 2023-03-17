@@ -9,17 +9,17 @@ import com.felh.openai.edit.Edit;
 import com.felh.openai.edit.CreateEditRequest;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
+import com.felh.openai.file.DeleteFileResponse;
+import com.felh.openai.file.File;
 import com.felh.openai.image.CreateImageRequest;
 import com.felh.openai.image.CreateImageResponse;
-import com.felh.openai.image.edit.CreateImageEditRequest;
-import com.felh.openai.image.variation.CreateImageVariationRequest;
 import com.felh.openai.model.Model;
+import com.felh.openai.moderation.CreateModerationRequest;
+import com.felh.openai.moderation.CreateModerationResponse;
 import io.reactivex.rxjava3.core.Single;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.http.*;
 
 public interface OpenAiApi {
 
@@ -155,4 +155,41 @@ public interface OpenAiApi {
      */
     @POST("v1/audio/translations")
     Single<AudioResponse> createAudioTranslation(@Body RequestBody request);
+
+    /**
+     * Create moderation
+     * POST
+     * https://api.openai.com/v1/moderations
+     * Classifies if text violates OpenAI's Content Policy
+     *
+     * @param request
+     * @return
+     */
+    @POST("v1/moderations")
+    Single<CreateModerationResponse> createModeration(@Body CreateModerationRequest request);
+
+    /**
+     * List files
+     * GET
+     * https://api.openai.com/v1/files
+     * Returns a list of files that belong to the user's organization.
+     *
+     * @return
+     */
+    @GET("/v1/files")
+    Single<OpenAiListResponse<File>> listFiles();
+
+    @Multipart
+    @POST("/v1/files")
+    Single<File> uploadFile(@Part MultipartBody.Part file, @Part("purpose") RequestBody purpose);
+
+    @DELETE("/v1/files/{file_id}")
+    Single<DeleteFileResponse> deleteFile(@Path("file_id") String fileId);
+
+    @GET("/v1/files/{file_id}")
+    Single<File> retrieveFile(@Path("file_id") String fileId);
+
+    @GET("/v1/files/{file_id}/content")
+    Single<String> retrieveFileContent(@Path("file_id") String fileId);
+
 }

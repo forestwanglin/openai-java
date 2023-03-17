@@ -6,8 +6,13 @@ import com.felh.openai.completion.chat.ChatMessage;
 import com.felh.openai.completion.chat.CreateChatCompletionRequest;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
+import com.felh.openai.file.DeleteFileResponse;
+import com.felh.openai.file.File;
+import com.felh.openai.moderation.CreateModerationRequest;
+import com.felh.openai.moderation.CreateModerationResponse;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class OpenAiExample {
 
@@ -67,6 +72,30 @@ public class OpenAiExample {
 //        CreateEmbeddingResponse createEmbeddingResponse = openAiService.createEmbeddings(createEmbeddingRequest);
 //        System.out.println(createEmbeddingResponse);
 
+//        CreateModerationRequest createModerationRequest = CreateModerationRequest.builder()
+//                .input("I want to kill them.")
+//                .build();
+//        CreateModerationResponse createModerationResponse = openAiService.createModeration(createModerationRequest);
+//        System.out.println(createModerationResponse);
+
+
+//      File file=  openAiService.uploadFile("/Users/forest/f", "fine-tune");
+//        System.out.println(file);
+
+//        File file = openAiService.retrieveFile("file-aI4BqkIctAkk7ZVzzuQwUdnn");
+//        System.out.println(file);
+//
+//        String fileContent = openAiService.retrieveFileContent("file-aI4BqkIctAkk7ZVzzuQwUdnn");
+//        System.out.println(fileContent);
+
+//        List<File> files = openAiService.listFiles();
+//        System.out.println(files);
+//
+//        DeleteFileResponse deleteFileResponse = openAiService.deleteFile("file-aI4BqkIctAkk7ZVzzuQwUdnn");
+//        System.out.println(deleteFileResponse);
+//
+//        files = openAiService.listFiles();
+//        System.out.println(files);
     }
 
 }
