@@ -160,8 +160,8 @@ public class OpenAiExample {
             System.out.println("listFineTuneEvents: " + toJSONString(fineTuneEvents));
 
         }
-        DeleteResponse deleteFineTuneResponse = openAiService.deleteFineTune("curie", "ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-        System.out.println("deleteFineTune: " + toJSONString(deleteFineTuneResponse));
+        List<File> files = openAiService.listFiles();
+        System.out.println("list files: " + toJSONString(files));
 
     }
 
