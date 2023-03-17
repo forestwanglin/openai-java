@@ -9,6 +9,8 @@ OpenAi GPT4 API for Java
 - [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
 - [Images](https://platform.openai.com/docs/api-reference/images)
 - [Audio](https://platform.openai.com/docs/api-reference/audio)
+- [File](https://platform.openai.com/docs/api-reference/files)
+- [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 
 ## License
 Published under the MIT License
