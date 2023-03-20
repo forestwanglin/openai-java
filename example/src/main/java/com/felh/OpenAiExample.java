@@ -161,15 +161,29 @@ public class OpenAiExample {
             System.out.println("listFineTuneEvents: " + toJSONString(fineTuneEvents));
 
         }
-//        List<File> files = openAiService.listFiles();
-//        System.out.println("list files: " + toJSONString(files));
-
-//        File file = openAiService.uploadFile("/Users/forest/ff.jsonl", "fine-tune");
-//        System.out.println("update file: " + toJSONString(file));
 
         // not for free account
-        RetrieveFileContentResponse fileContent = openAiService.retrieveFileContent("file-zuuXpPWYtGPlFjM2Z6coYy3h");
-        System.out.println("retrieveFileContent: " + toJSONString(fileContent));
+//        RetrieveFileContentResponse fileContent = openAiService.retrieveFileContent("file-zuuXpPWYtGPlFjM2Z6coYy3h");
+//        System.out.println("retrieveFileContent: " + toJSONString(fileContent));
+
+//        Model model = openAiService.getModel("gpt-3.5-turbo-0301");
+//        System.out.println("model gpt-3.5-turbo: " + toJSONString(model));
+
+//        CreateCompletionRequest completionRequest = CreateCompletionRequest.builder()
+//                .prompt("Somebody once told me the world is gonna roll me")
+//                .echo(true)
+//                .model("ada")
+//                .build();
+//        Completion completion = openAiService.createCompletion(completionRequest);
+//        System.out.println("completion: " + toJSONString(completion));
+//
+//        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+//                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello")))
+//                .model("gpt-3.5-turbo")
+//                .build();
+//        ChatCompletion chatCompletion = openAiService.createChatCompletion(chatCompletionRequest);
+//        System.out.println("chatCompletion: " + toJSONString(chatCompletion));
+
 
     }
 
