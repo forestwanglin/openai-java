@@ -9,9 +9,13 @@
         <version>${openai-java.version}</version>
     </parent>
 
-    <artifactId>openai-api</artifactId>
+    <artifactId>openai-core</artifactId>
     <version>${openai-java.version}</version>
     <packaging>jar</packaging>
+
+    <name>OpenAi API core</name>
+    <description>OpenAi API core</description>
+    <url>https://github.com/forestwanglin/openai-java/tree/main/core</url>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

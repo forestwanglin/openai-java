@@ -12,10 +12,10 @@ public class CreateCompletionRequest extends BaseCreateCompletionRequest {
 
     /**
      * The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens,
-     * or array of token arrays. Note that <|endoftext|> is the document separator that the model sees during training,
+     * or array of token arrays. Note that &lt;|endoftext|&gt; is the document separator that the model sees during training,
      * so if a prompt is not specified the model will generate as if from the beginning of a new document.
      * string or array
-     * Optional Defaults to <|endoftext|>
+     * Optional Defaults to &lt;|endoftext|&gt;
      */
     private String prompt;
 

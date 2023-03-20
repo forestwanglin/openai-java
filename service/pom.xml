@@ -12,6 +12,10 @@
     <artifactId>openai-service</artifactId>
     <packaging>jar</packaging>
 
+    <name>OpenAi API service</name>
+    <description>OpenAi API service</description>
+    <url>https://github.com/forestwanglin/openai-java/tree/main/service</url>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -21,7 +25,7 @@
     <dependencies>
         <dependency>
             <groupId>xyz.felh</groupId>
-            <artifactId>openai-api</artifactId>
+            <artifactId>openai-core</artifactId>
             <version>${openai-java.version}</version>
         </dependency>
 

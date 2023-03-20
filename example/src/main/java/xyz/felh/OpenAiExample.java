@@ -32,8 +32,16 @@ import xyz.felh.openai.moderation.CreateModerationResponse;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The class of example
+ */
 public class OpenAiExample {
 
+    /**
+     * Main interface
+     * @param args
+     * @throws JsonProcessingException
+     */
     public static void main(String[] args) throws JsonProcessingException {
         String sk = System.getenv("OPENAI_TOKEN");
 

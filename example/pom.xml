@@ -7,9 +7,11 @@
         <version>${openai-java.version}</version>
     </parent>
     <artifactId>openai-example</artifactId>
-    <name>openai-example</name>
     <version>${openai-java.version}</version>
-    <url>http://maven.apache.org</url>
+
+    <name>OpenAi API example</name>
+    <description>OpenAi API example</description>
+    <url>https://github.com/forestwanglin/openai-java/tree/main/example</url>
 
     <dependencies>
         <dependency>
