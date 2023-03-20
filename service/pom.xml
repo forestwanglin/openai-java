@@ -8,9 +8,9 @@
         <artifactId>openai-java</artifactId>
         <version>${openai-java.version}</version>
     </parent>
-    <packaging>jar</packaging>
     <version>${openai-java.version}</version>
-    <artifactId>service</artifactId>
+    <artifactId>openai-service</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>xyz.felh</groupId>
-            <artifactId>api</artifactId>
+            <artifactId>openai-api</artifactId>
             <version>${openai-java.version}</version>
         </dependency>
 

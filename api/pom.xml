@@ -8,10 +8,10 @@
         <artifactId>openai-java</artifactId>
         <version>${openai-java.version}</version>
     </parent>
-    <packaging>jar</packaging>
-    <version>${openai-java.version}</version>
 
-    <artifactId>api</artifactId>
+    <artifactId>openai-api</artifactId>
+    <version>${openai-java.version}</version>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>xyz.felh</groupId>
-            <artifactId>service</artifactId>
+            <artifactId>openai-service</artifactId>
             <version>${openai-java.version}</version>
         </dependency>
     </dependencies>
