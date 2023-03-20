@@ -18,6 +18,7 @@ import com.felh.openai.edit.Edit;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
 import com.felh.openai.file.File;
+import com.felh.openai.file.RetrieveFileContentResponse;
 import com.felh.openai.finetune.CreateFineTuneRequest;
 import com.felh.openai.finetune.FineTune;
 import com.felh.openai.finetune.FineTuneEvent;
@@ -160,8 +161,15 @@ public class OpenAiExample {
             System.out.println("listFineTuneEvents: " + toJSONString(fineTuneEvents));
 
         }
-        List<File> files = openAiService.listFiles();
-        System.out.println("list files: " + toJSONString(files));
+//        List<File> files = openAiService.listFiles();
+//        System.out.println("list files: " + toJSONString(files));
+
+//        File file = openAiService.uploadFile("/Users/forest/ff.jsonl", "fine-tune");
+//        System.out.println("update file: " + toJSONString(file));
+
+        // not for free account
+        RetrieveFileContentResponse fileContent = openAiService.retrieveFileContent("file-zuuXpPWYtGPlFjM2Z6coYy3h");
+        System.out.println("retrieveFileContent: " + toJSONString(fileContent));
 
     }
 

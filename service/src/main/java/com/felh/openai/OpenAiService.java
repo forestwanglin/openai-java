@@ -15,6 +15,7 @@ import com.felh.openai.edit.Edit;
 import com.felh.openai.edit.CreateEditRequest;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
+import com.felh.openai.file.RetrieveFileContentResponse;
 import com.felh.openai.finetune.CreateFineTuneRequest;
 import com.felh.openai.finetune.FineTune;
 import com.felh.openai.finetune.FineTuneEvent;
@@ -316,7 +317,7 @@ public class OpenAiService {
      * @param fileId
      * @return
      */
-    public String retrieveFileContent(String fileId) {
+    public RetrieveFileContentResponse retrieveFileContent(String fileId) {
         return execute(api.retrieveFileContent(fileId));
     }
 

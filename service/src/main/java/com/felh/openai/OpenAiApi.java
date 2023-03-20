@@ -10,6 +10,7 @@ import com.felh.openai.edit.Edit;
 import com.felh.openai.embedding.CreateEmbeddingRequest;
 import com.felh.openai.embedding.CreateEmbeddingResponse;
 import com.felh.openai.file.File;
+import com.felh.openai.file.RetrieveFileContentResponse;
 import com.felh.openai.finetune.CreateFineTuneRequest;
 import com.felh.openai.finetune.FineTune;
 import com.felh.openai.finetune.FineTuneEvent;
@@ -233,7 +234,7 @@ public interface OpenAiApi {
      * @return
      */
     @GET("/v1/files/{file_id}/content")
-    Single<String> retrieveFileContent(@Path("file_id") String fileId);
+    Single<RetrieveFileContentResponse> retrieveFileContent(@Path("file_id") String fileId);
 
     /**
      * Create fine-tune
