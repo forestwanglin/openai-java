@@ -7,7 +7,7 @@
         <version>${openai-java.version}</version>
     </parent>
     <artifactId>example</artifactId>
-    <name>example</name>
+    <name>openai-example</name>
     <version>${openai-java.version}</version>
     <url>http://maven.apache.org</url>
 
