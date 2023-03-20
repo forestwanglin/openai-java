@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.felh</groupId>
+        <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
         <version>${openai-java.version}</version>
     </parent>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.felh</groupId>
+            <groupId>xyz.felh</groupId>
             <artifactId>service</artifactId>
             <version>${openai-java.version}</version>
         </dependency>
