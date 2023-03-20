@@ -15,7 +15,7 @@
     </modules>
 
     <properties>
-        <openai-java.version>0.8.0-SNAPSHOT</openai-java.version>
+        <openai-java.version>0.8.0</openai-java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
