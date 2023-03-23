@@ -1,6 +1,24 @@
 # openai-java
 OpenAi GPT4 API for Java
 
+## How to use
+### Maven
+```xml
+<dependency>
+    <groupId>xyz.felh</groupId>
+    <artifactId>openai-java</artifactId>
+    <version>0.9.2</version>
+</dependency>
+```
+### Gradle
+```yaml
+implementation group: 'xyz.felh', name: 'openai-java', version: '0.9.2'
+```
+### sbt
+```javascript
+libraryDependencies += "xyz.felh" % "openai-java" % "0.9.2"
+```
+
 ## Supported APIs
 - [Models](https://platform.openai.com/docs/api-reference/models)
 - [Completions](https://platform.openai.com/docs/api-reference/completions)
@@ -14,4 +32,5 @@ OpenAi GPT4 API for Java
 - [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
 
 ## License
-Published under the MIT License
+Published under the MIT License (https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
+
