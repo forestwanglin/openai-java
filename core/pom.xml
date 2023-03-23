@@ -6,11 +6,10 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>${openai-java.version}</version>
+        <version>0.9.2</version>
     </parent>
 
     <artifactId>openai-core</artifactId>
-    <version>${openai-java.version}</version>
     <packaging>jar</packaging>
 
     <name>OpenAi API core</name>

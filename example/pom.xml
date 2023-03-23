@@ -4,10 +4,9 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>${openai-java.version}</version>
+        <version>0.9.2</version>
     </parent>
     <artifactId>openai-example</artifactId>
-    <version>${openai-java.version}</version>
 
     <name>OpenAi API example</name>
     <description>OpenAi API example</description>
