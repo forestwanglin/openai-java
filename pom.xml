@@ -41,6 +41,7 @@
         <module>core</module>
         <module>example</module>
         <module>service</module>
+        <module>gpt3-tokenizer</module>
     </modules>
 
     <properties>
