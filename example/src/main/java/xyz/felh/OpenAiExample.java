@@ -29,6 +29,8 @@ import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,10 +41,11 @@ public class OpenAiExample {
 
     /**
      * Main interface
+     *
      * @param args
      * @throws JsonProcessingException
      */
-    public static void main(String[] args) throws JsonProcessingException {
+    public static void main(String[] args) throws IOException {
         String sk = System.getenv("OPENAI_TOKEN");
 
         OpenAiService openAiService = new OpenAiService(sk);
@@ -88,15 +91,15 @@ public class OpenAiExample {
 
             CreateImageEditRequest createImageEditRequest = CreateImageEditRequest.builder()
                     .prompt("A cute baby sea otter wearing a beret")
-                    .image("/Users/forest/image_edit_original.png")
-                    .mask("/Users/forest/image_edit_mask.png")
+                    .imagePath("/Users/forest/image_edit_original.png")
+                    .maskPath("/Users/forest/image_edit_mask.png")
 //                .responseFormat("b64_json") // or url
                     .build();
             ImageResponse imageEditResponse = openAiService.createImageEdit(createImageEditRequest);
             System.out.println("imageEditResponse: " + toJSONString(imageEditResponse));
 
             CreateImageVariationRequest createImageVariationRequest = CreateImageVariationRequest.builder()
-                    .image("/Users/forest/image_edit_original.png")
+//                    .image("/Users/forest/image_edit_original.png")
                     .n(2)
                     .size("256x256")
                     .build();
@@ -173,8 +176,8 @@ public class OpenAiExample {
 //        RetrieveFileContentResponse fileContent = openAiService.retrieveFileContent("file-zuuXpPWYtGPlFjM2Z6coYy3h");
 //        System.out.println("retrieveFileContent: " + toJSONString(fileContent));
 
-        Model model = openAiService.getModel("gpt-3.5-turbo-0301");
-        System.out.println("model gpt-3.5-turbo: " + toJSONString(model));
+//        Model model = openAiService.getModel("gpt-3.5-turbo-0301");
+//        System.out.println("model gpt-3.5-turbo: " + toJSONString(model));
 
 //        CreateCompletionRequest completionRequest = CreateCompletionRequest.builder()
 //                .prompt("Somebody once told me the world is gonna roll me")
@@ -183,14 +186,34 @@ public class OpenAiExample {
 //                .build();
 //        Completion completion = openAiService.createCompletion(completionRequest);
 //        System.out.println("completion: " + toJSONString(completion));
-//
+
 //        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-//                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello")))
+//                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "My name is Forest")))
 //                .model("gpt-3.5-turbo")
 //                .build();
 //        ChatCompletion chatCompletion = openAiService.createChatCompletion(chatCompletionRequest);
 //        System.out.println("chatCompletion: " + toJSONString(chatCompletion));
 
+//        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
+//        java.io.File mask = new java.io.File("/Users/forest/image_edit_mask.png");
+//        CreateImageEditRequest createImageEditRequest = CreateImageEditRequest.builder()
+//                .prompt("A cute baby sea otter wearing a beret")
+//                .image(Files.readAllBytes(image.toPath()))
+//                .mask(Files.readAllBytes(mask.toPath()))
+////                .responseFormat("b64_json") // or url
+//                .build();
+//        ImageResponse imageEditResponse = openAiService.createImageEdit(createImageEditRequest);
+//        System.out.println("imageEditResponse: " + toJSONString(imageEditResponse));
+
+//        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
+//
+//        CreateImageVariationRequest createImageVariationRequest = CreateImageVariationRequest.builder()
+//                .image(Files.readAllBytes(image.toPath()))
+//                .n(1)
+//                .size("256x256")
+//                .build();
+//        ImageResponse imageVariationResponse = openAiService.createImageVariation(createImageVariationRequest);
+//        System.out.println("imageVariationResponse: " + toJSONString(imageVariationResponse));
 
     }
 

@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 //@Builder
 @SuperBuilder(toBuilder = true)
 public abstract class BaseCreateCompletionRequest implements IOpenAiApiRequest {

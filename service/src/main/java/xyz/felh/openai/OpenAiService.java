@@ -35,6 +35,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -178,16 +179,33 @@ public class OpenAiService {
     }
 
     public ImageResponse createImageEdit(CreateImageEditRequest request) {
-        File image = new File(request.getImage());
-        File mask = null;
-        if (request.getMask() != null) {
-            mask = new File(request.getMask());
+        byte[] imageBytes;
+        if (request.getImage() != null && request.getImage().length > 0) {
+            imageBytes = request.getImage();
+        } else {
+            File image = new File(request.getImagePath());
+            try {
+                imageBytes = Files.readAllBytes(image.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return createImageEdit(request, image, mask);
+        byte[] maskBytes = null;
+        if (request.getMask() != null && request.getMask().length > 0) {
+            maskBytes = request.getMask();
+        } else if (request.getMaskPath() != null && request.getMaskPath().length() > 0) {
+            File mask = new File(request.getMaskPath());
+            try {
+                maskBytes = Files.readAllBytes(mask.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return createImageEdit(request, imageBytes, maskBytes);
     }
 
-    private ImageResponse createImageEdit(CreateImageEditRequest request, File image, File mask) {
-        RequestBody imageBody = RequestBody.create(MediaType.parse("image"), image);
+    private ImageResponse createImageEdit(CreateImageEditRequest request, byte[] image, byte[] mask) {
+        RequestBody imageBody = RequestBody.create(image, MediaType.parse("image"));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("prompt", request.getPrompt())
@@ -202,14 +220,24 @@ public class OpenAiService {
             builder.addFormDataPart("response_format", request.getResponseFormat());
         }
         if (mask != null) {
-            RequestBody maskBody = RequestBody.create(MediaType.parse("image"), mask);
+            RequestBody maskBody = RequestBody.create(mask, MediaType.parse("image"));
             builder.addFormDataPart("mask", "mask", maskBody);
         }
         return execute(api.createImageEdit(builder.build()));
     }
 
     public ImageResponse createImageVariation(CreateImageVariationRequest request) {
-        RequestBody imageBody = RequestBody.create(MediaType.parse("image"), new File(request.getImage()));
+        RequestBody imageBody;
+        if (request.getImage() != null && request.getImage().length > 0) {
+            imageBody = RequestBody.create(request.getImage(), MediaType.parse("image"));
+        } else {
+            File mask = new File(request.getImagePath());
+            try {
+                imageBody = RequestBody.create(Files.readAllBytes(mask.toPath()), MediaType.parse("image"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("image", "image", imageBody);

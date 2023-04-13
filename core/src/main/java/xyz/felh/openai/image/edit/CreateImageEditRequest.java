@@ -4,27 +4,29 @@ import xyz.felh.openai.image.BaseCreateImageRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public class CreateImageEditRequest extends BaseCreateImageRequest {
 
     /**
-     * Required
+     * Required image or imagePath
      * The image to edit. Must be a valid PNG file, less than 4MB, and square. If mask is not provided,
      * image must have transparency, which will be used as the mask.
      */
-    @NonNull
-    private String image;
+    private String imagePath;
+    private byte[] image;
 
     /**
      * Optional
      * An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where image should be edited.
      * Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
      */
-    private String mask;
+    private byte[] mask;
+    private String maskPath;
 
     /**
      * Required
