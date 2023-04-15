@@ -6,7 +6,14 @@ OpenAi GPT4 API for Java
 ```xml
 <dependency>
     <groupId>xyz.felh</groupId>
-    <artifactId>openai-java</artifactId>
+    <artifactId>openai-service</artifactId>
+    <version>0.9.5</version>
+</dependency>
+
+<!-- 如果需要计算tokens数量 -->
+<dependency>
+    <groupId>xyz.felh</groupId>
+    <artifactId>gpt3-tokenizer</artifactId>
     <version>0.9.5</version>
 </dependency>
 ```
