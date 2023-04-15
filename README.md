@@ -7,7 +7,7 @@ OpenAi GPT4 API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>openai-java</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.5</version>
 </dependency>
 ```
 ### Gradle
