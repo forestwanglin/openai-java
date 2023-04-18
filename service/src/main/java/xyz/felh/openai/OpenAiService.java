@@ -224,7 +224,7 @@ public class OpenAiService {
                     streamChatCompletionListeners.forEach(it -> it.onEventDone(requestId));
                 } else {
                     try {
-                        System.out.println(System.currentTimeMillis() + ": onEvent, data: " + data);
+//                        System.out.println(System.currentTimeMillis() + ": onEvent, data: " + data);
                         ChatCompletion chatCompletion = defaultObjectMapper().readValue(data, ChatCompletion.class);
                         streamChatCompletionListeners.forEach(it -> it.onEvent(requestId, chatCompletion));
                     } catch (JsonProcessingException e) {
