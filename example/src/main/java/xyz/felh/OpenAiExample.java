@@ -2,8 +2,12 @@ package xyz.felh;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 import xyz.felh.openai.DeleteResponse;
+import xyz.felh.openai.OpenAiApi;
 import xyz.felh.openai.OpenAiService;
+import xyz.felh.openai.StreamChatCompletionListener;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -30,9 +34,13 @@ import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
 
 import java.io.IOException;
-import java.nio.file.Files;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+
+import static xyz.felh.openai.OpenAiService.*;
 
 /**
  * The class of example
@@ -46,9 +54,20 @@ public class OpenAiExample {
      * @throws JsonProcessingException
      */
     public static void main(String[] args) throws IOException {
+
         String sk = System.getenv("OPENAI_TOKEN");
 
-        OpenAiService openAiService = new OpenAiService(sk);
+        ObjectMapper mapper = defaultObjectMapper();
+        Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1086));
+        OkHttpClient client = defaultClient(sk, Duration.ofMillis(300000))
+                .newBuilder()
+                .proxy(proxy)
+                .build();
+        Retrofit retrofit = defaultRetrofit(client, mapper);
+        OpenAiApi api = retrofit.create(OpenAiApi.class);
+
+        OpenAiService openAiService = new OpenAiService(api, client);
+
 
         if (false) {
             List<Model> models = openAiService.listModels();
@@ -187,12 +206,12 @@ public class OpenAiExample {
 //        Completion completion = openAiService.createCompletion(completionRequest);
 //        System.out.println("completion: " + toJSONString(completion));
 
-//        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-//                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "My name is Forest")))
-//                .model("gpt-3.5-turbo")
-//                .build();
-//        ChatCompletion chatCompletion = openAiService.createChatCompletion(chatCompletionRequest);
-//        System.out.println("chatCompletion: " + toJSONString(chatCompletion));
+
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "CWhat's 1+1? Answer in one word.")))
+                .model("gpt-3.5-turbo")
+                .build();
+        openAiService.createSteamChatCompletion("2134234", chatCompletionRequest);
 
 //        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
 //        java.io.File mask = new java.io.File("/Users/forest/image_edit_mask.png");
@@ -215,6 +234,12 @@ public class OpenAiExample {
 //        ImageResponse imageVariationResponse = openAiService.createImageVariation(createImageVariationRequest);
 //        System.out.println("imageVariationResponse: " + toJSONString(imageVariationResponse));
 
+    }
+
+    static class SCCListener extends StreamChatCompletionListener {
+        public SCCListener(String id) {
+            super(id);
+        }
     }
 
     private static String toJSONString(Object obj) throws JsonProcessingException {

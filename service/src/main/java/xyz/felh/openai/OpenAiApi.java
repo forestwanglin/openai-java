@@ -1,5 +1,9 @@
 package xyz.felh.openai;
 
+import io.reactivex.rxjava3.core.Single;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.http.*;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.completion.Completion;
 import xyz.felh.openai.completion.CreateCompletionRequest;
@@ -19,10 +23,6 @@ import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import io.reactivex.rxjava3.core.Single;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.http.*;
 
 /**
  * Retrofit2 API interface
@@ -41,7 +41,7 @@ public interface OpenAiApi {
     /**
      * Retrieve model
      *
-     * @param modelId
+     * @param modelId model ID
      * @return Retrieves a model instance, providing basic information
      * about the model such as the owner and permission.
      */
@@ -52,7 +52,7 @@ public interface OpenAiApi {
      * Create completion
      * Creates a completion for the provided prompt and parameters
      *
-     * @param request
+     * @param request Create completion request
      * @return Completion detail information
      */
     @POST("/v1/completions")
@@ -62,7 +62,7 @@ public interface OpenAiApi {
      * Create chat completionBeta
      * Creates a completion for the chat message
      *
-     * @param request
+     * @param request Create chat completion request
      * @return Chat Completion information
      */
     @POST("/v1/chat/completions")
@@ -72,7 +72,7 @@ public interface OpenAiApi {
      * Create edit
      * Creates a new edit for the provided input, instruction, and parameters.
      *
-     * @param request
+     * @param request create edit request
      * @return Edit information
      */
     @POST("/v1/edits")
@@ -82,7 +82,7 @@ public interface OpenAiApi {
      * Create image Beta
      * Creates an image given a prompt.
      *
-     * @param request
+     * @param request create image request
      * @return Image Information Wrapper
      */
     @POST("/v1/images/generations")
@@ -92,7 +92,7 @@ public interface OpenAiApi {
      * Create image editBeta
      * Creates an edited or extended image given an original image and a prompt.
      *
-     * @param request
+     * @param request request body
      * @return Image Information Wrapper
      */
     @POST("/v1/images/edits")
@@ -102,7 +102,7 @@ public interface OpenAiApi {
      * Create image variationBeta
      * Creates a variation of a given image.
      *
-     * @param request
+     * @param request request body
      * @return Image Information Wrapper
      */
     @POST("/v1/images/variations")
@@ -112,7 +112,7 @@ public interface OpenAiApi {
      * Create embeddings
      * Creates an embedding vector representing the input text.
      *
-     * @param request
+     * @param request create embedding request
      * @return Embeddings
      */
     @POST("/v1/embeddings")
@@ -122,7 +122,7 @@ public interface OpenAiApi {
      * Create transcriptionBeta
      * Transcribes audio into the input language.
      *
-     * @param request
+     * @param request body
      * @return Text of audio
      */
     @POST("/v1/audio/transcriptions")
@@ -132,7 +132,7 @@ public interface OpenAiApi {
      * Create translationBeta
      * Translates audio into English.
      *
-     * @param request
+     * @param request body
      * @return Text of audio
      */
     @POST("/v1/audio/translations")
@@ -142,7 +142,7 @@ public interface OpenAiApi {
      * Create moderation
      * Classifies if text violates OpenAI's Content Policy
      *
-     * @param request
+     * @param request create moderation request
      * @return Moderation
      */
     @POST("/v1/moderations")
@@ -163,8 +163,8 @@ public interface OpenAiApi {
      * the size of all the files uploaded by one organization can be up to 1 GB.
      * Please contact us if you need to increase the storage limit.
      *
-     * @param file
-     * @param purpose
+     * @param file    file
+     * @param purpose request body
      * @return File information
      */
     @Multipart
@@ -175,7 +175,7 @@ public interface OpenAiApi {
      * Delete file
      * Delete a file.
      *
-     * @param fileId
+     * @param fileId fileId
      * @return Delete file and status
      */
     @DELETE("/v1/files/{file_id}")
@@ -184,7 +184,7 @@ public interface OpenAiApi {
     /**
      * Retrieve file
      *
-     * @param fileId
+     * @param fileId fileId
      * @return information about a specific file.
      */
     @GET("/v1/files/{file_id}")
@@ -193,7 +193,7 @@ public interface OpenAiApi {
     /**
      * Retrieve file content
      *
-     * @param fileId
+     * @param fileId fileId
      * @return the contents of the specified file
      */
     @GET("/v1/files/{file_id}/content")
@@ -204,7 +204,7 @@ public interface OpenAiApi {
      * Creates a job that fine-tunes a specified model from a given dataset.
      * Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
      *
-     * @param request
+     * @param request create fine tune request
      * @return Fine-tune information
      */
     @POST("/v1/fine-tunes")
@@ -223,7 +223,7 @@ public interface OpenAiApi {
      * Retrieve fine-tune
      * Gets info about the fine-tune job.
      *
-     * @param fineTuneId
+     * @param fineTuneId fineTuneId
      * @return Fine-tune information
      */
     @GET("/v1/fine-tunes/{fine_tune_id}")
@@ -233,7 +233,7 @@ public interface OpenAiApi {
      * Cancel fine-tune
      * Immediately cancel a fine-tune job.
      *
-     * @param fineTuneId
+     * @param fineTuneId fineTuneId
      * @return Fine-tune information
      */
     @POST("/v1/fine-tunes/{fine_tune_id}/cancel")
@@ -243,7 +243,7 @@ public interface OpenAiApi {
      * List fine-tune events
      * Get fine-grained status updates for a fine-tune job.
      *
-     * @param fineTuneId
+     * @param fineTuneId fineTuneId
      * @return Fine-tune event information
      */
     @GET("/v1/fine-tunes/{fine_tune_id}/events")
@@ -253,7 +253,7 @@ public interface OpenAiApi {
      * Delete fine-tune model
      * Delete a fine-tuned model. You must have the Owner role in your organization.
      *
-     * @param modelAndFineTuneId
+     * @param modelAndFineTuneId model and fineTuneId
      * @return Delete status
      */
     @DELETE("/v1/models/{model_and_fine_tune_id}")

@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class CreateEditRequest implements IOpenAiApiRequest {
 
     /**

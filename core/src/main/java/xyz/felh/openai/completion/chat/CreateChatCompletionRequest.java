@@ -1,15 +1,16 @@
 package xyz.felh.openai.completion.chat;
 
-import xyz.felh.openai.completion.BaseCreateCompletionRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import xyz.felh.openai.completion.BaseCreateCompletionRequest;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @ToString(callSuper = true)
 public class CreateChatCompletionRequest extends BaseCreateCompletionRequest {
 

@@ -4,7 +4,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>0.9.5</version>
+        <version>0.9.6</version>
     </parent>
     <artifactId>openai-example</artifactId>
 
@@ -13,11 +13,19 @@
     <url>https://github.com/forestwanglin/openai-java/tree/main/example</url>
 
     <dependencies>
+
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>openai-service</artifactId>
             <version>${openai-java.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+
     </dependencies>
 
 </project>

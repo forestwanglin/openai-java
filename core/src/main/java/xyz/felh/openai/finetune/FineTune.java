@@ -1,11 +1,13 @@
 package xyz.felh.openai.finetune;
 
+import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
 import xyz.felh.openai.file.File;
 import lombok.Data;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class FineTune extends OpenAiApiObjectWithId {
 

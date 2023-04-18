@@ -3,9 +3,10 @@ package xyz.felh.openai.image;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public class CreateImageRequest extends BaseCreateImageRequest {

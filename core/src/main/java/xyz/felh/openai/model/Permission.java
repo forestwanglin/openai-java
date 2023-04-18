@@ -1,8 +1,10 @@
 package xyz.felh.openai.model;
 
+import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
 import lombok.Data;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Permission extends OpenAiApiObjectWithId {
 

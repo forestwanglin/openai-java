@@ -1,9 +1,21 @@
 package xyz.felh.openai;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import io.reactivex.rxjava3.core.Single;
+import lombok.NonNull;
+import okhttp3.*;
+import okhttp3.sse.EventSource;
+import okhttp3.sse.EventSourceListener;
+import okhttp3.sse.EventSources;
+import org.jetbrains.annotations.Nullable;
+import retrofit2.HttpException;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -11,8 +23,8 @@ import xyz.felh.openai.completion.Completion;
 import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
-import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.edit.CreateEditRequest;
+import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
@@ -26,19 +38,14 @@ import xyz.felh.openai.image.variation.CreateImageVariationRequest;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import io.reactivex.rxjava3.core.Single;
-import okhttp3.*;
-import retrofit2.HttpException;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * OpenAi Service Class
@@ -50,6 +57,10 @@ public class OpenAiService {
     private static final ObjectMapper errorMapper = defaultObjectMapper();
 
     private final OpenAiApi api;
+
+    private final OkHttpClient client;
+
+    private final Set<StreamChatCompletionListener> listeners;
 
     /**
      * Creates a new OpenAiService that wraps OpenAiApi
@@ -67,7 +78,7 @@ public class OpenAiService {
      * @param timeout http read timeout, Duration.ZERO means no timeout
      */
     public OpenAiService(final String token, final Duration timeout) {
-        this(buildApi(token, timeout));
+        this(buildApi(token, timeout), defaultClient(token, timeout));
     }
 
     /**
@@ -76,10 +87,23 @@ public class OpenAiService {
      *
      * @param api OpenAiApi instance to use for all methods
      */
-    public OpenAiService(final OpenAiApi api) {
+    public OpenAiService(final OpenAiApi api, final OkHttpClient client) {
         this.api = api;
+        this.client = client;
+        this.listeners = new HashSet<>();
     }
 
+    public void addListener(StreamChatCompletionListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(StreamChatCompletionListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void printListeners() {
+        listeners.forEach(it -> System.out.println("id:" + it.getId()));
+    }
 
     /**
      * Calls the Open AI api, returns the response, and parses error messages if the request fails
@@ -157,18 +181,76 @@ public class OpenAiService {
     /**
      * gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301
      *
-     * @param request
-     * @return
+     * @param request create chat completion request
+     * @return chat completion
      */
     public ChatCompletion createChatCompletion(CreateChatCompletionRequest request) {
+        request.setStream(false);
         return execute(api.createChatCompletion(request));
+    }
+
+    /**
+     * create chat completion by stream
+     *
+     * @param requestId request ID, every observer is unique
+     * @param request   detail of request
+     */
+    public void createSteamChatCompletion(final String requestId, CreateChatCompletionRequest request) {
+        request.setStream(true);
+        Request okHttpRequest;
+        try {
+            okHttpRequest = new Request.Builder().url(BASE_URL + "/v1/chat/completions")
+                    .header("content-type", "text/event-stream")
+                    .header("Accept", "text/event-stream")
+                    .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request), MediaType.parse("application/json")))
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        EventSource.Factory factory = EventSources.createFactory(client);
+        EventSourceListener eventSourceListener = new EventSourceListener() {
+            @Override
+            public void onOpen(@NonNull EventSource eventSource, @NonNull Response response) {
+//                System.out.println(System.currentTimeMillis() + ": onOpen, response code: " + response.code());
+                listeners.forEach(it -> it.onOpen(requestId, response));
+            }
+
+            @Override
+            public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
+                if (data.equals("[DONE]")) {
+//                    System.out.println(System.currentTimeMillis() + ": onEvent, done");
+                    listeners.forEach(it -> it.onEventDone(requestId));
+                } else {
+                    try {
+                        System.out.println(System.currentTimeMillis() + ": onEvent, data: " + data);
+                        ChatCompletion chatCompletion = defaultObjectMapper().readValue(data, ChatCompletion.class);
+                        listeners.forEach(it -> it.onEvent(requestId, chatCompletion));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onClosed(@NonNull EventSource eventSource) {
+//                System.out.println(System.currentTimeMillis() + ": onClosed, " + eventSource.request().body());
+                listeners.forEach(it -> it.onClosed(requestId));
+            }
+
+            @Override
+            public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+//                System.err.println(System.currentTimeMillis() + ": onFailure, response code: " + Objects.requireNonNull(response).code());
+                listeners.forEach(it -> it.onFailure(requestId, t, response));
+            }
+        };
+        factory.newEventSource(okHttpRequest, eventSourceListener);
     }
 
     /**
      * text-davinci-edit-001, code-davinci-edit-001
      *
-     * @param request
-     * @return
+     * @param request create edit request
+     * @return edit
      */
     public Edit createEdit(CreateEditRequest request) {
         return execute(api.createEdit(request));

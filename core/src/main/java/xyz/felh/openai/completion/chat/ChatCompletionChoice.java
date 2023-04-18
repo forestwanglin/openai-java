@@ -10,6 +10,9 @@ public class ChatCompletionChoice implements IOpenAiApiObject {
 
     private ChatMessage message;
 
+    // stream = true
+    private ChatMessage delta;
+
     private String finishReason;
 
 }

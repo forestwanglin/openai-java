@@ -1,5 +1,6 @@
 package xyz.felh.openai;
 
+import lombok.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,7 +19,7 @@ public class AuthenticationInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public @NonNull Response intercept(Chain chain) throws IOException {
         Request request = chain.request()
                 .newBuilder()
                 .header("Authorization", "Bearer " + token)
