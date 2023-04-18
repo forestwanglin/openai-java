@@ -43,7 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -60,7 +62,7 @@ public class OpenAiService {
 
     private final OkHttpClient client;
 
-    private final Set<StreamChatCompletionListener> listeners;
+    private final Set<StreamChatCompletionListener> streamChatCompletionListeners;
 
     /**
      * Creates a new OpenAiService that wraps OpenAiApi
@@ -90,19 +92,19 @@ public class OpenAiService {
     public OpenAiService(final OpenAiApi api, final OkHttpClient client) {
         this.api = api;
         this.client = client;
-        this.listeners = new HashSet<>();
+        this.streamChatCompletionListeners = new HashSet<>();
     }
 
-    public void addListener(StreamChatCompletionListener listener) {
-        listeners.add(listener);
+    public void addStreamChatCompletionListener(StreamChatCompletionListener listener) {
+        streamChatCompletionListeners.add(listener);
     }
 
-    public void removeListener(StreamChatCompletionListener listener) {
-        listeners.remove(listener);
+    public void removeStreamChatCompletionListener(StreamChatCompletionListener listener) {
+        streamChatCompletionListeners.remove(listener);
     }
 
-    public void printListeners() {
-        listeners.forEach(it -> System.out.println("id:" + it.getId()));
+    public void printStreamChatCompletionListeners() {
+        streamChatCompletionListeners.forEach(it -> System.out.println("id:" + it.getId()));
     }
 
     /**
@@ -212,19 +214,19 @@ public class OpenAiService {
             @Override
             public void onOpen(@NonNull EventSource eventSource, @NonNull Response response) {
 //                System.out.println(System.currentTimeMillis() + ": onOpen, response code: " + response.code());
-                listeners.forEach(it -> it.onOpen(requestId, response));
+                streamChatCompletionListeners.forEach(it -> it.onOpen(requestId, response));
             }
 
             @Override
             public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
                 if (data.equals("[DONE]")) {
 //                    System.out.println(System.currentTimeMillis() + ": onEvent, done");
-                    listeners.forEach(it -> it.onEventDone(requestId));
+                    streamChatCompletionListeners.forEach(it -> it.onEventDone(requestId));
                 } else {
                     try {
                         System.out.println(System.currentTimeMillis() + ": onEvent, data: " + data);
                         ChatCompletion chatCompletion = defaultObjectMapper().readValue(data, ChatCompletion.class);
-                        listeners.forEach(it -> it.onEvent(requestId, chatCompletion));
+                        streamChatCompletionListeners.forEach(it -> it.onEvent(requestId, chatCompletion));
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -234,13 +236,13 @@ public class OpenAiService {
             @Override
             public void onClosed(@NonNull EventSource eventSource) {
 //                System.out.println(System.currentTimeMillis() + ": onClosed, " + eventSource.request().body());
-                listeners.forEach(it -> it.onClosed(requestId));
+                streamChatCompletionListeners.forEach(it -> it.onClosed(requestId));
             }
 
             @Override
             public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
 //                System.err.println(System.currentTimeMillis() + ": onFailure, response code: " + Objects.requireNonNull(response).code());
-                listeners.forEach(it -> it.onFailure(requestId, t, response));
+                streamChatCompletionListeners.forEach(it -> it.onFailure(requestId, t, response));
             }
         };
         factory.newEventSource(okHttpRequest, eventSourceListener);
