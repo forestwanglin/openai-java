@@ -7,7 +7,6 @@ import retrofit2.Retrofit;
 import xyz.felh.openai.DeleteResponse;
 import xyz.felh.openai.OpenAiApi;
 import xyz.felh.openai.OpenAiService;
-import xyz.felh.openai.StreamChatCompletionListener;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -234,12 +233,6 @@ public class OpenAiExample {
 //        ImageResponse imageVariationResponse = openAiService.createImageVariation(createImageVariationRequest);
 //        System.out.println("imageVariationResponse: " + toJSONString(imageVariationResponse));
 
-    }
-
-    static class SCCListener extends StreamChatCompletionListener {
-        public SCCListener(String id) {
-            super(id);
-        }
     }
 
     private static String toJSONString(Object obj) throws JsonProcessingException {
