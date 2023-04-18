@@ -11,14 +11,14 @@ OpenAi GPT4 API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>openai-service</artifactId>
-    <version>0.9.8</version>
+    <version>0.9.9</version>
 </dependency>
 
 <!-- 如果需要计算tokens数量 -->
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>gpt3-tokenizer</artifactId>
-    <version>0.9.8</version>
+    <version>0.9.9</version>
 </dependency>
 ```
 

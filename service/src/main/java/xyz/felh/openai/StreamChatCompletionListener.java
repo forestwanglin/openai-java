@@ -9,10 +9,6 @@ public abstract class StreamChatCompletionListener {
 
     private String id;
 
-    public StreamChatCompletionListener(String id) {
-        this.id = id;
-    }
-
     @Override
     public int hashCode() {
         return this.id.hashCode();
