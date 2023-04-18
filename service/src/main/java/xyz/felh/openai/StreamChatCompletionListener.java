@@ -30,7 +30,7 @@ public abstract class StreamChatCompletionListener {
      * @param requestId request ID
      * @param response  OK http response
      */
-    void onOpen(String requestId, Response response) {
+    public void onOpen(String requestId, Response response) {
         System.out.println("onOpen:" + System.currentTimeMillis() + ":" + requestId);
     }
 
@@ -40,7 +40,7 @@ public abstract class StreamChatCompletionListener {
      * @param requestId      request ID
      * @param chatCompletion return chat completion
      */
-    void onEvent(String requestId, ChatCompletion chatCompletion) {
+    public void onEvent(String requestId, ChatCompletion chatCompletion) {
         System.out.println("onEvent:" + System.currentTimeMillis() + ":" + requestId);
     }
 
@@ -49,7 +49,7 @@ public abstract class StreamChatCompletionListener {
      *
      * @param requestId request ID
      */
-    void onEventDone(String requestId) {
+    public void onEventDone(String requestId) {
         System.out.println("onEventDone:" + System.currentTimeMillis() + ":" + requestId);
     }
 
@@ -59,7 +59,7 @@ public abstract class StreamChatCompletionListener {
      *
      * @param requestId request ID
      */
-    void onClosed(String requestId) {
+    public void onClosed(String requestId) {
         System.out.println("onClosed:" + System.currentTimeMillis() + ":" + requestId);
     }
 
@@ -71,7 +71,7 @@ public abstract class StreamChatCompletionListener {
      * @param t         throwable
      * @param response  response
      */
-    void onFailure(String requestId, Throwable t, Response response) {
+    public void onFailure(String requestId, Throwable t, Response response) {
         System.out.println("onFailure:" + System.currentTimeMillis() + ":" + requestId);
     }
 
