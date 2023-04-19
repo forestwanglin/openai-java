@@ -103,6 +103,15 @@ public class OpenAiService {
         streamChatCompletionListeners.remove(listener);
     }
 
+    public void removeStreamChatCompletionListener(String listenerId) {
+        for (StreamChatCompletionListener streamChatCompletionListener : streamChatCompletionListeners) {
+            if (streamChatCompletionListener.getId().equals(listenerId)) {
+                streamChatCompletionListeners.remove(streamChatCompletionListener);
+                break;
+            }
+        }
+    }
+
     public void printStreamChatCompletionListeners() {
         streamChatCompletionListeners.forEach(it -> System.out.println("id:" + it.getId()));
     }
