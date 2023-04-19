@@ -213,18 +213,15 @@ public class OpenAiService {
         EventSourceListener eventSourceListener = new EventSourceListener() {
             @Override
             public void onOpen(@NonNull EventSource eventSource, @NonNull Response response) {
-//                System.out.println(System.currentTimeMillis() + ": onOpen, response code: " + response.code());
                 streamChatCompletionListeners.forEach(it -> it.onOpen(requestId, response));
             }
 
             @Override
             public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
                 if (data.equals("[DONE]")) {
-//                    System.out.println(System.currentTimeMillis() + ": onEvent, done");
                     streamChatCompletionListeners.forEach(it -> it.onEventDone(requestId));
                 } else {
                     try {
-//                        System.out.println(System.currentTimeMillis() + ": onEvent, data: " + data);
                         ChatCompletion chatCompletion = defaultObjectMapper().readValue(data, ChatCompletion.class);
                         streamChatCompletionListeners.forEach(it -> it.onEvent(requestId, chatCompletion));
                     } catch (JsonProcessingException e) {
@@ -235,13 +232,11 @@ public class OpenAiService {
 
             @Override
             public void onClosed(@NonNull EventSource eventSource) {
-//                System.out.println(System.currentTimeMillis() + ": onClosed, " + eventSource.request().body());
                 streamChatCompletionListeners.forEach(it -> it.onClosed(requestId));
             }
 
             @Override
             public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-//                System.err.println(System.currentTimeMillis() + ": onFailure, response code: " + Objects.requireNonNull(response).code());
                 streamChatCompletionListeners.forEach(it -> it.onFailure(requestId, t, response));
             }
         };
