@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.reactivex.rxjava3.core.Single;
+import kotlin.PreconditionsKt;
 import lombok.NonNull;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
@@ -95,7 +96,15 @@ public class OpenAiService {
         this.streamChatCompletionListeners = new HashSet<>();
     }
 
+    /**
+     * replace old one if exist
+     *
+     * @param listener Stream listener
+     */
     public void addStreamChatCompletionListener(StreamChatCompletionListener listener) {
+        if (listener.getClientId() != null) {
+            removeStreamChatCompletionListener(listener.getClientId());
+        }
         streamChatCompletionListeners.add(listener);
     }
 
@@ -105,7 +114,7 @@ public class OpenAiService {
 
     public void removeStreamChatCompletionListener(String listenerId) {
         for (StreamChatCompletionListener streamChatCompletionListener : streamChatCompletionListeners) {
-            if (streamChatCompletionListener.getId().equals(listenerId)) {
+            if (streamChatCompletionListener.getClientId().equals(listenerId)) {
                 streamChatCompletionListeners.remove(streamChatCompletionListener);
                 break;
             }
@@ -113,7 +122,8 @@ public class OpenAiService {
     }
 
     public void printStreamChatCompletionListeners() {
-        streamChatCompletionListeners.forEach(it -> System.out.println("id:" + it.getId()));
+        System.out.println("--- listener clients ---");
+        streamChatCompletionListeners.forEach(it -> System.out.println("clientId:" + it.getClientId()));
     }
 
     /**
@@ -213,7 +223,8 @@ public class OpenAiService {
             okHttpRequest = new Request.Builder().url(BASE_URL + "/v1/chat/completions")
                     .header("content-type", "text/event-stream")
                     .header("Accept", "text/event-stream")
-                    .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request), MediaType.parse("application/json")))
+                    .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request),
+                            MediaType.parse("application/json")))
                     .build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

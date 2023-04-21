@@ -7,6 +7,7 @@ import retrofit2.Retrofit;
 import xyz.felh.openai.DeleteResponse;
 import xyz.felh.openai.OpenAiApi;
 import xyz.felh.openai.OpenAiService;
+import xyz.felh.openai.StreamChatCompletionListener;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -37,6 +38,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static xyz.felh.openai.OpenAiService.*;
@@ -207,10 +209,14 @@ public class OpenAiExample {
 
 
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "CWhat's 1+1? Answer in one word.")))
+                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "CWhat's 1+1? Answer in one word.")))
                 .model("gpt-3.5-turbo")
                 .build();
-        openAiService.createSteamChatCompletion("2134234", chatCompletionRequest);
+        openAiService.createSteamChatCompletion("1234", chatCompletionRequest);
+        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+        };
+        listener.setClientId("cid");
+        openAiService.addStreamChatCompletionListener(listener);
 
 //        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
 //        java.io.File mask = new java.io.File("/Users/forest/image_edit_mask.png");

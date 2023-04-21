@@ -7,16 +7,16 @@ import xyz.felh.openai.completion.chat.ChatCompletion;
 @Data
 public abstract class StreamChatCompletionListener {
 
-    private String id;
+    private String clientId;
 
     @Override
     public int hashCode() {
-        return this.id.hashCode();
+        return this.clientId.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return ((StreamChatCompletionListener) obj).getId().equals(this.id);
+        return ((StreamChatCompletionListener) obj).getClientId().equals(this.clientId);
     }
 
     /**
@@ -27,7 +27,7 @@ public abstract class StreamChatCompletionListener {
      * @param response  OK http response
      */
     public void onOpen(String requestId, Response response) {
-        System.out.println("onOpen:" + System.currentTimeMillis() + ":" + requestId);
+        System.out.println("onOpen:" + requestId);
     }
 
     /**
@@ -37,7 +37,7 @@ public abstract class StreamChatCompletionListener {
      * @param chatCompletion return chat completion
      */
     public void onEvent(String requestId, ChatCompletion chatCompletion) {
-        System.out.println("onEvent:" + System.currentTimeMillis() + ":" + requestId);
+        System.out.println("onEvent:" + requestId);
     }
 
     /**
@@ -46,7 +46,7 @@ public abstract class StreamChatCompletionListener {
      * @param requestId request ID
      */
     public void onEventDone(String requestId) {
-        System.out.println("onEventDone:" + System.currentTimeMillis() + ":" + requestId);
+        System.out.println("onEventDone:" + requestId);
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class StreamChatCompletionListener {
      * @param requestId request ID
      */
     public void onClosed(String requestId) {
-        System.out.println("onClosed:" + System.currentTimeMillis() + ":" + requestId);
+        System.out.println("onClosed:" + requestId);
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class StreamChatCompletionListener {
      * @param response  response
      */
     public void onFailure(String requestId, Throwable t, Response response) {
-        System.out.println("onFailure:" + System.currentTimeMillis() + ":" + requestId);
+        System.out.println("onFailure:" + requestId);
     }
 
 }
