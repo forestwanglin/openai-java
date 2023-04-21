@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.reactivex.rxjava3.core.Single;
-import kotlin.PreconditionsKt;
 import lombok.NonNull;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
@@ -108,10 +107,6 @@ public class OpenAiService {
         streamChatCompletionListeners.add(listener);
     }
 
-    public void removeStreamChatCompletionListener(StreamChatCompletionListener listener) {
-        streamChatCompletionListeners.remove(listener);
-    }
-
     public void removeStreamChatCompletionListener(String listenerId) {
         for (StreamChatCompletionListener streamChatCompletionListener : streamChatCompletionListeners) {
             if (streamChatCompletionListener.getClientId().equals(listenerId)) {
@@ -119,6 +114,10 @@ public class OpenAiService {
                 break;
             }
         }
+    }
+
+    public Set<StreamChatCompletionListener> getStreamChatCompletionListeners() {
+        return streamChatCompletionListeners;
     }
 
     public void printStreamChatCompletionListeners() {
