@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.reactivex.rxjava3.core.Single;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
@@ -52,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * OpenAi Service Class
  */
+@Slf4j
 public class OpenAiService {
 
     private static final String BASE_URL = "https://api.openai.com";
@@ -116,13 +118,9 @@ public class OpenAiService {
         }
     }
 
-    public Set<StreamChatCompletionListener> getStreamChatCompletionListeners() {
-        return streamChatCompletionListeners;
-    }
-
     public void printStreamChatCompletionListeners() {
-        System.out.println("--- listener clients ---");
-        streamChatCompletionListeners.forEach(it -> System.out.println("clientId:" + it.getClientId()));
+        log.info("--- listener clients ---");
+        streamChatCompletionListeners.forEach(it -> log.info("clientId: {}", it.getClientId()));
     }
 
     /**
@@ -396,8 +394,8 @@ public class OpenAiService {
      * <p>
      * TODO only support mp3 so far
      *
-     * @param request
-     * @return
+     * @param request create audio traslation request
+     * @return audio
      */
     public AudioResponse createAudioTranslation(CreateAudioTranslationRequest request) {
         RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), new File(request.getFile()));

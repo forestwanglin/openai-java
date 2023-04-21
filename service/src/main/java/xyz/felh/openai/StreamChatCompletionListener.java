@@ -1,22 +1,20 @@
 package xyz.felh.openai;
 
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 
-@Data
+@Slf4j
 public abstract class StreamChatCompletionListener {
 
     private String clientId;
 
-    @Override
-    public int hashCode() {
-        return this.clientId.hashCode();
+    public String getClientId() {
+        return clientId;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return ((StreamChatCompletionListener) obj).getClientId().equals(this.clientId);
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     /**
@@ -27,7 +25,7 @@ public abstract class StreamChatCompletionListener {
      * @param response  OK http response
      */
     public void onOpen(String requestId, Response response) {
-        System.out.println("onOpen:" + requestId);
+        log.info("onOpen: {}", requestId);
     }
 
     /**
@@ -37,7 +35,7 @@ public abstract class StreamChatCompletionListener {
      * @param chatCompletion return chat completion
      */
     public void onEvent(String requestId, ChatCompletion chatCompletion) {
-        System.out.println("onEvent:" + requestId);
+        log.info("onEvent: {}", requestId);
     }
 
     /**
@@ -46,7 +44,7 @@ public abstract class StreamChatCompletionListener {
      * @param requestId request ID
      */
     public void onEventDone(String requestId) {
-        System.out.println("onEventDone:" + requestId);
+        log.info("onEventDone: {}", requestId);
     }
 
     /**
@@ -56,7 +54,7 @@ public abstract class StreamChatCompletionListener {
      * @param requestId request ID
      */
     public void onClosed(String requestId) {
-        System.out.println("onClosed:" + requestId);
+        log.info("onClosed: {}", requestId);
     }
 
     /**
@@ -68,7 +66,7 @@ public abstract class StreamChatCompletionListener {
      * @param response  response
      */
     public void onFailure(String requestId, Throwable t, Response response) {
-        System.out.println("onFailure:" + requestId);
+        log.error("onFailure: {}", requestId, t);
     }
 
 }
