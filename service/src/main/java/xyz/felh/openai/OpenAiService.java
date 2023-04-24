@@ -118,6 +118,10 @@ public class OpenAiService {
         }
     }
 
+    public Set<StreamChatCompletionListener> getStreamChatCompletionListeners() {
+        return streamChatCompletionListeners;
+    }
+
     public void printStreamChatCompletionListeners() {
         log.info("--- listener clients ---");
         streamChatCompletionListeners.forEach(it -> log.info("clientId: {}", it.getClientId()));
