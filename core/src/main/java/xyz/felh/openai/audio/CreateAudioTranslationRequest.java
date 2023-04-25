@@ -12,10 +12,12 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
 
     /**
      * Required
+     * must set filePath or file
      * The audio file to transcribe, in one of these formats: mp3, mp4, mpeg, mpga, m4a, wav, or webm.
      */
-    @NonNull
-    private String file;
+    private String filePath;
+
+    private byte[] file;
 
     /**
      * Required

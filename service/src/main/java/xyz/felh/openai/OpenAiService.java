@@ -365,11 +365,22 @@ public class OpenAiService {
      * <p>
      * TODO only support mp3 so far
      *
-     * @param request
-     * @return
+     * @param request create audio transcription request
+     * @return audio response
      */
     public AudioResponse createAudioTranscription(CreateAudioTranscriptionRequest request) {
-        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), new File(request.getFile()));
+        byte[] fileBytes;
+        if (request.getFile() != null && request.getFile().length > 0) {
+            fileBytes = request.getFile();
+        } else {
+            File file = new File(request.getFilePath());
+            try {
+                fileBytes = Files.readAllBytes(file.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), fileBytes);
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("model", request.getModel())
@@ -398,7 +409,18 @@ public class OpenAiService {
      * @return audio
      */
     public AudioResponse createAudioTranslation(CreateAudioTranslationRequest request) {
-        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), new File(request.getFile()));
+        byte[] fileBytes;
+        if (request.getFile() != null && request.getFile().length > 0) {
+            fileBytes = request.getFile();
+        } else {
+            File file = new File(request.getFilePath());
+            try {
+                fileBytes = Files.readAllBytes(file.toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), fileBytes);
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("model", request.getModel())

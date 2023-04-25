@@ -141,14 +141,14 @@ public class OpenAiExample {
 
             CreateAudioTranscriptionRequest createAudioTranscriptionRequest = CreateAudioTranscriptionRequest.builder()
                     .model("whisper-1")
-                    .file("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
+                    .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
                     .build();
             AudioResponse audioResponse = openAiService.createAudioTranscription(createAudioTranscriptionRequest);
             System.out.println("audioResponse: " + toJSONString(audioResponse));
 
             CreateAudioTranslationRequest createAudioTranslationRequest = CreateAudioTranslationRequest.builder()
                     .model("whisper-1")
-                    .file("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
+                    .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
                     .build();
             AudioResponse audioResponse2 = openAiService.createAudioTranslation(createAudioTranslationRequest);
             System.out.println("audioResponse2: " + toJSONString(audioResponse2));
