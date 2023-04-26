@@ -36,6 +36,7 @@ import xyz.felh.openai.moderation.CreateModerationResponse;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
@@ -208,15 +209,15 @@ public class OpenAiExample {
 //        System.out.println("completion: " + toJSONString(completion));
 
 
-        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "CWhat's 1+1? Answer in one word.")))
-                .model("gpt-3.5-turbo")
-                .build();
-        openAiService.createSteamChatCompletion("1234", chatCompletionRequest);
-        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
-        };
-        listener.setClientId("cid");
-        openAiService.addStreamChatCompletionListener(listener);
+//        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+//                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "CWhat's 1+1? Answer in one word.")))
+//                .model("gpt-3.5-turbo")
+//                .build();
+//        openAiService.createSteamChatCompletion("1234", chatCompletionRequest);
+//        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+//        };
+//        listener.setClientId("cid");
+//        openAiService.addStreamChatCompletionListener(listener);
 
 //        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
 //        java.io.File mask = new java.io.File("/Users/forest/image_edit_mask.png");
@@ -238,6 +239,14 @@ public class OpenAiExample {
 //                .build();
 //        ImageResponse imageVariationResponse = openAiService.createImageVariation(createImageVariationRequest);
 //        System.out.println("imageVariationResponse: " + toJSONString(imageVariationResponse));
+
+        java.io.File audio = new java.io.File("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3");
+        CreateAudioTranscriptionRequest createAudioTranscriptionRequest = CreateAudioTranscriptionRequest.builder()
+                .model("whisper-1")
+                .file(Files.readAllBytes(audio.toPath()))
+                .build();
+        AudioResponse audioResponse = openAiService.createAudioTranscription(createAudioTranscriptionRequest);
+        System.out.println("audioResponse: " + toJSONString(audioResponse));
 
     }
 

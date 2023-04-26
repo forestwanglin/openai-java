@@ -380,7 +380,7 @@ public class OpenAiService {
                 throw new RuntimeException(e);
             }
         }
-        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), fileBytes);
+        RequestBody audioBody = RequestBody.create(fileBytes, MediaType.parse("mp3"));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("model", request.getModel())
@@ -420,7 +420,7 @@ public class OpenAiService {
                 throw new RuntimeException(e);
             }
         }
-        RequestBody audioBody = RequestBody.create(MediaType.parse("mp3"), fileBytes);
+        RequestBody audioBody = RequestBody.create(fileBytes, MediaType.parse("mp3"));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
                 .addFormDataPart("model", request.getModel())
