@@ -161,9 +161,13 @@ public class OpenAiService {
     }
 
     public static OkHttpClient defaultClient(String token, Duration timeout) {
+        return defaultClient(token, null, timeout);
+    }
+
+    public static OkHttpClient defaultClient(String token, String orgId, Duration timeout) {
         return new OkHttpClient.Builder()
-                .addInterceptor(new AuthenticationInterceptor(token))
-                .connectionPool(new ConnectionPool(5, 1, TimeUnit.SECONDS))
+                .addInterceptor(new AuthenticationInterceptor(token, orgId))
+                .connectionPool(new ConnectionPool(10, 4, TimeUnit.SECONDS))
                 .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
                 .build();
     }

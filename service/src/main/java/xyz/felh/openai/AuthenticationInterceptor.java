@@ -13,21 +13,17 @@ import java.io.IOException;
 public class AuthenticationInterceptor implements Interceptor {
 
     private final String token;
-    private final String openAiOrg;
-
-    public AuthenticationInterceptor(String token) {
-        this(token, null);
-    }
+    private final String orgId;
 
     /**
      * Constructor
      *
-     * @param token     OPENAI_API_KEY
-     * @param openAiOrg OPENAI ORGANIZATION ID
+     * @param token OPENAI_API_KEY
+     * @param orgId OPENAI ORGANIZATION ID
      */
-    public AuthenticationInterceptor(String token, String openAiOrg) {
+    public AuthenticationInterceptor(String token, String orgId) {
         this.token = token;
-        this.openAiOrg = openAiOrg;
+        this.orgId = orgId;
     }
 
     @Override
@@ -35,8 +31,8 @@ public class AuthenticationInterceptor implements Interceptor {
         Request.Builder requestBuilder = chain.request()
                 .newBuilder()
                 .header("Authorization", "Bearer " + token);
-        if (openAiOrg != null) {
-            requestBuilder.header("OpenAI-Organization", openAiOrg);
+        if (orgId != null) {
+            requestBuilder.header("OpenAI-Organization", orgId);
         }
         return chain.proceed(requestBuilder.build());
     }
