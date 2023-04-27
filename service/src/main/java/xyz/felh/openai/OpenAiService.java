@@ -189,8 +189,8 @@ public class OpenAiService {
      * text-davinci-003, text-davinci-002, text-curie-001, text-babbage-001,
      * text-ada-001, davinci, curie, babbage, ada
      *
-     * @param request
-     * @return
+     * @param request create completion request
+     * @return completion
      */
     public Completion createCompletion(CreateCompletionRequest request) {
         return execute(api.createCompletion(request));
@@ -353,8 +353,8 @@ public class OpenAiService {
     /**
      * text-embedding-ada-002, text-search-ada-doc-001
      *
-     * @param request
-     * @return
+     * @param request create Embedding request
+     * @return create embedding response
      */
     public CreateEmbeddingResponse createEmbeddings(CreateEmbeddingRequest request) {
         return execute(api.createEmbedding(request));
@@ -443,8 +443,8 @@ public class OpenAiService {
 
     public xyz.felh.openai.file.File uploadFile(String filepath, String purpose) {
         File file = new File(filepath);
-        RequestBody purposeBody = RequestBody.create(okhttp3.MultipartBody.FORM, purpose);
-        RequestBody fileBody = RequestBody.create(MediaType.parse("text"), file);
+        RequestBody purposeBody = RequestBody.create(purpose, okhttp3.MultipartBody.FORM);
+        RequestBody fileBody = RequestBody.create(file, MediaType.parse("text"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", filepath, fileBody);
         return execute(api.uploadFile(body, purposeBody));
     }
@@ -458,10 +458,8 @@ public class OpenAiService {
     }
 
     /**
-     * TODO This is not for free accounts
-     *
-     * @param fileId
-     * @return
+     * @param fileId file id
+     * @return file content
      */
     public RetrieveFileContentResponse retrieveFileContent(String fileId) {
         return execute(api.retrieveFileContent(fileId));
@@ -494,8 +492,8 @@ public class OpenAiService {
     /**
      * text-moderation-stable, text-moderation-latest
      *
-     * @param request
-     * @return
+     * @param request create moderation request
+     * @return moderation response
      */
     public CreateModerationResponse createModeration(CreateModerationRequest request) {
         return execute(api.createModeration(request));
