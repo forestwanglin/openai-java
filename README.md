@@ -25,13 +25,13 @@ OpenAi GPT4 API for Java
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'openai-java', version: '0.9.2'
+implementation group: 'xyz.felh', name: 'openai-java', version: '1.1.1'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "openai-java" % "0.9.2"
+libraryDependencies += "xyz.felh" % "openai-java" % "1.1.1"
 ```
 
 ## Supported APIs
