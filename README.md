@@ -13,8 +13,10 @@ OpenAi GPT API for Java
     <artifactId>openai-service</artifactId>
     <version>1.1.1</version>
 </dependency>
+```
 
-<!-- 如果需要计算tokens数量 -->
+```xml
+<!--  add it if need calculate tokens when using gpt3 -->
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>gpt3-tokenizer</artifactId>
