@@ -1,6 +1,6 @@
 # openai-java
 
-OpenAi GPT4 API for Java
+OpenAi GPT API for Java
 
 ## How to use
 
