@@ -27,13 +27,15 @@ OpenAi GPT API for Java
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'openai-java', version: '1.1.1'
+implementation group: 'xyz.felh', name: 'openai-service', version: '1.1.1'
+implementation group: 'xyz.felh', name: 'gpt3-tokenizer', version: '1.1.1'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "openai-java" % "1.1.1"
+libraryDependencies += "xyz.felh" % "openai-service" % "1.1.1"
+libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.1.1"
 ```
 
 ## Supported APIs
