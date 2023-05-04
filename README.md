@@ -38,7 +38,7 @@ libraryDependencies += "xyz.felh" % "openai-java" % "1.1.1"
 
 - [Models](https://platform.openai.com/docs/api-reference/models)
 - [Completions](https://platform.openai.com/docs/api-reference/completions)
-- [Chat Completions](https://platform.openai.com/docs/api-reference/chat/create)
+- [Chat Completions(2023-04-18 support stream)](https://platform.openai.com/docs/api-reference/chat/create)
 - [Edits](https://platform.openai.com/docs/api-reference/edits)
 - [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
 - [Images](https://platform.openai.com/docs/api-reference/images)
@@ -46,8 +46,6 @@ libraryDependencies += "xyz.felh" % "openai-java" % "1.1.1"
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 - [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
-
-- 2023-4-18 Chat Completion support stream
 
 ## License
 
