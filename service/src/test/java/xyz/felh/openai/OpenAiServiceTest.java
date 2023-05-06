@@ -4,13 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
+import xyz.felh.openai.completion.chat.ChatCompletion;
+import xyz.felh.openai.completion.chat.ChatMessage;
+import xyz.felh.openai.completion.chat.ChatMessageRole;
+import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.model.Model;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
+import java.util.Collections;
 
 import static xyz.felh.openai.OpenAiService.*;
 
@@ -34,6 +40,28 @@ public class OpenAiServiceTest {
     public void getModel() {
         Model model = getOpenAiService().getModel("gpt-3.5-turbo-0301");
         log.info("model gpt-3.5-turbo: {}", toJSONString(model));
+    }
+
+    @Test
+    public void createStreamChatCompletion() {
+        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+            @Override
+            public void onEvent(String requestId, ChatCompletion chatCompletion) {
+                log.info("model gpt-3.5-turbo: {}", chatCompletion.getChoices().get(0).getDelta().getContent());
+            }
+
+            @Override
+            public void onFailure(String requestId, Throwable t, Response response) {
+                t.printStackTrace();
+            }
+        };
+        listener.setClientId("cid");
+        getOpenAiService().addStreamChatCompletionListener(listener);
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "What's 1+1? Answer in one word.")))
+                .model("gpt-3.5-turbo")
+                .build();
+        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest);
     }
 
 
