@@ -51,6 +51,179 @@ libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.1.1"
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 - [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
 
+
+## Example (Spring Boot 3)
+
+- ### 1. Add maven dependency
+
+```xml
+<dependency>
+    <groupId>xyz.felh</groupId>
+    <artifactId>openai-service</artifactId>
+    <version>1.1.1</version>
+</dependency>
+```
+
+- ### 2. Init openAIService
+
+There are multiple ways to init openAIService. Create OpenAiService by passing token, or you can init it with your own OkHttpClient settings.
+
+
+```java
+@Data
+@Component
+@ConfigurationProperties(prefix = "openai")
+public class OpenAiApiConfig {
+    // OpenAI API token
+    private String token;
+
+    // Init directly with token only
+    @Bean(name = "openAiService")
+    public OpenAiService openAiService() {
+        return new OpenAiService(token);
+    }
+}
+```
+
+```java
+@Data
+@Component
+@ConfigurationProperties(prefix = "openai")
+public class OpenAiApiConfig {
+    // OpenAI API token
+    private String token;
+    // OpenAI API orgId
+    private String orgId;
+    // OpenAI API timeout
+    private Long timeout;
+
+    // Init with OkHttpClient settings
+    @Bean(name = "openAiService")
+    public OpenAiService openAiService() {
+        ObjectMapper mapper = defaultObjectMapper();
+        // Add proxy if need
+        // Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1086));
+        OkHttpClient client = defaultClient(token, orgId, Duration.ofMillis(timeout))
+                .newBuilder()
+                .proxy(proxy)
+                .build();
+        Retrofit retrofit = defaultRetrofit(client, mapper);
+        OpenAiApi api = retrofit.create(OpenAiApi.class);
+        return new OpenAiService(api, client);
+    }
+}
+```
+Below is the settings in yml file.
+```yaml
+openai:
+  token: OPEN_AI_API_TOKEN
+  org-id: OPEN_AI_ORG_ID
+  timeout: 60000
+```
+
+### 3. Call API
+
+#### 3.1.a Create Chat Completion (Without stream)
+
+```java
+CreateChatCompletionRequest request = CreateChatCompletionRequest.builder()
+        .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello, Please count 1 to 10")))
+        .model("gpt-3.5-turbo")
+        .maxTokens(2048) 
+        .temperature(0.8)
+        .stream(false)
+        .user("LOGIC_USER_KEY")
+        .build();
+log.info("chatCompletion Request:\n{}", JsonUtils.toPrettyJSONString(request));
+xyz.felh.openai.completion.chat.ChatCompletion completionResult = openAiService.createChatCompletion(request);
+log.info("chatCompletion Response:\n{}", JsonUtils.toPrettyJSONString(completionResult));
+``` 
+
+#### 3.1.b Create Chat Completion (With stream)
+
+##### 3.1.b.1 Register listener for stream (use Flux to serve server-sent events)
+
+```java
+private Flux<ServerSentEvent<List<String>>> buildFlux(String listenerClientId) {
+    Flux<ServerSentEvent<List<String>>> flux = Flux.create(fluxSink -> {
+        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+            @Override
+            public void onOpen(String requestId, Response response) {
+                log.debug("onOpen {}", requestId);
+            }
+
+            @Override
+            public void onEvent(String requestId, xyz.felh.openai.completion.chat.ChatCompletion chatCompletion) {
+                ChatCompletionChoice chatCompletionChoice = chatCompletion.getChoices().get(0);
+                requestMap.get(requestId).getChatMessages().add(chatCompletionChoice.getDelta());
+                if ("stop".equalsIgnoreCase(chatCompletionChoice.getFinishReason())) {
+                    log.info("chatCompletion stream is stopped");
+                    // send stop signature to client
+                    fluxSink.next(ServerSentEvent.<List<String>>builder()
+                        .id(requestId)
+                        .event("stop")
+                        .data(Collections.singletonList("stop"))
+                        .build());
+                } else {
+                    if (chatCompletionChoice.getDelta() != null && chatCompletionChoice.getDelta().getContent() != null) {
+                        // send delta message to client
+                        fluxSink.next(ServerSentEvent.<List<String>>builder()
+                            .id(requestId)
+                            .event("message")
+                            .data(Collections.singletonList(chatCompletionChoice.getDelta().getContent()))
+                            .build());
+                    }
+                }
+            }
+        }
+        
+        listener.setClientId(listenerClientId);
+        // unsubscribe when user disconnect
+        fluxSink.onCancel(() -> {
+            log.info("flux cancel {}", listener.getClientId());
+            openAiService.removeStreamChatCompletionListener(listener.getClientId());
+            openAiService.printStreamChatCompletionListeners();
+        });
+        // subscribe
+        openAiService.addStreamChatCompletionListener(listener);
+        }, FluxSink.OverflowStrategy.LATEST);
+    return flux;
+}
+```
+##### 3.1.b.1 Send request to OpenAI
+```java
+// set your own messageId
+String messageId = "Unique Message Id for each message";
+// create stream chat message
+CreateChatCompletionRequest request = CreateChatCompletionRequest.builder()
+        .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello, Please count 1 to 10")))
+        .model("gpt-3.5-turbo")
+        .maxTokens(2048)
+        .temperature(0.8)
+        .stream(true)
+        .user("LOGIC_USER_KEY")
+        .build();
+log.info("chatCompletion Request:\n{}", JsonUtils.toPrettyJSONString(request));
+openAiService.createSteamChatCompletion(request);
+```
+
+#### 3.2 Create Completion
+
+```java
+CreateCompletionRequest request = CreateCompletionRequest.builder()
+               .prompt("Somebody once told me the world is gonna roll me")
+               .model("ada")
+               .echo(true)
+               .n(1)
+               .user("LOGIC_USER_KEY")
+               .build();
+log.info("completion Request:\n{}", JsonUtils.toPrettyJSONString(request));
+xyz.felh.openai.completion.Completion completionResult = openAiService.createCompletion(request);
+log.info("completionResult:\n{}", JsonUtils.toPrettyJSONString(completionResult));
+```
+
+You can find more examples in [OpenAiServiceTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiServiceTest.java)
+
 ## License
 
 Published under the MIT License (https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
