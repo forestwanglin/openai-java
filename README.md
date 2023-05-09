@@ -155,7 +155,6 @@ private Flux<ServerSentEvent<List<String>>> buildFlux(String listenerClientId) {
             @Override
             public void onEvent(String requestId, xyz.felh.openai.completion.chat.ChatCompletion chatCompletion) {
                 ChatCompletionChoice chatCompletionChoice = chatCompletion.getChoices().get(0);
-                requestMap.get(requestId).getChatMessages().add(chatCompletionChoice.getDelta());
                 if ("stop".equalsIgnoreCase(chatCompletionChoice.getFinishReason())) {
                     log.info("chatCompletion stream is stopped");
                     // send stop signature to client
