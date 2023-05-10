@@ -7,6 +7,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
+import xyz.felh.openai.audio.AudioResponse;
+import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
+import xyz.felh.openai.audio.CreateAudioTranslationRequest;
 import xyz.felh.openai.completion.Completion;
 import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.completion.chat.ChatCompletion;
@@ -17,11 +20,18 @@ import xyz.felh.openai.edit.CreateEditRequest;
 import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
+import xyz.felh.openai.file.File;
+import xyz.felh.openai.file.RetrieveFileContentResponse;
+import xyz.felh.openai.finetune.CreateFineTuneRequest;
+import xyz.felh.openai.finetune.FineTune;
+import xyz.felh.openai.finetune.FineTuneEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
 import xyz.felh.openai.image.variation.CreateImageVariationRequest;
 import xyz.felh.openai.model.Model;
+import xyz.felh.openai.moderation.CreateModerationRequest;
+import xyz.felh.openai.moderation.CreateModerationResponse;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -51,7 +61,7 @@ public class OpenAiServiceTest {
     @Test
     public void listModels() {
         List<Model> models = getOpenAiService().listModels();
-        System.out.println("model size: " + models.size());
+        log.info("model size: " + models.size());
     }
 
     @Test
@@ -100,7 +110,7 @@ public class OpenAiServiceTest {
                 .model("gpt-3.5-turbo")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-        System.out.println("chatCompletion: " + toJSONString(chatCompletion));
+        log.info("chatCompletion: " + toJSONString(chatCompletion));
     }
 
     @Test
@@ -159,127 +169,104 @@ public class OpenAiServiceTest {
         log.info("createEmbeddingResponse:  {}", toJSONString(createEmbeddingResponse));
     }
 
-//
-//        CreateModerationRequest createModerationRequest = CreateModerationRequest.builder()
-//                .input("I want to kill them.")
-//                .build();
-//        CreateModerationResponse createModerationResponse = openAiService.createModeration(createModerationRequest);
-//        System.out.println("createModerationResponse: " + toJSONString(createModerationResponse));
-//
-//        CreateAudioTranscriptionRequest createAudioTranscriptionRequest = CreateAudioTranscriptionRequest.builder()
-//                .model("whisper-1")
-//                .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
-//                .build();
-//        AudioResponse audioResponse = openAiService.createAudioTranscription(createAudioTranscriptionRequest);
-//        System.out.println("audioResponse: " + toJSONString(audioResponse));
-//
-//        CreateAudioTranslationRequest createAudioTranslationRequest = CreateAudioTranslationRequest.builder()
-//                .model("whisper-1")
-//                .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
-//                .build();
-//        AudioResponse audioResponse2 = openAiService.createAudioTranslation(createAudioTranslationRequest);
-//        System.out.println("audioResponse2: " + toJSONString(audioResponse2));
-//
-//        File file = openAiService.uploadFile("/Users/forest/fineTuningSample.jsonl", "fine-tune");
-//        System.out.println("update file: " + toJSONString(file));
-//
-//        DeleteResponse deleteFileResponse = openAiService.deleteFile("file-lq7ubCONViIIP0S2AAE2JIYW");
-//        System.out.println("delete file: " + toJSONString(deleteFileResponse));
-//
-//        List<File> files = openAiService.listFiles();
-//        System.out.println("list files: " + toJSONString(files));
-//
-//        File retrieveFile = openAiService.retrieveFile("file-eloVljhERlCO2qWNFeTlA0Az");
-//        System.out.println("retrieve file: " + toJSONString(retrieveFile));
-//
-//        // not for free account
-////            String fileContent = openAiService.retrieveFileContent("file-eloVljhERlCO2qWNFeTlA0Az");
-////            System.out.println(fileContent);
-//
-//        CreateFineTuneRequest createFineTuneRequest = CreateFineTuneRequest.builder()
-//                .trainingFile("file-eloVljhERlCO2qWNFeTlA0Az")
-//                .build();
-//        FineTune fineTune = openAiService.createFineTune(createFineTuneRequest);
-//        System.out.println("createFineTune: " + toJSONString(fineTune));
-//
-//        List<FineTune> fineTunes = openAiService.listFineTunes();
-//        System.out.println("list fine tunes: " + toJSONString(fineTunes));
-//
-//        FineTune fineTune1 = openAiService.retrieveFineTune("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-//        System.out.println("retrieveFineTune: " + toJSONString(fineTune1));
-//
-//        FineTune cancelFineTune = openAiService.cancelFineTune("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-//        System.out.println("cancelFineTune: " + toJSONString(cancelFineTune));
-//
-//        DeleteResponse deleteFineTuneResponse = openAiService.deleteFineTune("curie", "ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-//        System.out.println("deleteFineTune: " + toJSONString(deleteFineTuneResponse));
-//
-//        List<FineTuneEvent> fineTuneEvents = openAiService.listFineTuneEvents("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-//        System.out.println("listFineTuneEvents: " + toJSONString(fineTuneEvents));
-//
-//    }
+    @Test
+    public void createModeration() {
+        CreateModerationRequest createModerationRequest = CreateModerationRequest.builder()
+                .input("I want to kill them.")
+                .build();
+        CreateModerationResponse createModerationResponse = getOpenAiService().createModeration(createModerationRequest);
+        log.info("createModerationResponse: {}", toJSONString(createModerationResponse));
+    }
 
-    // not for free account
-//        RetrieveFileContentResponse fileContent = openAiService.retrieveFileContent("file-zuuXpPWYtGPlFjM2Z6coYy3h");
-//        System.out.println("retrieveFileContent: " + toJSONString(fileContent));
+    @Test
+    public void createAudioTranscription() {
+        CreateAudioTranscriptionRequest createAudioTranscriptionRequest = CreateAudioTranscriptionRequest.builder()
+                .model("whisper-1")
+                .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
+                .build();
+        AudioResponse audioResponse = getOpenAiService().createAudioTranscription(createAudioTranscriptionRequest);
+        log.info("audioResponse: {}", toJSONString(audioResponse));
+    }
 
-//        CreateCompletionRequest completionRequest = CreateCompletionRequest.builder()
-//                .prompt("Somebody once told me the world is gonna roll me")
-//                .echo(true)
-//                .model("ada")
-//                .build();
-//        Completion completion = openAiService.createCompletion(completionRequest);
-//        System.out.println("completion: " + toJSONString(completion));
+    @Test
+    public void createAudioTranslation() {
+        CreateAudioTranslationRequest createAudioTranslationRequest = CreateAudioTranslationRequest.builder()
+                .model("whisper-1")
+                .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
+                .build();
+        AudioResponse audioResponse2 = getOpenAiService().createAudioTranslation(createAudioTranslationRequest);
+        log.info("audioResponse2: {}", toJSONString(audioResponse2));
+    }
+
+    @Test
+    public void uploadFile() {
+        File file = getOpenAiService().uploadFile("/Users/forest/fineTuningSample.jsonl", "fine-tune");
+        log.info("update file: " + toJSONString(file));
+    }
+
+    @Test
+    public void deleteFile() {
+        DeleteResponse deleteFileResponse = getOpenAiService().deleteFile("file-lq7ubCONViIIP0S2AAE2JIYW");
+        log.info("delete file: " + toJSONString(deleteFileResponse));
+    }
+
+    @Test
+    public void listFiles() {
+        List<File> files = getOpenAiService().listFiles();
+        log.info("list files: " + toJSONString(files));
+    }
+
+    @Test
+    public void retrieveFile() {
+        File retrieveFile = getOpenAiService().retrieveFile("file-lq7ubCONViIIP0S2AAE2JIYW");
+        log.info("retrieve file: " + toJSONString(retrieveFile));
+    }
+
+    @Test
+    public void retrieveFileContent() {
+        RetrieveFileContentResponse fileContent = getOpenAiService().retrieveFileContent("file-lq7ubCONViIIP0S2AAE2JIYW");
+        log.info("retrieve file content: {}", toJSONString(fileContent));
+    }
 
 
-//        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
-//            @Override
-//            public void onEvent(String requestId, ChatCompletion chatCompletion) {
-//                System.out.println(chatCompletion.getChoices().get(0).getDelta().getContent());
-//            }
-//
-//            @Override
-//            public void onFailure(String requestId, Throwable t, Response response) {
-//                t.printStackTrace();
-//            }
-//        };
-//        listener.setClientId("cid");
-//        openAiService.addStreamChatCompletionListener(listener);
-//        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-//                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "CWhat's 1+1? Answer in one word.")))
-//                .model("gpt-3.5-turbo")
-//                .build();
-//        openAiService.createSteamChatCompletion("1234", chatCompletionRequest);
+    @Test
+    public void createFineTune() {
+        CreateFineTuneRequest createFineTuneRequest = CreateFineTuneRequest.builder()
+                .trainingFile("file-eloVljhERlCO2qWNFeTlA0Az")
+                .build();
+        FineTune fineTune = getOpenAiService().createFineTune(createFineTuneRequest);
+        log.info("createFineTune: " + toJSONString(fineTune));
+    }
 
-//        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
-//        java.io.File mask = new java.io.File("/Users/forest/image_edit_mask.png");
-//        CreateImageEditRequest createImageEditRequest = CreateImageEditRequest.builder()
-//                .prompt("A cute baby sea otter wearing a beret")
-//                .image(Files.readAllBytes(image.toPath()))
-//                .mask(Files.readAllBytes(mask.toPath()))
-////                .responseFormat("b64_json") // or url
-//                .build();
-//        ImageResponse imageEditResponse = openAiService.createImageEdit(createImageEditRequest);
-//        System.out.println("imageEditResponse: " + toJSONString(imageEditResponse));
+    @Test
+    public void listFineTunes() {
+        List<FineTune> fineTunes = getOpenAiService().listFineTunes();
+        log.info("list fine tunes: " + toJSONString(fineTunes));
+    }
 
-//        java.io.File image = new java.io.File("/Users/forest/image_edit_original.png");
-//
-//        CreateImageVariationRequest createImageVariationRequest = CreateImageVariationRequest.builder()
-//                .image(Files.readAllBytes(image.toPath()))
-//                .n(1)
-//                .size("256x256")
-//                .build();
-//        ImageResponse imageVariationResponse = openAiService.createImageVariation(createImageVariationRequest);
-//        System.out.println("imageVariationResponse: " + toJSONString(imageVariationResponse));
+    @Test
+    public void retrieveFineTune() {
+        FineTune fineTune = getOpenAiService().retrieveFineTune("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
+        log.info("retrieveFineTune: " + toJSONString(fineTune));
+    }
 
-//        java.io.File audio = new java.io.File("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3");
-//        CreateAudioTranscriptionRequest createAudioTranscriptionRequest = CreateAudioTranscriptionRequest.builder()
-//                .model("whisper-1")
-//                .file(Files.readAllBytes(audio.toPath()))
-//                .build();
-//        AudioResponse audioResponse = openAiService.createAudioTranscription(createAudioTranscriptionRequest);
-//        System.out.println("audioResponse: " + toJSONString(audioResponse));
+    @Test
+    public void cancelFineTune() {
+        FineTune cancelFineTune = getOpenAiService().cancelFineTune("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
+        log.info("cancelFineTune: " + toJSONString(cancelFineTune));
+    }
 
+    @Test
+    public void deleteFineTune() {
+        DeleteResponse deleteFineTuneResponse = getOpenAiService().deleteFineTune("curie", "ft-4jF2VK5hYHFdwTRKsJe1PX9y");
+        log.info("deleteFineTune: " + toJSONString(deleteFineTuneResponse));
+    }
+
+    @Test
+    public void listFineTuneEvents() {
+        List<FineTuneEvent> fineTuneEvents = getOpenAiService().listFineTuneEvents("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
+        log.info("listFineTuneEvents: " + toJSONString(fineTuneEvents));
+    }
 
     private String toJSONString(Object obj) {
         ObjectMapper ob = new ObjectMapper();
@@ -289,4 +276,5 @@ public class OpenAiServiceTest {
             throw new RuntimeException(e);
         }
     }
+
 }
