@@ -7,16 +7,28 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
+import xyz.felh.openai.completion.Completion;
+import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.ChatMessage;
 import xyz.felh.openai.completion.chat.ChatMessageRole;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
+import xyz.felh.openai.edit.CreateEditRequest;
+import xyz.felh.openai.edit.Edit;
+import xyz.felh.openai.embedding.CreateEmbeddingRequest;
+import xyz.felh.openai.embedding.CreateEmbeddingResponse;
+import xyz.felh.openai.image.CreateImageRequest;
+import xyz.felh.openai.image.ImageResponse;
+import xyz.felh.openai.image.edit.CreateImageEditRequest;
+import xyz.felh.openai.image.variation.CreateImageVariationRequest;
 import xyz.felh.openai.model.Model;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static xyz.felh.openai.OpenAiService.*;
 
@@ -34,6 +46,12 @@ public class OpenAiServiceTest {
         Retrofit retrofit = defaultRetrofit(client, mapper);
         OpenAiApi api = retrofit.create(OpenAiApi.class);
         return new OpenAiService(api, client);
+    }
+
+    @Test
+    public void listModels() {
+        List<Model> models = getOpenAiService().listModels();
+        System.out.println("model size: " + models.size());
     }
 
     @Test
@@ -64,68 +82,83 @@ public class OpenAiServiceTest {
         getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest);
     }
 
+    @Test
+    public void createCompletion() {
+        CreateCompletionRequest completionRequest = CreateCompletionRequest.builder()
+                .prompt("Somebody once told me the world is gonna roll me")
+                .echo(true)
+                .model("ada")
+                .build();
+        Completion completion = getOpenAiService().createCompletion(completionRequest);
+        log.info("completion: {}", toJSONString(completion));
+    }
 
-//        List<Model> models = openAiService.listModels();
-//        System.out.println("model size: " + models.size());
-//        // gpt-3.5-turbo
-//
-//        Model model = openAiService.getModel("gpt-3.5-turbo");
-//        System.out.println("model gpt-3.5-turbo: " + toJSONString(model));
-//
-//        CreateCompletionRequest completionRequest = CreateCompletionRequest.builder()
-//                .prompt("Somebody once told me the world is gonna roll me")
-//                .echo(true)
-//                .model("ada")
-//                .build();
-//        Completion completion = openAiService.createCompletion(completionRequest);
-//        System.out.println("completion: " + toJSONString(completion));
-//
-//        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-//                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello")))
-//                .model("gpt-3.5-turbo")
-//                .build();
-//        ChatCompletion chatCompletion = openAiService.createChatCompletion(chatCompletionRequest);
-//        System.out.println("chatCompletion: " + toJSONString(chatCompletion));
-//
-//        CreateEditRequest editRequest = CreateEditRequest.builder()
-//                .model("text-davinci-edit-001")
-//                .input("What day of the wek is it?")
-//                .instruction("Fix the spelling mistakes")
-//                .build();
-//        Edit edit = openAiService.createEdit(editRequest);
-//        System.out.println("edit: " + toJSONString(edit));
-//
-//        CreateImageRequest createImageRequest = CreateImageRequest.builder()
-//                .prompt("A cute baby dea otter")
-//                .n(1)
-////                .responseFormat("b64_json") // or url
-//                .build();
-//        ImageResponse imageResponse = openAiService.createImage(createImageRequest);
-//        System.out.println("imageResponse: " + toJSONString(imageResponse));
-//
-//        CreateImageEditRequest createImageEditRequest = CreateImageEditRequest.builder()
-//                .prompt("A cute baby sea otter wearing a beret")
-//                .imagePath("/Users/forest/image_edit_original.png")
-//                .maskPath("/Users/forest/image_edit_mask.png")
-////                .responseFormat("b64_json") // or url
-//                .build();
-//        ImageResponse imageEditResponse = openAiService.createImageEdit(createImageEditRequest);
-//        System.out.println("imageEditResponse: " + toJSONString(imageEditResponse));
-//
-//        CreateImageVariationRequest createImageVariationRequest = CreateImageVariationRequest.builder()
-////                    .image("/Users/forest/image_edit_original.png")
-//                .n(2)
-//                .size("256x256")
-//                .build();
-//        ImageResponse imageVariationResponse = openAiService.createImageVariation(createImageVariationRequest);
-//        System.out.println("imageVariationResponse: " + toJSONString(imageVariationResponse));
-//
-//        CreateEmbeddingRequest createEmbeddingRequest = CreateEmbeddingRequest.builder()
-//                .input("The food was delicious and the waiter...")
-//                .model("text-embedding-ada-002")
-//                .build();
-//        CreateEmbeddingResponse createEmbeddingResponse = openAiService.createEmbeddings(createEmbeddingRequest);
-//        System.out.println("createEmbeddingResponse: " + toJSONString(createEmbeddingResponse));
+    @Test
+    public void createChatCompletion() {
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello")))
+                .model("gpt-3.5-turbo")
+                .build();
+        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+        System.out.println("chatCompletion: " + toJSONString(chatCompletion));
+    }
+
+    @Test
+    public void createEdit() {
+        CreateEditRequest editRequest = CreateEditRequest.builder()
+                .model("text-davinci-edit-001")
+                .input("What day of the wek is it?")
+                .instruction("Fix the spelling mistakes")
+                .build();
+        Edit edit = getOpenAiService().createEdit(editRequest);
+        log.info("edit: {}", toJSONString(edit));
+    }
+
+    @Test
+    public void createImage() {
+        CreateImageRequest createImageRequest = CreateImageRequest.builder()
+                .prompt("A cute baby dea otter")
+                .n(1)
+//                .responseFormat("b64_json") // or url
+                .build();
+        ImageResponse imageResponse = getOpenAiService().createImage(createImageRequest);
+        log.info("imageResponse: {}", toJSONString(imageResponse));
+    }
+
+    @Test
+    public void createImageEdit() {
+        CreateImageEditRequest createImageEditRequest = CreateImageEditRequest.builder()
+                .prompt("A cute baby sea otter wearing a beret")
+                .imagePath("/Users/forest/image_edit_original.png")
+                .maskPath("/Users/forest/image_edit_mask.png")
+//                .responseFormat("b64_json") // or url
+                .build();
+        ImageResponse imageEditResponse = getOpenAiService().createImageEdit(createImageEditRequest);
+        log.info("imageEditResponse: {}", toJSONString(imageEditResponse));
+    }
+
+    @Test
+    public void createImageVariation() {
+        CreateImageVariationRequest createImageVariationRequest = CreateImageVariationRequest.builder()
+//                    .image("/Users/forest/image_edit_original.png")
+                .n(2)
+                .size("256x256")
+                .build();
+        ImageResponse imageVariationResponse = getOpenAiService().createImageVariation(createImageVariationRequest);
+        log.info("imageVariationResponse: {} ", toJSONString(imageVariationResponse));
+
+    }
+
+    @Test
+    public void createEmbedding() {
+        CreateEmbeddingRequest createEmbeddingRequest = CreateEmbeddingRequest.builder()
+                .input("The food was delicious and the waiter...")
+                .model("text-embedding-ada-002")
+                .build();
+        CreateEmbeddingResponse createEmbeddingResponse = getOpenAiService().createEmbeddings(createEmbeddingRequest);
+        log.info("createEmbeddingResponse:  {}", toJSONString(createEmbeddingResponse));
+    }
+
 //
 //        CreateModerationRequest createModerationRequest = CreateModerationRequest.builder()
 //                .input("I want to kill them.")
