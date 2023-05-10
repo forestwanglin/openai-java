@@ -12,7 +12,7 @@
     <artifactId>gpt3-tokenizer</artifactId>
 
     <name>OpenAi API GPT3-Tokenizer</name>
-    <description>OpenAi API GPT3-Tokenizer</description>
+    <description>OpenAi API gpt3/gpt4</description>
     <url>https://github.com/forestwanglin/openai-java/tree/main/gpt3-tokenizer</url>
 
     <properties>
