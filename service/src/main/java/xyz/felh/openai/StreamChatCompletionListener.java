@@ -7,16 +7,6 @@ import xyz.felh.openai.completion.chat.ChatCompletion;
 @Slf4j
 public abstract class StreamChatCompletionListener {
 
-    private String clientId;
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
     /**
      * Invoked when an event source has been accepted by the remote peer and may begin transmitting
      * events.

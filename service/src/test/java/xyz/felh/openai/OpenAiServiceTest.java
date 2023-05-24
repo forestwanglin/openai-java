@@ -83,13 +83,11 @@ public class OpenAiServiceTest {
                 t.printStackTrace();
             }
         };
-        listener.setClientId("cid");
-        getOpenAiService().addStreamChatCompletionListener(listener);
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "What's 1+1? Answer in one word.")))
                 .model("gpt-3.5-turbo")
                 .build();
-        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest);
+        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener);
     }
 
     @Test

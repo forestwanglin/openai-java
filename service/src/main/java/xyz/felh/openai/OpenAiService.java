@@ -44,9 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -63,8 +61,6 @@ public class OpenAiService {
     private final OpenAiApi api;
 
     private final OkHttpClient client;
-
-    private final Set<StreamChatCompletionListener> streamChatCompletionListeners;
 
     /**
      * Creates a new OpenAiService that wraps OpenAiApi
@@ -94,33 +90,6 @@ public class OpenAiService {
     public OpenAiService(final OpenAiApi api, final OkHttpClient client) {
         this.api = api;
         this.client = client;
-        this.streamChatCompletionListeners = new HashSet<>();
-    }
-
-    /**
-     * replace old one if exist
-     *
-     * @param listener Stream listener
-     */
-    public void addStreamChatCompletionListener(StreamChatCompletionListener listener) {
-        if (listener.getClientId() != null) {
-            removeStreamChatCompletionListener(listener.getClientId());
-        }
-        streamChatCompletionListeners.add(listener);
-    }
-
-    public void removeStreamChatCompletionListener(String listenerId) {
-        for (StreamChatCompletionListener streamChatCompletionListener : streamChatCompletionListeners) {
-            if (streamChatCompletionListener.getClientId().equals(listenerId)) {
-                streamChatCompletionListeners.remove(streamChatCompletionListener);
-                break;
-            }
-        }
-    }
-
-    public void printStreamChatCompletionListeners() {
-        log.info("--- listener clients ---");
-        streamChatCompletionListeners.forEach(it -> log.info("clientId: {}", it.getClientId()));
     }
 
     /**
@@ -216,8 +185,9 @@ public class OpenAiService {
      *
      * @param requestId request ID, every observer is unique
      * @param request   detail of request
+     * @param listener  StreamChatCompletionListener
      */
-    public void createSteamChatCompletion(final String requestId, CreateChatCompletionRequest request) {
+    public void createSteamChatCompletion(String requestId, CreateChatCompletionRequest request, StreamChatCompletionListener listener) {
         request.setStream(true);
         Request okHttpRequest;
         try {
@@ -234,17 +204,17 @@ public class OpenAiService {
         EventSourceListener eventSourceListener = new EventSourceListener() {
             @Override
             public void onOpen(@NonNull EventSource eventSource, @NonNull Response response) {
-                streamChatCompletionListeners.forEach(it -> it.onOpen(requestId, response));
+                listener.onOpen(requestId, response);
             }
 
             @Override
             public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
                 if (data.equals("[DONE]")) {
-                    streamChatCompletionListeners.forEach(it -> it.onEventDone(requestId));
+                    listener.onEventDone(requestId);
                 } else {
                     try {
                         ChatCompletion chatCompletion = defaultObjectMapper().readValue(data, ChatCompletion.class);
-                        streamChatCompletionListeners.forEach(it -> it.onEvent(requestId, chatCompletion));
+                        listener.onEvent(requestId, chatCompletion);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -253,12 +223,12 @@ public class OpenAiService {
 
             @Override
             public void onClosed(@NonNull EventSource eventSource) {
-                streamChatCompletionListeners.forEach(it -> it.onClosed(requestId));
+                listener.onClosed(requestId);
             }
 
             @Override
             public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-                streamChatCompletionListeners.forEach(it -> it.onFailure(requestId, t, response));
+                listener.onFailure(requestId, t, response);
             }
         };
         factory.newEventSource(okHttpRequest, eventSourceListener);
