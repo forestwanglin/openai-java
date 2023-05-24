@@ -2,10 +2,17 @@ package xyz.felh.openai;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
+import okhttp3.sse.EventSource;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 
 @Slf4j
 public abstract class StreamChatCompletionListener {
+
+    private EventSource eventSource;
+
+    public void setEventSource(EventSource eventSource) {
+        this.eventSource = eventSource;
+    }
 
     /**
      * Invoked when an event source has been accepted by the remote peer and may begin transmitting
@@ -57,6 +64,15 @@ public abstract class StreamChatCompletionListener {
      */
     public void onFailure(String requestId, Throwable t, Response response) {
         log.error("onFailure: {}", requestId, t);
+    }
+
+    /**
+     * cancel eventSource
+     */
+    public void close() {
+        if (eventSource != null) {
+            eventSource.cancel();
+        }
     }
 
 }

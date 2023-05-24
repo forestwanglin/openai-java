@@ -187,7 +187,9 @@ public class OpenAiService {
      * @param request   detail of request
      * @param listener  StreamChatCompletionListener
      */
-    public void createSteamChatCompletion(String requestId, CreateChatCompletionRequest request, StreamChatCompletionListener listener) {
+    public void createSteamChatCompletion(String requestId,
+                                          CreateChatCompletionRequest request,
+                                          @NonNull StreamChatCompletionListener listener) {
         request.setStream(true);
         Request okHttpRequest;
         try {
@@ -231,7 +233,8 @@ public class OpenAiService {
                 listener.onFailure(requestId, t, response);
             }
         };
-        factory.newEventSource(okHttpRequest, eventSourceListener);
+        EventSource eventSource = factory.newEventSource(okHttpRequest, eventSourceListener);
+        listener.setEventSource(eventSource);
     }
 
     /**
