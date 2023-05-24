@@ -6,7 +6,7 @@
 
     <groupId>xyz.felh</groupId>
     <artifactId>openai-java</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <packaging>pom</packaging>
 
     <name>ChatGPT of Openai API for Java</name>
@@ -48,7 +48,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <maven.compiler.release>8</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openai-java.version>1.2.0</openai-java.version>
+        <openai-java.version>1.2.1</openai-java.version>
     </properties>
 
     <build>
