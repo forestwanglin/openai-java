@@ -144,8 +144,9 @@ log.info("chatCompletion Response:\n{}", JsonUtils.toPrettyJSONString(completion
 ##### 3.1.b.1 Register listener for stream (use Flux to serve server-sent events)
 
 ```java
-private Flux<ServerSentEvent<List<String>>> buildFlux(String listenerClientId) {
+private Flux<ServerSentEvent<List<String>>> buildFlux(String messageId) {
     Flux<ServerSentEvent<List<String>>> flux = Flux.create(fluxSink -> {
+        
         StreamChatCompletionListener listener = new StreamChatCompletionListener() {
             @Override
             public void onOpen(String requestId, Response response) {
@@ -176,34 +177,25 @@ private Flux<ServerSentEvent<List<String>>> buildFlux(String listenerClientId) {
             }
         }
         
-        listener.setClientId(listenerClientId);
+        // create stream chat message
+        CreateChatCompletionRequest request = CreateChatCompletionRequest.builder()
+            .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello, Please count 1 to 10")))
+            .model("gpt-3.5-turbo")
+            .maxTokens(2048)
+            .temperature(0.8)
+            .stream(true)
+            .build();
+        log.info("chatCompletion Request:\n{}", JsonUtils.toPrettyJSONString(request));
+        openAiService.createSteamChatCompletion(messageId, request, listener);
+        
         // unsubscribe when user disconnect
         fluxSink.onCancel(() -> {
-            log.info("flux cancel {}", listener.getClientId());
-            openAiService.removeStreamChatCompletionListener(listener.getClientId());
-            openAiService.printStreamChatCompletionListeners();
+            log.info("flux cancel {}", messageId);
+            listener.close();
         });
-        // subscribe
-        openAiService.addStreamChatCompletionListener(listener);
         }, FluxSink.OverflowStrategy.LATEST);
     return flux;
 }
-```
-##### 3.1.b.1 Send request to OpenAI
-```java
-// set your own messageId
-String messageId = "Unique Message Id for each message";
-// create stream chat message
-CreateChatCompletionRequest request = CreateChatCompletionRequest.builder()
-        .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello, Please count 1 to 10")))
-        .model("gpt-3.5-turbo")
-        .maxTokens(2048)
-        .temperature(0.8)
-        .stream(true)
-        .user("LOGIC_USER_KEY")
-        .build();
-log.info("chatCompletion Request:\n{}", JsonUtils.toPrettyJSONString(request));
-openAiService.createSteamChatCompletion(request);
 ```
 
 #### 3.2 Create Completion
