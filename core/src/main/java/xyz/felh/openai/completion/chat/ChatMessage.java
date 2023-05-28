@@ -11,6 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatMessage {
 
+    public ChatMessage(ChatMessageRole role, String content) {
+        this.role = role;
+        this.content = content;
+    }
+
     /**
      * Must be either 'system', 'user', or 'assistant'.<br>
      * You may use {@link ChatMessageRole} enum.
