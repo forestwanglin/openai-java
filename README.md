@@ -11,7 +11,7 @@ OpenAi GPT API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>openai-service</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
@@ -20,22 +20,22 @@ OpenAi GPT API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>gpt3-tokenizer</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'openai-service', version: '1.2.2'
-implementation group: 'xyz.felh', name: 'gpt3-tokenizer', version: '1.2.2'
+implementation group: 'xyz.felh', name: 'openai-service', version: '1.2.3'
+implementation group: 'xyz.felh', name: 'gpt3-tokenizer', version: '1.2.3'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "openai-service" % "1.2.2"
-libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.2.2"
+libraryDependencies += "xyz.felh" % "openai-service" % "1.2.3"
+libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.2.3"
 ```
 
 ## Supported APIs
@@ -60,7 +60,7 @@ libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.2.2"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>openai-service</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 

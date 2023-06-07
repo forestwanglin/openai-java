@@ -31,4 +31,8 @@ public class OpenAiHttpException extends RuntimeException {
         this.type = error.getError().getType();
     }
 
+    public static void main(String[] args) {
+        System.out.println("ffff");
+    }
+
 }

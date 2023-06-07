@@ -32,6 +32,7 @@ import xyz.felh.openai.image.variation.CreateImageVariationRequest;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
+import xyz.felh.openai.utils.TikTokenUtils;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -84,10 +85,20 @@ public class OpenAiServiceTest {
             }
         };
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-                .messages(Collections.singletonList(new ChatMessage(ChatMessageRole.USER, "What's 1+1? Answer in one word.")))
+                .messages(Arrays.asList(
+                        new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses."),
+                        new ChatMessage(ChatMessageRole.USER, "你好，讲个笑话", "FU0837801026829335"),
+                        new ChatMessage(ChatMessageRole.ASSISTANT, "抱歉，我是一名助手，不会开玩笑。有什么需要我帮忙的吗?"),
+                        new ChatMessage(ChatMessageRole.USER, "真的不会吗?", "FU0837801026829335")))
                 .model("gpt-3.5-turbo")
                 .build();
         getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener);
+
+        try {
+            Thread.sleep(10000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -104,7 +115,9 @@ public class OpenAiServiceTest {
     @Test
     public void createChatCompletion() {
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello")))
+                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
+                        new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
+                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123423423423423423423234")))
                 .model("gpt-3.5-turbo")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
@@ -273,6 +286,16 @@ public class OpenAiServiceTest {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void testTokens() {
+        log.info("test tokens");
+        List<ChatMessage> messages = Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
+                new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
+                new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123423423423423423423234"));
+        log.info("{}", TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO.getName(),messages));
+        log.info("{}",  TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO.getName(),messages));
     }
 
 }
