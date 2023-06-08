@@ -15,27 +15,16 @@ OpenAi GPT API for Java
 </dependency>
 ```
 
-```xml
-<!--  add it if need calculate tokens when using gpt3 -->
-<dependency>
-    <groupId>xyz.felh</groupId>
-    <artifactId>gpt3-tokenizer</artifactId>
-    <version>1.3.0</version>
-</dependency>
-```
-
 ### Gradle
 
 ```yaml
 implementation group: 'xyz.felh', name: 'openai-service', version: '1.3.0'
-implementation group: 'xyz.felh', name: 'gpt3-tokenizer', version: '1.3.0'
 ```
 
 ### sbt
 
 ```javascript
 libraryDependencies += "xyz.felh" % "openai-service" % "1.3.0"
-libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.3.0"
 ```
 
 ## Supported APIs
@@ -51,6 +40,7 @@ libraryDependencies += "xyz.felh" % "gpt3-tokenizer" % "1.3.0"
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 - [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
 
+## Use TikTokenUtils to calculate tokens
 
 ## Example (Spring Boot 3)
 
