@@ -42,7 +42,7 @@ public class TikTokenUtils {
      * @return 编码数组
      */
     public static List<Integer> encode(@NotNull Encoding enc, String text) {
-        return text == null || "".equals(text) ? new ArrayList<>() : enc.encode(text);
+        return Preconditions.isBlank(text) ? new ArrayList<>() : enc.encode(text);
     }
 
     /**
@@ -86,7 +86,7 @@ public class TikTokenUtils {
      * @return 编码数组
      */
     public static List<Integer> encode(@NotNull EncodingType encodingType, String text) {
-        if (text == null || "".equals(text)) {
+        if (Preconditions.isBlank(text)) {
             return new ArrayList<>();
         }
         Encoding enc = getEncoding(encodingType);
@@ -135,7 +135,7 @@ public class TikTokenUtils {
      * @return 编码数组
      */
     public static List<Integer> encode(@NotNull String modelName, String text) {
-        if (text == null || "".equals(text)) {
+        if (Preconditions.isBlank(text)) {
             return new ArrayList<>();
         }
         Encoding enc = getEncoding(modelName);
@@ -187,7 +187,7 @@ public class TikTokenUtils {
             sum += tokens(encoding, msg.getContent());
             sum += tokens(encoding, msg.getRole().value());
             sum += tokens(encoding, msg.getName());
-            if (msg.getName() != null && !"".equals(msg.getName())) {
+            if (Preconditions.isNotBlank(msg.getName())) {
                 sum += tokensPerName;
             }
         }
