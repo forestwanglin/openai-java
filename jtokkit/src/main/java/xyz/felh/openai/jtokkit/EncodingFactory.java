@@ -62,7 +62,7 @@ final class EncodingFactory {
         return fromPredefinedParameters(
                 "r50k_base",
                 "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
-                "/xyz/felh/openai/jtokkit/r50k_base.tiktoken",
+                "r50k_base.tiktoken",
                 SPECIAL_TOKENS_X50K_BASE
         );
     }
@@ -76,7 +76,7 @@ final class EncodingFactory {
         return fromPredefinedParameters(
                 "p50k_base",
                 "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
-                "/xyz/felh/openai/jtokkit/p50k_base.tiktoken",
+                "p50k_base.tiktoken",
                 SPECIAL_TOKENS_X50K_BASE
         );
     }
@@ -90,7 +90,7 @@ final class EncodingFactory {
         return fromPredefinedParameters(
                 "p50k_edit",
                 "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
-                "/xyz/felh/openai/jtokkit/p50k_base.tiktoken",
+                "p50k_base.tiktoken",
                 SPECIAL_TOKENS_P50K_EDIT
         );
     }
@@ -104,7 +104,7 @@ final class EncodingFactory {
         return fromPredefinedParameters(
                 "cl100k_base",
                 "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+",
-                "/xyz/felh/openai/jtokkit/cl100k_base.tiktoken",
+                "cl100k_base.tiktoken",
                 SPECIAL_TOKENS_CL100K_BASE
         );
     }

@@ -10,21 +10,32 @@ OpenAi GPT API for Java
 
 <dependency>
     <groupId>xyz.felh</groupId>
-    <artifactId>openai-service</artifactId>
-    <version>1.3.0</version>
+    <artifactId>service</artifactId>
+    <version>1.4.0</version>
+</dependency>
+```
+
+```xml
+<!-- get tokens count -->
+<dependency>
+    <groupId>xyz.felh</groupId>
+    <artifactId>jtokkit</artifactId>
+    <version>1.4.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'openai-service', version: '1.3.0'
+implementation group: 'xyz.felh', name: 'service', version: '1.4.0'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '1.4.0'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "openai-service" % "1.3.0"
+libraryDependencies += "xyz.felh" % "service" % "1.4.0"
+libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.0"
 ```
 
 ## Supported APIs
@@ -50,7 +61,7 @@ libraryDependencies += "xyz.felh" % "openai-service" % "1.3.0"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>openai-service</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
