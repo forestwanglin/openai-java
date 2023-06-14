@@ -38,7 +38,7 @@ public class LazyEncodingRegistryTest extends BaseEncodingRegistryTest<LazyEncod
         List<ChatMessage> messages = Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
                 new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
                 new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123423423423423423423234"));
-        log.info("{}", TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO.getName(), messages));
+        log.info("{}", TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName(), messages));
     }
 
 }
