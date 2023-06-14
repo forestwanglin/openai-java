@@ -33,6 +33,14 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
          */
         GPT_3_5_TURBO_0301("gpt-3.5-turbo-0301"),
         /**
+         * gpt-3.5-turbo-0613, On June 27th, the stable gpt-3.5-turbo will be automatically upgraded to this new version
+         */
+        GPT_3_5_TURBO_0613("gpt-3.5-turbo-0613"),
+        /**
+         * gpt-3.5-turbo-16k
+         */
+        GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k"),
+        /**
          * GPT4.0
          */
         GPT_4("gpt-4"),

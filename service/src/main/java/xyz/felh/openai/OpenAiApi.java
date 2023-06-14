@@ -3,6 +3,7 @@ package xyz.felh.openai;
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.http.*;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.completion.Completion;

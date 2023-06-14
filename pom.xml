@@ -40,6 +40,7 @@
     <modules>
         <module>core</module>
         <module>service</module>
+        <module>jtokkit</module>
     </modules>
 
     <properties>

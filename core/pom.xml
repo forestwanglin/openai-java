@@ -9,11 +9,11 @@
         <version>1.3.0</version>
     </parent>
 
-    <artifactId>openai-core</artifactId>
+    <artifactId>core</artifactId>
     <packaging>jar</packaging>
 
-    <name>OpenAi API core</name>
-    <description>OpenAi API core</description>
+    <name>OpenAi api core</name>
+    <description>OpenAi api core</description>
     <url>https://github.com/forestwanglin/openai-java/tree/main/core</url>
 
     <properties>

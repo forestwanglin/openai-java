@@ -1,15 +1,15 @@
-package xyz.felh.openai.utils;
+package xyz.felh.openai.jtokkit.utils;
 
 
-import com.knuddels.jtokkit.Encodings;
-import com.knuddels.jtokkit.api.Encoding;
-import com.knuddels.jtokkit.api.EncodingRegistry;
-import com.knuddels.jtokkit.api.EncodingType;
-import com.knuddels.jtokkit.api.ModelType;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.ChatMessage;
+import xyz.felh.openai.jtokkit.Encodings;
+import xyz.felh.openai.jtokkit.api.Encoding;
+import xyz.felh.openai.jtokkit.api.EncodingRegistry;
+import xyz.felh.openai.jtokkit.api.EncodingType;
+import xyz.felh.openai.jtokkit.api.ModelType;
+import xyz.felh.openai.utils.Preconditions;
 
 import java.util.*;
 
@@ -29,6 +29,8 @@ public class TikTokenUtils {
             modelMap.put(modelType.getName(), registry.getEncodingForModel(modelType));
         }
         modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0301.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
         modelMap.put(ChatCompletion.Model.GPT_4_32K.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_32K_0314.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_0314.getName(), registry.getEncodingForModel(ModelType.GPT_4));
@@ -41,7 +43,7 @@ public class TikTokenUtils {
      * @param text 文本信息
      * @return 编码数组
      */
-    public static List<Integer> encode(@NotNull Encoding enc, String text) {
+    public static List<Integer> encode(Encoding enc, String text) {
         return Preconditions.isBlank(text) ? new ArrayList<>() : enc.encode(text);
     }
 
@@ -52,10 +54,9 @@ public class TikTokenUtils {
      * @param text 文本信息
      * @return tokens数量
      */
-    public static int tokens(@NotNull Encoding enc, String text) {
+    public static int tokens(Encoding enc, String text) {
         return encode(enc, text).size();
     }
-
 
     /**
      * 通过Encoding和encoded数组反推text信息
@@ -64,7 +65,7 @@ public class TikTokenUtils {
      * @param encoded 编码数组
      * @return 编码数组对应的文本信息
      */
-    public static String decode(@NotNull Encoding enc, @NotNull List<Integer> encoded) {
+    public static String decode(Encoding enc, List<Integer> encoded) {
         return enc.decode(encoded);
     }
 
@@ -74,7 +75,7 @@ public class TikTokenUtils {
      * @param encodingType encodingType
      * @return Encoding
      */
-    public static Encoding getEncoding(@NotNull EncodingType encodingType) {
+    public static Encoding getEncoding(EncodingType encodingType) {
         Encoding enc = registry.getEncoding(encodingType);
         return enc;
     }
@@ -85,7 +86,7 @@ public class TikTokenUtils {
      * @param text 文本信息
      * @return 编码数组
      */
-    public static List<Integer> encode(@NotNull EncodingType encodingType, String text) {
+    public static List<Integer> encode(EncodingType encodingType, String text) {
         if (Preconditions.isBlank(text)) {
             return new ArrayList<>();
         }
@@ -100,7 +101,7 @@ public class TikTokenUtils {
      * @param text         文本信息
      * @return tokens数量
      */
-    public static int tokens(@NotNull EncodingType encodingType, String text) {
+    public static int tokens(EncodingType encodingType, String text) {
         return encode(encodingType, text).size();
     }
 
@@ -112,7 +113,7 @@ public class TikTokenUtils {
      * @param encoded      编码数组
      * @return 编码数组对应的字符串
      */
-    public static String decode(@NotNull EncodingType encodingType, @NotNull List<Integer> encoded) {
+    public static String decode(EncodingType encodingType, List<Integer> encoded) {
         Encoding enc = getEncoding(encodingType);
         return enc.decode(encoded);
     }
@@ -124,7 +125,7 @@ public class TikTokenUtils {
      * @param modelName 模型名称
      * @return Encoding
      */
-    public static Encoding getEncoding(@NotNull String modelName) {
+    public static Encoding getEncoding(String modelName) {
         return modelMap.get(modelName);
     }
 
@@ -134,7 +135,7 @@ public class TikTokenUtils {
      * @param text 文本信息
      * @return 编码数组
      */
-    public static List<Integer> encode(@NotNull String modelName, String text) {
+    public static List<Integer> encode(String modelName, String text) {
         if (Preconditions.isBlank(text)) {
             return new ArrayList<>();
         }
@@ -153,7 +154,7 @@ public class TikTokenUtils {
      * @param text      文本信息
      * @return tokens数量
      */
-    public static int tokens(@NotNull String modelName, String text) {
+    public static int tokens(String modelName, String text) {
         return encode(modelName, text).size();
     }
 
@@ -167,17 +168,23 @@ public class TikTokenUtils {
      * @param messages  消息体
      * @return tokens数量
      */
-    public static int tokens(@NotNull String modelName, @NotNull List<ChatMessage> messages) {
+    public static int tokens(String modelName, List<ChatMessage> messages) {
         Encoding encoding = getEncoding(modelName);
         int tokensPerMessage = 0;
         int tokensPerName = 0;
         //3.5统一处理
-        if (modelName.equals("gpt-3.5-turbo-0301") || modelName.equals("gpt-3.5-turbo")) {
+        if (modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0301.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName()) // 16k 待验证
+                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO.getName())) {
             tokensPerMessage = 4;
             tokensPerName = -1;
         }
         //4.0统一处理
-        if (modelName.equals("gpt-4") || modelName.equals("gpt-4-0314")) {
+        if (modelName.equals(ChatCompletion.Model.GPT_4.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_4_0314.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_4_32K_0314.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_4_32K.getName())) {
             tokensPerMessage = 3;
             tokensPerName = 1;
         }
@@ -202,7 +209,7 @@ public class TikTokenUtils {
      * @param encoded
      * @return
      */
-    public static String decode(@NotNull String modelName, @NotNull List<Integer> encoded) {
+    public static String decode(String modelName, List<Integer> encoded) {
         Encoding enc = getEncoding(modelName);
         return enc.decode(encoded);
     }
@@ -215,7 +222,9 @@ public class TikTokenUtils {
      * @return
      */
     public static ModelType getModelTypeByName(String name) {
-        if (ChatCompletion.Model.GPT_3_5_TURBO_0301.getName().equals(name)) {
+        if (ChatCompletion.Model.GPT_3_5_TURBO_0301.getName().equals(name)
+                || ChatCompletion.Model.GPT_3_5_TURBO_0613.getName().equals(name)
+                || ChatCompletion.Model.GPT_3_5_TURBO_16K.getName().equals(name)) {
             return ModelType.GPT_3_5_TURBO;
         }
         if (ChatCompletion.Model.GPT_4.getName().equals(name)

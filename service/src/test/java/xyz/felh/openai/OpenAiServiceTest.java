@@ -29,16 +29,15 @@ import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
 import xyz.felh.openai.image.variation.CreateImageVariationRequest;
+import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import xyz.felh.openai.utils.TikTokenUtils;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static xyz.felh.openai.OpenAiService.*;
@@ -294,8 +293,7 @@ public class OpenAiServiceTest {
         List<ChatMessage> messages = Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
                 new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
                 new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123423423423423423423234"));
-        log.info("{}", TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO.getName(),messages));
-        log.info("{}",  TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO.getName(),messages));
+        log.info("{}", TikTokenUtils.tokens(ChatCompletion.Model.GPT_3_5_TURBO.getName(), messages));
     }
 
 }
