@@ -1,9 +1,11 @@
 package xyz.felh.openai.jtokkit.utils;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.ChatMessage;
+import xyz.felh.openai.completion.chat.func.Function;
 import xyz.felh.openai.jtokkit.Encodings;
 import xyz.felh.openai.jtokkit.api.Encoding;
 import xyz.felh.openai.jtokkit.api.EncodingRegistry;
@@ -158,35 +160,47 @@ public class TikTokenUtils {
         return encode(modelName, text).size();
     }
 
+    public static int tokens(String modelName, List<ChatMessage> messages) {
+        return tokens(modelName, messages, null, null);
+    }
 
     /**
      * 通过模型名称计算messages获取编码数组
      * 参考官方的处理逻辑：
      * <a href=https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb>https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb</a>
      *
-     * @param modelName 模型名称
-     * @param messages  消息体
+     * @param modelName    模型名称
+     * @param messages     消息体
+     * @param functionCall 消息体
+     * @param functions    消息体
      * @return tokens数量
      */
-    public static int tokens(String modelName, List<ChatMessage> messages) {
+    public static int tokens(String modelName, List<ChatMessage> messages, Object functionCall, List<Function> functions) {
         Encoding encoding = getEncoding(modelName);
         int tokensPerMessage = 0;
         int tokensPerName = 0;
         //3.5统一处理
         if (modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0301.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName()) // 16k 待验证
                 || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO.getName())) {
             tokensPerMessage = 4;
             tokensPerName = -1;
         }
+        // 0613新加的模型
+        if (modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName())) {
+            tokensPerMessage = 3;
+            tokensPerName = 1;
+        }
         //4.0统一处理
         if (modelName.equals(ChatCompletion.Model.GPT_4.getName())
                 || modelName.equals(ChatCompletion.Model.GPT_4_0314.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_4_32K_0314.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_4_32K.getName())) {
+        ) {
             tokensPerMessage = 3;
             tokensPerName = 1;
+        }
+        if (modelName.equals(ChatCompletion.Model.GPT_4_32K_0314.getName())
+                || modelName.equals(ChatCompletion.Model.GPT_4_32K.getName())) {
+            // TODO
         }
         int sum = 0;
         for (ChatMessage msg : messages) {
@@ -197,8 +211,38 @@ public class TikTokenUtils {
             if (Preconditions.isNotBlank(msg.getName())) {
                 sum += tokensPerName;
             }
+            if (Preconditions.isNotBlank(msg.getFunctionCall())) {
+                sum += 1;
+                sum += tokens(encoding, msg.getFunctionCall().getName());
+                if (Preconditions.isNotBlank(msg.getFunctionCall().getArguments())) {
+                    sum += tokens(encoding, msg.getFunctionCall().getArguments());
+                }
+            }
         }
         sum += 3;
+
+        // add functions
+        if (Preconditions.isNotBlank(functions)) {
+            if (Preconditions.isNotBlank(functionCall)) {
+                if (functionCall instanceof JSONObject) {
+                    sum += tokens(encoding, functionCall.toString());
+                }
+            }
+            for (Function function : functions) {
+                sum += tokens(encoding, function.getName());
+                sum += tokens(encoding, function.getDescription());
+                if (Preconditions.isNotBlank(function.getParameters())) {
+                    JSONObject jsonObject = (JSONObject) function.getParameters();
+                    if (jsonObject.containsKey("properties")) {
+                        sum -= jsonObject.getJSONObject("properties").keySet().size() * 4;
+                    }
+                    String parameters = jsonObject.toString();
+                    log.info("parameters: {}", parameters);
+                    sum += tokens(encoding, parameters);
+                }
+            }
+            sum += 16;
+        }
         return sum;
     }
 

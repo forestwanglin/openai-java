@@ -1,7 +1,14 @@
 package xyz.felh.openai;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vertx.json.schema.JsonSchema;
+import io.vertx.json.schema.common.dsl.SchemaBuilder;
+import io.vertx.json.schema.common.dsl.SchemaType;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -16,6 +23,8 @@ import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.ChatMessage;
 import xyz.felh.openai.completion.chat.ChatMessageRole;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
+import xyz.felh.openai.completion.chat.func.Function;
+import xyz.felh.openai.completion.chat.func.FunctionCall;
 import xyz.felh.openai.edit.CreateEditRequest;
 import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
@@ -29,16 +38,20 @@ import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
 import xyz.felh.openai.image.variation.CreateImageVariationRequest;
+import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
+import xyz.felh.openai.utils.Preconditions;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static io.vertx.json.schema.common.dsl.Schemas.*;
 import static xyz.felh.openai.OpenAiService.*;
 
 @Slf4j
@@ -47,7 +60,7 @@ public class OpenAiServiceTest {
     private OpenAiService getOpenAiService() {
         String sk = System.getenv("OPENAI_TOKEN");
         ObjectMapper mapper = defaultObjectMapper();
-        Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1086));
+        Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 7890));
         OkHttpClient client = defaultClient(sk, Duration.ofMillis(300000))
                 .newBuilder()
                 .proxy(proxy)
@@ -120,6 +133,109 @@ public class OpenAiServiceTest {
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
+    }
+
+    @Data
+    class GetWeather {
+        private String location;
+        private int hour;
+        private String height;
+        private boolean good;
+    }
+
+    private void removeId(Object obj) {
+        if (Preconditions.isNotBlank(obj)) {
+            if (obj instanceof JSONObject) {
+                JSONObject jsonObject = (JSONObject) obj;
+                jsonObject.remove("$id");
+                for (String key : jsonObject.keySet()) {
+                    removeId(jsonObject.get(key));
+                }
+            } else if (obj instanceof JSONArray) {
+                JSONArray jsonArray = ((JSONArray) obj);
+                for (Object o : jsonArray) {
+                    removeId(o);
+                }
+            }
+        }
+    }
+
+    private String get_current_weather_of_the_world(String location, String unit) {
+        log.info("a {}, b {}", location, unit);
+        return "10-20度,多云，大风";
+    }
+
+    @Test
+    public void createFunctionChatCompletion() {
+        SchemaBuilder objectSchemaBuilder = objectSchema()
+                .requiredProperty("location", stringSchema()
+                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
+                .property("unit", enumSchema("celsius", "fahrenheit").type(SchemaType.STRING));
+        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
+        removeId(jsonObject);
+
+        List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Beijing?", "u12323"));
+
+
+        List<Function> functions = Arrays.asList(
+                Function.builder()
+                        .name("get_current_weather")
+                        .description("Get the current weather in a given location")
+                        .parameters(jsonObject)
+                        .build()
+//                , Function.builder()
+//                        .name("get_current_weather_of_the_world")
+//                        .description("Get the current weather in a given location all over the world, exclude the unite of State")
+//                        .parameters(jsonObject)
+//                        .build()
+//                , Function.builder()
+//                        .name("get_current_weather_of_the_world")
+//                        .description("Get the current weather in a given location all over the world, exclude the unite of State")
+//                        .parameters(jsonObject)
+//                        .build()
+        );
+
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(messages)
+                .model("gpt-3.5-turbo-0613")
+                .functions(functions)
+                .functionCall("auto")
+                .build();
+        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages, "auto", functions));
+        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+        log.info("request: " + toJSONString(chatCompletionRequest));
+        log.info("chatCompletion: " + toJSONString(chatCompletion));
+
+        FunctionCall functionCall = chatCompletion.getChoices().get(0).getMessage().getFunctionCall();
+        if (Preconditions.isNotBlank(functionCall)) {
+            log.info("fc: {}", chatCompletion.getChoices().get(0).getMessage().getFunctionCall());
+
+            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
+            chatMessage.setContent("");
+            messages.add(chatMessage);
+            messages.add(new ChatMessage(ChatMessageRole.FUNCTION, get_current_weather_of_the_world("Beijing", null),functionCall.getName()));
+
+            log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages));
+            chatCompletionRequest.setFunctions(null);
+            chatCompletionRequest.setFunctionCall(null);
+             chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            log.info("request: " + toJSONString(chatCompletionRequest));
+            log.info("chatCompletion: " + toJSONString(chatCompletion));
+
+        }
+
+//        List<ChatMessage> messages1 = new ArrayList<>();
+//        messages1.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Shanghai?", "u12323"));
+//        messages1.add(new ChatMessage(ChatMessageRole.ASSISTANT, "", null, FunctionCall.builder()
+//                .name("get_current_weather_of_the_world")
+//                .arguments("{\n  \"location\": \"Shanghai\"\n}")
+//                .build()));
+//        messages1.add(new ChatMessage(ChatMessageRole.FUNCTION, "10-20度", "get_current_weather_of_the_world"));
+//        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages1));
+
+
+
     }
 
     @Test

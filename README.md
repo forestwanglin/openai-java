@@ -11,7 +11,7 @@ OpenAi GPT API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 </dependency>
 ```
 
@@ -20,22 +20,22 @@ OpenAi GPT API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '1.4.1'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '1.4.1'
+implementation group: 'xyz.felh', name: 'service', version: '1.4.2'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '1.4.2'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "1.4.1"
-libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.1"
+libraryDependencies += "xyz.felh" % "service" % "1.4.2"
+libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.2"
 ```
 
 ## Supported APIs
@@ -53,6 +53,8 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.1"
 
 ## Use TikTokenUtils to calculate tokens
 
+## Support function call by API
+
 ## Example (Spring Boot 3)
 
 - ### 1. Add maven dependency
@@ -60,8 +62,8 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.1"
 ```xml
 <dependency>
     <groupId>xyz.felh</groupId>
-    <artifactId>openai-service</artifactId>
-    <version>1.4.1</version>
+    <artifactId>service</artifactId>
+    <version>1.4.2</version>
 </dependency>
 ```
 
