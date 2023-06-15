@@ -202,7 +202,7 @@ public class OpenAiServiceTest {
                 .functions(functions)
                 .functionCall("auto")
                 .build();
-        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages, "auto", functions));
+        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages) + TikTokenUtils.tokens("gpt-3.5-turbo-0613", null, functions));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("request: " + toJSONString(chatCompletionRequest));
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -214,12 +214,12 @@ public class OpenAiServiceTest {
             ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
             chatMessage.setContent("");
             messages.add(chatMessage);
-            messages.add(new ChatMessage(ChatMessageRole.FUNCTION, get_current_weather_of_the_world("Beijing", null),functionCall.getName()));
+            messages.add(new ChatMessage(ChatMessageRole.FUNCTION, get_current_weather_of_the_world("Beijing", null), functionCall.getName()));
 
             log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages));
             chatCompletionRequest.setFunctions(null);
             chatCompletionRequest.setFunctionCall(null);
-             chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
             log.info("request: " + toJSONString(chatCompletionRequest));
             log.info("chatCompletion: " + toJSONString(chatCompletion));
 
@@ -233,7 +233,6 @@ public class OpenAiServiceTest {
 //                .build()));
 //        messages1.add(new ChatMessage(ChatMessageRole.FUNCTION, "10-20度", "get_current_weather_of_the_world"));
 //        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages1));
-
 
 
     }

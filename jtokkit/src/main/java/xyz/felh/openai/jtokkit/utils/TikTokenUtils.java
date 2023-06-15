@@ -160,22 +160,16 @@ public class TikTokenUtils {
         return encode(modelName, text).size();
     }
 
-    public static int tokens(String modelName, List<ChatMessage> messages) {
-        return tokens(modelName, messages, null, null);
-    }
-
     /**
      * 通过模型名称计算messages获取编码数组
      * 参考官方的处理逻辑：
      * <a href=https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb>https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb</a>
      *
-     * @param modelName    模型名称
-     * @param messages     消息体
-     * @param functionCall 消息体
-     * @param functions    消息体
+     * @param modelName 模型名称
+     * @param messages  消息体
      * @return tokens数量
      */
-    public static int tokens(String modelName, List<ChatMessage> messages, Object functionCall, List<Function> functions) {
+    public static int tokens(String modelName, List<ChatMessage> messages) {
         Encoding encoding = getEncoding(modelName);
         int tokensPerMessage = 0;
         int tokensPerName = 0;
@@ -220,29 +214,31 @@ public class TikTokenUtils {
             }
         }
         sum += 3;
+        return sum;
+    }
 
-        // add functions
-        if (Preconditions.isNotBlank(functions)) {
-            if (Preconditions.isNotBlank(functionCall)) {
-                if (functionCall instanceof JSONObject) {
-                    sum += tokens(encoding, functionCall.toString());
-                }
+    public static int tokens(String modelName, Object functionCall, List<Function> functions) {
+        Encoding encoding = getEncoding(modelName);
+        int sum = 0;
+        if (Preconditions.isNotBlank(functionCall)) {
+            if (functionCall instanceof JSONObject) {
+                sum += tokens(encoding, functionCall.toString());
             }
-            for (Function function : functions) {
-                sum += tokens(encoding, function.getName());
-                sum += tokens(encoding, function.getDescription());
-                if (Preconditions.isNotBlank(function.getParameters())) {
-                    JSONObject jsonObject = (JSONObject) function.getParameters();
-                    if (jsonObject.containsKey("properties")) {
-                        sum -= jsonObject.getJSONObject("properties").keySet().size() * 4;
-                    }
-                    String parameters = jsonObject.toString();
-                    log.info("parameters: {}", parameters);
-                    sum += tokens(encoding, parameters);
-                }
-            }
-            sum += 16;
         }
+        for (Function function : functions) {
+            sum += tokens(encoding, function.getName());
+            sum += tokens(encoding, function.getDescription());
+            if (Preconditions.isNotBlank(function.getParameters())) {
+                JSONObject jsonObject = (JSONObject) function.getParameters();
+                if (jsonObject.containsKey("properties")) {
+                    sum -= jsonObject.getJSONObject("properties").keySet().size() * 4;
+                }
+                String parameters = jsonObject.toString();
+                log.info("parameters: {}", parameters);
+                sum += tokens(encoding, parameters);
+            }
+        }
+        sum += 16;
         return sum;
     }
 
