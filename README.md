@@ -11,7 +11,7 @@ OpenAi GPT API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
 </dependency>
 ```
 
@@ -20,22 +20,22 @@ OpenAi GPT API for Java
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '1.4.3'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '1.4.3'
+implementation group: 'xyz.felh', name: 'service', version: '1.4.4'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '1.4.4'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "1.4.3"
-libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.3"
+libraryDependencies += "xyz.felh" % "service" % "1.4.4"
+libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.4"
 ```
 
 ## Supported APIs
@@ -53,7 +53,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.3"
 
 ## Use TikTokenUtils to calculate tokens
 
-## Support function call by API
+## Support function call by API, and update the method to count tokens for functions
 
 ## Example (Spring Boot 3)
 
@@ -63,7 +63,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.3"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
 </dependency>
 ```
 

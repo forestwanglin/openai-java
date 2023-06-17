@@ -174,35 +174,28 @@ public class TikTokenUtils {
         int tokensPerMessage = 0;
         int tokensPerName = 0;
         //3.5统一处理
-        if (modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0301.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO.getName())) {
-            tokensPerMessage = 4;
-            tokensPerName = -1;
-        }
-        // 0613新加的模型
-        if (modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName())) {
-            tokensPerMessage = 3;
-            tokensPerName = 1;
+        if (modelName.startsWith("gpt-3.5-turbo")) {
+            tokensPerMessage = 4; // every message follows <|start|>{role/name}\n{content}<|end|>\n
+            tokensPerName = -1;  // if there's a name, the role is omitted
         }
         //4.0统一处理
-        if (modelName.equals(ChatCompletion.Model.GPT_4.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_4_0314.getName())
-        ) {
+        if (modelName.startsWith("gpt-4")) {
             tokensPerMessage = 3;
             tokensPerName = 1;
         }
-        if (modelName.equals(ChatCompletion.Model.GPT_4_32K_0314.getName())
-                || modelName.equals(ChatCompletion.Model.GPT_4_32K.getName())) {
-            // TODO
+        // 2023-06-13 update api, new model
+        if (modelName.endsWith("-0613")
+                || modelName.equals("gpt-3.5-turbo-16k")) {
+            tokensPerMessage = 3;
+            tokensPerName = 1;
         }
         int sum = 0;
         for (ChatMessage msg : messages) {
             sum += tokensPerMessage;
             sum += tokens(encoding, msg.getContent());
             sum += tokens(encoding, msg.getRole().value());
-            sum += tokens(encoding, msg.getName());
             if (Preconditions.isNotBlank(msg.getName())) {
+                sum += tokens(encoding, msg.getName());
                 sum += tokensPerName;
             }
             if (Preconditions.isNotBlank(msg.getFunctionCall())) {
@@ -213,7 +206,7 @@ public class TikTokenUtils {
                 }
             }
         }
-        sum += 3;
+        sum += 3;  // every reply is primed with <|start|>assistant<|message|>
         return sum;
     }
 
@@ -231,14 +224,32 @@ public class TikTokenUtils {
             if (Preconditions.isNotBlank(function.getParameters())) {
                 JSONObject jsonObject = (JSONObject) function.getParameters();
                 if (jsonObject.containsKey("properties")) {
-                    sum -= jsonObject.getJSONObject("properties").keySet().size() * 4;
+                    for (String propertiesKey : jsonObject.getJSONObject("properties").keySet()) {
+                        sum += tokens(encoding, propertiesKey);
+                        JSONObject v = jsonObject.getJSONObject("properties").getJSONObject(propertiesKey);
+                        for (String field : v.keySet()) {
+                            if ("type".equals(field)) {
+                                sum += 2;
+                                sum += tokens(encoding, v.getString("type"));
+                            } else if ("description".equals(field)) {
+                                sum += 2;
+                                sum += tokens(encoding, v.getString("description"));
+                            } else if ("enum".equals(field)) {
+                                sum -= 3;
+                                for (Object o : v.getJSONArray(field)) {
+                                    sum += 3;
+                                    sum += tokens(encoding, o.toString());
+                                }
+                            } else {
+                                log.warn("not supported field {}", field);
+                            }
+                        }
+                    }
                 }
-                String parameters = jsonObject.toString();
-                log.info("parameters: {}", parameters);
-                sum += tokens(encoding, parameters);
+                sum += 11;
             }
         }
-        sum += 16;
+        sum += 12;
         return sum;
     }
 

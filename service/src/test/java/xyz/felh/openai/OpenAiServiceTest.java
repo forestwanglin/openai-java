@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vertx.json.schema.JsonSchema;
 import io.vertx.json.schema.common.dsl.SchemaBuilder;
 import io.vertx.json.schema.common.dsl.SchemaType;
 import lombok.Data;
@@ -168,14 +167,25 @@ public class OpenAiServiceTest {
     @Test
     public void createFunctionChatCompletion() {
         SchemaBuilder objectSchemaBuilder = objectSchema()
-                .requiredProperty("location", stringSchema()
+                .property("location", stringSchema()
                         .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
-                .property("unit", enumSchema("celsius", "fahrenheit").type(SchemaType.STRING));
+                .property("unit", enumSchema("celsius", "fahrenheit").type(SchemaType.STRING))
+                .property("age", intSchema());
         JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
         removeId(jsonObject);
 
         List<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Beijing?", "u12323"));
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "How many miles from here to Beijing?", "forest"));
+
+        SchemaBuilder objectSchemaBuilder2 = objectSchema()
+                .property("location", stringSchema()
+                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
+                .property("city", stringSchema().withKeyword("description", "The city or state of the location"))
+                .property("longitude", intSchema().withKeyword("description", "The longitude of the location"))
+                .property("latitude", intSchema().withKeyword("description", "The latitude of the location"));
+        JSONObject jsonObject2 = JSON.parseObject(objectSchemaBuilder2.toJson().toString());
+        removeId(jsonObject2);
 
 
         List<Function> functions = Arrays.asList(
@@ -183,48 +193,50 @@ public class OpenAiServiceTest {
                         .name("get_current_weather")
                         .description("Get the current weather in a given location")
                         .parameters(jsonObject)
+                        .build(),
+                Function.builder()
+                        .name("get_location")
+                        .description("Get the current user's location")
+                        .parameters(jsonObject2)
                         .build()
-//                , Function.builder()
-//                        .name("get_current_weather_of_the_world")
-//                        .description("Get the current weather in a given location all over the world, exclude the unite of State")
-//                        .parameters(jsonObject)
-//                        .build()
-//                , Function.builder()
-//                        .name("get_current_weather_of_the_world")
-//                        .description("Get the current weather in a given location all over the world, exclude the unite of State")
-//                        .parameters(jsonObject)
-//                        .build()
+
         );
 
+        JSONObject fc = new JSONObject();
+        fc.put("name", "get_location");
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
                 .model("gpt-3.5-turbo-0613")
                 .functions(functions)
-                .functionCall("auto")
+                .functionCall(fc)
+//                .maxTokens(1)
+                .stream(false)
                 .build();
-        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages) + TikTokenUtils.tokens("gpt-3.5-turbo-0613", null, functions));
-        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-        log.info("request: " + toJSONString(chatCompletionRequest));
-        log.info("chatCompletion: " + toJSONString(chatCompletion));
-
-        FunctionCall functionCall = chatCompletion.getChoices().get(0).getMessage().getFunctionCall();
-        if (Preconditions.isNotBlank(functionCall)) {
-            log.info("fc: {}", chatCompletion.getChoices().get(0).getMessage().getFunctionCall());
-
-            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
-            chatMessage.setContent("");
-            messages.add(chatMessage);
-            messages.add(new ChatMessage(ChatMessageRole.FUNCTION, get_current_weather_of_the_world("Beijing", null), functionCall.getName()));
-
-            log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages));
-            chatCompletionRequest.setFunctions(null);
-            chatCompletionRequest.setFunctionCall(null);
-            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-            log.info("request: " + toJSONString(chatCompletionRequest));
-            log.info("chatCompletion: " + toJSONString(chatCompletion));
-
-        }
-
+        log.info("prompts: {} {} {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages),
+                TikTokenUtils.tokens("gpt-3.5-turbo-0613", fc, functions)
+                , TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages) + TikTokenUtils.tokens("gpt-3.5-turbo-0613", fc, functions));
+//        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+//        log.info("request: " + toJSONString(chatCompletionRequest));
+//        log.info("chatCompletion: " + toJSONString(chatCompletion));
+//
+//        FunctionCall functionCall = chatCompletion.getChoices().get(0).getMessage().getFunctionCall();
+//        if (Preconditions.isNotBlank(functionCall)) {
+//            log.info("fc: {}", chatCompletion.getChoices().get(0).getMessage().getFunctionCall());
+//
+//            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
+//            chatMessage.setContent("");
+//            messages.add(chatMessage);
+//            messages.add(new ChatMessage(ChatMessageRole.FUNCTION, "shanghai", functionCall.getName()));
+//
+//            log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages));
+//            chatCompletionRequest.setFunctions(null);
+//            chatCompletionRequest.setFunctionCall(null);
+//            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+//            log.info("request: " + toJSONString(chatCompletionRequest));
+//            log.info("chatCompletion: " + toJSONString(chatCompletion));
+//
+//        }
+//
 //        List<ChatMessage> messages1 = new ArrayList<>();
 //        messages1.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Shanghai?", "u12323"));
 //        messages1.add(new ChatMessage(ChatMessageRole.ASSISTANT, "", null, FunctionCall.builder()
