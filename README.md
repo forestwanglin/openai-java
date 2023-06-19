@@ -1,6 +1,32 @@
 # openai-java
 
-OpenAi GPT API for Java
+OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
+
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v1.4.4&color=blue)](https://github.com/forestwanglin/openai-java)
+[![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
+
+## Supported APIs
+
+- [Models](https://platform.openai.com/docs/api-reference/models)
+- [Completions](https://platform.openai.com/docs/api-reference/completions)
+- [Chat Completions(2023-04-18 support stream)](https://platform.openai.com/docs/api-reference/chat/create)
+- [Edits](https://platform.openai.com/docs/api-reference/edits)
+- [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
+- [Images](https://platform.openai.com/docs/api-reference/images)
+- [Audio](https://platform.openai.com/docs/api-reference/audio)
+- [File](https://platform.openai.com/docs/api-reference/files)
+- [Moderations](https://platform.openai.com/docs/api-reference/moderations)
+- [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
+
+## Supported Methods
+
+- use TikTokenUtils.tokens([String modelName, List<ChatMessage> messages]) to count message tokens
+- use TikTokenUtils.tokens([String modelName, Object functionCall, List<Function> functions]) to count function call tokens
+
+
+## Important update
+
+- [2023-06-18] Support function call by API, and update the method to count tokens for functions after 0613 update by OpenAI
 
 ## How to use
 
@@ -37,23 +63,6 @@ implementation group: 'xyz.felh', name: 'jtokkit', version: '1.4.4'
 libraryDependencies += "xyz.felh" % "service" % "1.4.4"
 libraryDependencies += "xyz.felh" % "jtokkit" % "1.4.4"
 ```
-
-## Supported APIs
-
-- [Models](https://platform.openai.com/docs/api-reference/models)
-- [Completions](https://platform.openai.com/docs/api-reference/completions)
-- [Chat Completions(2023-04-18 support stream)](https://platform.openai.com/docs/api-reference/chat/create)
-- [Edits](https://platform.openai.com/docs/api-reference/edits)
-- [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
-- [Images](https://platform.openai.com/docs/api-reference/images)
-- [Audio](https://platform.openai.com/docs/api-reference/audio)
-- [File](https://platform.openai.com/docs/api-reference/files)
-- [Moderations](https://platform.openai.com/docs/api-reference/moderations)
-- [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
-
-## Use TikTokenUtils to calculate tokens
-
-## Support function call by API, and update the method to count tokens for functions
 
 ## Example (Spring Boot 3)
 
