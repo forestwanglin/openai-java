@@ -39,8 +39,8 @@
 
     <modules>
         <module>core</module>
-        <module>service</module>
         <module>jtokkit</module>
+        <module>service</module>
     </modules>
 
     <properties>

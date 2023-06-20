@@ -246,7 +246,55 @@ public class OpenAiServiceTest {
 //        messages1.add(new ChatMessage(ChatMessageRole.FUNCTION, "10-20度", "get_current_weather_of_the_world"));
 //        log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages1));
 
+    }
 
+
+    @Test
+    public void createFunctionCallStreamChatCompletion() {
+        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+            @Override
+            public void onEvent(String requestId, ChatCompletion chatCompletion) {
+                log.info("chatCompletion: {}", JSON.toJSONString(chatCompletion));
+                log.info("content: {}", chatCompletion.getChoices().get(0).getDelta().getContent());
+            }
+
+            @Override
+            public void onFailure(String requestId, Throwable t, Response response) {
+                log.info("on failure {}", JSON.toJSONString(response));
+                t.printStackTrace();
+            }
+        };
+        List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Beijing?", "forest"));
+
+        SchemaBuilder objectSchemaBuilder = objectSchema()
+                .property("location", stringSchema()
+                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"));
+        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
+        removeId(jsonObject);
+        List<Function> functions = Arrays.asList(
+                Function.builder()
+                        .name("get_current_weather")
+                        .description("Get the current weather in a given location")
+                        .parameters(jsonObject)
+                        .build()
+
+        );
+
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(messages)
+                .model("gpt-3.5-turbo-0613")
+                .functions(functions)
+                .functionCall("auto")
+                .build();
+        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener);
+
+        try {
+            Thread.sleep(10000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
