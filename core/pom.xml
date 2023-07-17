@@ -12,8 +12,8 @@
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
 
-    <name>Core of OpenAi API</name>
-    <description>Core of OpenAi API</description>
+    <name>Core of OpenAI API</name>
+    <description>Core of OpenAI API</description>
     <url>https://github.com/forestwanglin/openai-java/tree/main/core</url>
 
     <properties>

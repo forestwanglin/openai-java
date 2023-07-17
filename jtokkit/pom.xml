@@ -12,8 +12,8 @@
     <artifactId>jtokkit</artifactId>
     <packaging>jar</packaging>
 
-    <name>JTokkit of OpenAi</name>
-    <description>JTokkit of OpenAi</description>
+    <name>JTokkit of OpenAI API</name>
+    <description>JTokkit of OpenAI API</description>
     <url>https://github.com/forestwanglin/openai-java/tree/main/jtokkit</url>
 
     <properties>

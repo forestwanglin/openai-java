@@ -9,8 +9,8 @@
     <version>1.4.4</version>
     <packaging>pom</packaging>
 
-    <name>ChatGPT of Openai API for Java</name>
-    <description>ChatGPT of Openai API for Java</description>
+    <name>ChatGPT of OpenAI API for Java</name>
+    <description>ChatGPT of OpenAI API for Java</description>
     <url>https://github.com/forestwanglin/openai-java</url>
 
     <scm>
