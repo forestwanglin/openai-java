@@ -12,8 +12,8 @@
     <artifactId>service</artifactId>
     <packaging>jar</packaging>
 
-    <name>OpenAi service</name>
-    <description>OpenAi service</description>
+    <name>Service of OpenAi API</name>
+    <description>Service of OpenAi API</description>
     <url>https://github.com/forestwanglin/openai-java/tree/main/service</url>
 
     <properties>
