@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v1.5.0&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v1.5.1&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Supported APIs
@@ -27,6 +27,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 ## Important update
 
 - [2023-06-18] Support function call by API, and update the method to count tokens for functions after 0613 update by OpenAI
+- [2023-07-25] Return model limit information by passing consumer to OpenAiService instructor.
 
 ## How to use
 
@@ -37,7 +38,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ```
 
@@ -46,22 +47,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '1.5.0'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '1.5.0'
+implementation group: 'xyz.felh', name: 'service', version: '1.5.1'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '1.5.1'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "1.5.0"
-libraryDependencies += "xyz.felh" % "jtokkit" % "1.5.0"
+libraryDependencies += "xyz.felh" % "service" % "1.5.1"
+libraryDependencies += "xyz.felh" % "jtokkit" % "1.5.1"
 ```
 
 ## Example (Spring Boot 3)
@@ -72,7 +73,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "1.5.0"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ```
 
@@ -117,6 +118,7 @@ public class OpenAiApiConfig {
         // Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1086));
         OkHttpClient client = defaultClient(token, orgId, Duration.ofMillis(timeout))
                 .newBuilder()
+                .addInterceptor(new ExtractHeaderInterceptor(responseHeaders -> log.info("headers: {}", JSON.toJSONString(responseHeaders))))
                 .proxy(proxy)
                 .build();
         Retrofit retrofit = defaultRetrofit(client, mapper);

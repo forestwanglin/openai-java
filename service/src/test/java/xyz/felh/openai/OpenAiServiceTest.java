@@ -23,7 +23,6 @@ import xyz.felh.openai.completion.chat.ChatMessage;
 import xyz.felh.openai.completion.chat.ChatMessageRole;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.completion.chat.func.Function;
-import xyz.felh.openai.completion.chat.func.FunctionCall;
 import xyz.felh.openai.edit.CreateEditRequest;
 import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
@@ -37,6 +36,7 @@ import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
 import xyz.felh.openai.image.variation.CreateImageVariationRequest;
+import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
@@ -62,6 +62,7 @@ public class OpenAiServiceTest {
         Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 7890));
         OkHttpClient client = defaultClient(sk, Duration.ofMillis(300000))
                 .newBuilder()
+                .addInterceptor(new ExtractHeaderInterceptor(responseHeaders -> log.info("headers: {}", JSON.toJSONString(responseHeaders))))
                 .proxy(proxy)
                 .build();
         Retrofit retrofit = defaultRetrofit(client, mapper);
@@ -125,9 +126,10 @@ public class OpenAiServiceTest {
     @Test
     public void createChatCompletion() {
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
-                        new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
-                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123423423423423423423234")))
+                .messages(Arrays.asList(
+//                        new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
+//                        new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
+                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123")))
                 .model("gpt-3.5-turbo")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);

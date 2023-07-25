@@ -20,6 +20,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
+import xyz.felh.openai.bean.ResponseHeaders;
 import xyz.felh.openai.completion.Completion;
 import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.completion.chat.ChatCompletion;
@@ -36,9 +37,11 @@ import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
 import xyz.felh.openai.image.variation.CreateImageVariationRequest;
+import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
+import xyz.felh.openai.utils.Preconditions;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +49,7 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 
 /**
@@ -81,14 +85,21 @@ public class OpenAiService {
         this(buildApi(token, timeout), defaultClient(token, timeout));
     }
 
+    public OpenAiService(final OpenAiApi api, final OkHttpClient client) {
+        this(api, client, null);
+    }
+
     /**
      * Creates a new OpenAiService that wraps OpenAiApi.
      * Use this if you need more customization.
      *
      * @param api OpenAiApi instance to use for all methods
      */
-    public OpenAiService(final OpenAiApi api, final OkHttpClient client) {
+    public OpenAiService(final OpenAiApi api, final OkHttpClient client, Consumer<ResponseHeaders> headersConsumer) {
         this.api = api;
+        if (Preconditions.isNotBlank(headersConsumer)) {
+            client.interceptors().add(new ExtractHeaderInterceptor(headersConsumer));
+        }
         this.client = client;
     }
 
