@@ -8,7 +8,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 ## Example Application
 - Mobile: https://web.felh.xyz
 - PC: https://web.felh.xyz
-- Miniprogram:
+- Miniprogram (Scan with Wechat):
   
   <img decoding="async" src="https://raw.githubusercontent.com/forestwanglin/openai-java/main/miniprogram_430.jpg" width="30%">
 
