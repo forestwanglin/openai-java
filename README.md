@@ -5,6 +5,12 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 [![GitHub version](https://img.shields.io/static/v1?label=version&message=v1.5.2&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
+## Example Application
+- Mobile: https://web.felh.xyz
+- PC: https://web.felh.xyz
+- Miniprogram: 
+- 
+
 ## Supported APIs
 
 - [Models](https://platform.openai.com/docs/api-reference/models)
@@ -16,7 +22,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [Audio](https://platform.openai.com/docs/api-reference/audio)
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
-- [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes)
+- [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes) 
 
 ## Supported Methods
 
