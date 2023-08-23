@@ -3,22 +3,16 @@ package xyz.felh.openai;
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import org.jetbrains.annotations.NotNull;
 import retrofit2.http.*;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.completion.Completion;
 import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
-import xyz.felh.openai.edit.CreateEditRequest;
-import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
-import xyz.felh.openai.finetune.CreateFineTuneRequest;
-import xyz.felh.openai.finetune.FineTune;
-import xyz.felh.openai.finetune.FineTuneEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.model.Model;
@@ -68,16 +62,6 @@ public interface OpenAiApi {
      */
     @POST("/v1/chat/completions")
     Single<ChatCompletion> createChatCompletion(@Body CreateChatCompletionRequest request);
-
-    /**
-     * Create edit
-     * Creates a new edit for the provided input, instruction, and parameters.
-     *
-     * @param request create edit request
-     * @return Edit information
-     */
-    @POST("/v1/edits")
-    Single<Edit> createEdit(@Body CreateEditRequest request);
 
     /**
      * Create image Beta
@@ -199,65 +183,5 @@ public interface OpenAiApi {
      */
     @GET("/v1/files/{file_id}/content")
     Single<RetrieveFileContentResponse> retrieveFileContent(@Path("file_id") String fileId);
-
-    /**
-     * Create fine-tune
-     * Creates a job that fine-tunes a specified model from a given dataset.
-     * Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
-     *
-     * @param request create fine tune request
-     * @return Fine-tune information
-     */
-    @POST("/v1/fine-tunes")
-    Single<FineTune> createFineTune(@Body CreateFineTuneRequest request);
-
-    /**
-     * List fine-tunes
-     * List your organization's fine-tuning jobs
-     *
-     * @return Fine-tune list
-     */
-    @GET("/v1/fine-tunes")
-    Single<OpenAiApiListResponse<FineTune>> listFineTunes();
-
-    /**
-     * Retrieve fine-tune
-     * Gets info about the fine-tune job.
-     *
-     * @param fineTuneId fineTuneId
-     * @return Fine-tune information
-     */
-    @GET("/v1/fine-tunes/{fine_tune_id}")
-    Single<FineTune> retrieveFineTune(@Path("fine_tune_id") String fineTuneId);
-
-    /**
-     * Cancel fine-tune
-     * Immediately cancel a fine-tune job.
-     *
-     * @param fineTuneId fineTuneId
-     * @return Fine-tune information
-     */
-    @POST("/v1/fine-tunes/{fine_tune_id}/cancel")
-    Single<FineTune> cancelFineTune(@Path("fine_tune_id") String fineTuneId);
-
-    /**
-     * List fine-tune events
-     * Get fine-grained status updates for a fine-tune job.
-     *
-     * @param fineTuneId fineTuneId
-     * @return Fine-tune event information
-     */
-    @GET("/v1/fine-tunes/{fine_tune_id}/events")
-    Single<OpenAiApiListResponse<FineTuneEvent>> listFineTuneEvents(@Path("fine_tune_id") String fineTuneId);
-
-    /**
-     * Delete fine-tune model
-     * Delete a fine-tuned model. You must have the Owner role in your organization.
-     *
-     * @param modelAndFineTuneId model and fineTuneId
-     * @return Delete status
-     */
-    @DELETE("/v1/models/{model_and_fine_tune_id}")
-    Single<DeleteResponse> deleteFineTune(@Path("model_and_fine_tune_id") String modelAndFineTuneId);
 
 }

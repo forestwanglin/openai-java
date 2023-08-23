@@ -24,14 +24,9 @@ import xyz.felh.openai.completion.Completion;
 import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
-import xyz.felh.openai.edit.CreateEditRequest;
-import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
-import xyz.felh.openai.finetune.CreateFineTuneRequest;
-import xyz.felh.openai.finetune.FineTune;
-import xyz.felh.openai.finetune.FineTuneEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
@@ -237,16 +232,6 @@ public class OpenAiService {
         listener.setEventSource(eventSource);
     }
 
-    /**
-     * text-davinci-edit-001, code-davinci-edit-001
-     *
-     * @param request create edit request
-     * @return edit
-     */
-    public Edit createEdit(CreateEditRequest request) {
-        return execute(api.createEdit(request));
-    }
-
     public ImageResponse createImage(CreateImageRequest request) {
         return execute(api.createImage(request));
     }
@@ -440,30 +425,6 @@ public class OpenAiService {
      */
     public RetrieveFileContentResponse retrieveFileContent(String fileId) {
         return execute(api.retrieveFileContent(fileId));
-    }
-
-    public FineTune createFineTune(CreateFineTuneRequest request) {
-        return execute(api.createFineTune(request));
-    }
-
-    public List<FineTune> listFineTunes() {
-        return execute(api.listFineTunes()).getData();
-    }
-
-    public FineTune retrieveFineTune(String fineTuneId) {
-        return execute(api.retrieveFineTune(fineTuneId));
-    }
-
-    public FineTune cancelFineTune(String fineTuneId) {
-        return execute(api.cancelFineTune(fineTuneId));
-    }
-
-    public List<FineTuneEvent> listFineTuneEvents(String fineTuneId) {
-        return execute(api.listFineTuneEvents(fineTuneId)).getData();
-    }
-
-    public DeleteResponse deleteFineTune(String model, String fineTuneId) {
-        return execute(api.deleteFineTune(String.format("%s:%s", model, fineTuneId)));
     }
 
     /**

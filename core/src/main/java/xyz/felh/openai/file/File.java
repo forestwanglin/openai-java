@@ -30,4 +30,15 @@ public class File extends OpenAiApiObjectWithId {
      */
     String purpose;
 
+    /**
+     * The current status of the file, which can be either
+     * uploaded, processed, pending, error, deleting or deleted.
+     */
+    String status;
+
+    /**
+     * Additional details about the status of the file. If the file is in the error state, this will include a message describing the error.
+     */
+    String statusDetails;
+
 }

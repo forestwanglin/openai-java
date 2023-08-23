@@ -23,15 +23,10 @@ import xyz.felh.openai.completion.chat.ChatMessage;
 import xyz.felh.openai.completion.chat.ChatMessageRole;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.completion.chat.func.Function;
-import xyz.felh.openai.edit.CreateEditRequest;
-import xyz.felh.openai.edit.Edit;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
-import xyz.felh.openai.finetune.CreateFineTuneRequest;
-import xyz.felh.openai.finetune.FineTune;
-import xyz.felh.openai.finetune.FineTuneEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
@@ -300,17 +295,6 @@ public class OpenAiServiceTest {
     }
 
     @Test
-    public void createEdit() {
-        CreateEditRequest editRequest = CreateEditRequest.builder()
-                .model("text-davinci-edit-001")
-                .input("What day of the wek is it?")
-                .instruction("Fix the spelling mistakes")
-                .build();
-        Edit edit = getOpenAiService().createEdit(editRequest);
-        log.info("edit: {}", toJSONString(edit));
-    }
-
-    @Test
     public void createImage() {
         CreateImageRequest createImageRequest = CreateImageRequest.builder()
                 .prompt("A cute baby dea otter")
@@ -404,54 +388,14 @@ public class OpenAiServiceTest {
 
     @Test
     public void retrieveFile() {
-        File retrieveFile = getOpenAiService().retrieveFile("file-lq7ubCONViIIP0S2AAE2JIYW");
+        File retrieveFile = getOpenAiService().retrieveFile("file-x2URJppDcP6GpvKnyWP8S16g");
         log.info("retrieve file: " + toJSONString(retrieveFile));
     }
 
     @Test
     public void retrieveFileContent() {
-        RetrieveFileContentResponse fileContent = getOpenAiService().retrieveFileContent("file-lq7ubCONViIIP0S2AAE2JIYW");
+        RetrieveFileContentResponse fileContent = getOpenAiService().retrieveFileContent("file-x2URJppDcP6GpvKnyWP8S16g");
         log.info("retrieve file content: {}", toJSONString(fileContent));
-    }
-
-
-    @Test
-    public void createFineTune() {
-        CreateFineTuneRequest createFineTuneRequest = CreateFineTuneRequest.builder()
-                .trainingFile("file-eloVljhERlCO2qWNFeTlA0Az")
-                .build();
-        FineTune fineTune = getOpenAiService().createFineTune(createFineTuneRequest);
-        log.info("createFineTune: " + toJSONString(fineTune));
-    }
-
-    @Test
-    public void listFineTunes() {
-        List<FineTune> fineTunes = getOpenAiService().listFineTunes();
-        log.info("list fine tunes: " + toJSONString(fineTunes));
-    }
-
-    @Test
-    public void retrieveFineTune() {
-        FineTune fineTune = getOpenAiService().retrieveFineTune("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-        log.info("retrieveFineTune: " + toJSONString(fineTune));
-    }
-
-    @Test
-    public void cancelFineTune() {
-        FineTune cancelFineTune = getOpenAiService().cancelFineTune("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-        log.info("cancelFineTune: " + toJSONString(cancelFineTune));
-    }
-
-    @Test
-    public void deleteFineTune() {
-        DeleteResponse deleteFineTuneResponse = getOpenAiService().deleteFineTune("curie", "ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-        log.info("deleteFineTune: " + toJSONString(deleteFineTuneResponse));
-    }
-
-    @Test
-    public void listFineTuneEvents() {
-        List<FineTuneEvent> fineTuneEvents = getOpenAiService().listFineTuneEvents("ft-4jF2VK5hYHFdwTRKsJe1PX9y");
-        log.info("listFineTuneEvents: " + toJSONString(fineTuneEvents));
     }
 
     private String toJSONString(Object obj) {
