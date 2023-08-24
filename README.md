@@ -22,6 +22,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [Audio](https://platform.openai.com/docs/api-reference/audio)
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
+- [Fine-tuning](https://platform.openai.com/docs/api-reference/fine-tuning)
 
 ## Supported Methods
 
@@ -34,6 +35,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-06-18] Support function call by API, and update the method to count tokens for functions after 0613 update by OpenAI
 - [2023-07-25] Return model limit information by passing consumer to OpenAiService instructor.
 - [2023-08-23] Remove api for [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes) and [Edits](https://platform.openai.com/docs/api-reference/edits)
+- [2023-08-24] Support Fine-tuning
 
 ## How to use
 
