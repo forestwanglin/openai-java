@@ -406,12 +406,16 @@ public class OpenAiService {
         return execute(api.listFiles()).getData();
     }
 
-    public xyz.felh.openai.file.File uploadFile(String filepath, String purpose) {
-        File file = new File(filepath);
+    public xyz.felh.openai.file.File uploadFile(File file, String purpose) {
         RequestBody purposeBody = RequestBody.create(purpose, okhttp3.MultipartBody.FORM);
         RequestBody fileBody = RequestBody.create(file, MediaType.parse("text"));
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", filepath, fileBody);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
         return execute(api.uploadFile(body, purposeBody));
+    }
+
+    public xyz.felh.openai.file.File uploadFile(String filepath, String purpose) {
+        File file = new File(filepath);
+        return uploadFile(file, purpose);
     }
 
     public DeleteResponse deleteFile(String fileId) {
