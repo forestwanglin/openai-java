@@ -27,6 +27,9 @@ import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
+import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
+import xyz.felh.openai.fineTuning.FineTuningJob;
+import xyz.felh.openai.fineTuning.FineTuningJobEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
@@ -436,5 +439,50 @@ public class OpenAiService {
     public CreateModerationResponse createModeration(CreateModerationRequest request) {
         return execute(api.createModeration(request));
     }
+
+    /**
+     * Creates a job that fine-tunes a specified model from a given dataset.
+     *
+     * @param request CreateFineTuningJobRequest
+     * @return A fine-tuning.job object.
+     */
+    public FineTuningJob createFineTuningJob(CreateFineTuningJobRequest request) {
+        return execute(api.createFineTuningJob(request));
+    }
+
+    /**
+     * Get info about a fine-tuning job.
+     *
+     * @param fineTuningJobId fineTuningJobId
+     * @return The fine-tuning object with the given ID.
+     */
+    public FineTuningJob retrieveFineTuningJob(String fineTuningJobId) {
+        return execute(api.retrieveFineTuningJob(fineTuningJobId));
+    }
+
+    /**
+     * Immediately cancel a fine-tune job.
+     *
+     * @param fineTuningJobId fineTuningJobId
+     * @return The cancelled fine-tuning object.
+     */
+    public FineTuningJob cancelFineTuningJob(String fineTuningJobId) {
+        return execute(api.cancelFineTuningJob(fineTuningJobId));
+    }
+
+    /**
+     * Get status updates for a fine-tuning job.
+     *
+     * @param fineTuningJobId fineTuningJobId
+     * @param after           Identifier for the last event from the previous pagination request.
+     * @param limit           Number of events to retrieve.
+     * @return A list of fine-tuning event objects.
+     */
+    public List<FineTuningJobEvent> listFineTuningEvents(String fineTuningJobId,
+                                                         String after,
+                                                         Integer limit) {
+        return execute(api.listFineTuningEvents(fineTuningJobId, after, limit)).getData();
+    }
+
 
 }

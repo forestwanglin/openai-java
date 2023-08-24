@@ -27,6 +27,9 @@ import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
+import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
+import xyz.felh.openai.fineTuning.FineTuningJob;
+import xyz.felh.openai.fineTuning.FineTuningJobEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.image.edit.CreateImageEditRequest;
@@ -370,7 +373,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void uploadFile() {
-        File file = getOpenAiService().uploadFile("/Users/forest/fineTuningSample.jsonl", "fine-tune");
+        File file = getOpenAiService().uploadFile("/Users/forest/ft.jsonl", "fine-tune");
         log.info("update file: " + toJSONString(file));
     }
 
@@ -396,6 +399,34 @@ public class OpenAiServiceTest {
     public void retrieveFileContent() {
         RetrieveFileContentResponse fileContent = getOpenAiService().retrieveFileContent("file-x2URJppDcP6GpvKnyWP8S16g");
         log.info("retrieve file content: {}", toJSONString(fileContent));
+    }
+
+    @Test
+    public void createFineTuning() {
+        CreateFineTuningJobRequest request = new CreateFineTuningJobRequest();
+        request.setTrainingFile("file-9cx96z03TZfw6x9PPtgwthMI");
+        request.setModel("gpt-3.5-turbo");
+        request.setSuffix("felh");
+        FineTuningJob fineTuningJob = getOpenAiService().createFineTuningJob(request);
+        log.info("createFineTuning: {}", toJSONString(fineTuningJob));
+    }
+
+    @Test
+    public void retrieveFineTuning() {
+        FineTuningJob fineTuningJob = getOpenAiService().retrieveFineTuningJob("ftjob-7uMofI4pJtLAuBmi1CxWQvCa");
+        log.info("retrieveFineTuning: {}", toJSONString(fineTuningJob));
+    }
+
+    @Test
+    public void cancelFineTuning() {
+        FineTuningJob fineTuningJob = getOpenAiService().cancelFineTuningJob("ftjob-7uMofI4pJtLAuBmi1CxWQvCa");
+        log.info("cancelFineTuning: {}", toJSONString(fineTuningJob));
+    }
+
+    @Test
+    public void listFineTuningEvents() {
+        List<FineTuningJobEvent> fineTuningJobEvents = getOpenAiService().listFineTuningEvents("ftjob-7uMofI4pJtLAuBmi1CxWQvCa", null, null);
+        log.info("listFineTuningEvents: {}", toJSONString(fineTuningJobEvents));
     }
 
     private String toJSONString(Object obj) {

@@ -22,4 +22,10 @@ public class OpenAiApiListResponse<T extends IOpenAiApiObject> implements IOpenA
      */
     private List<T> data;
 
+
+    /**
+     * 是否有更多
+     */
+    private Boolean hasMore;
+
 }

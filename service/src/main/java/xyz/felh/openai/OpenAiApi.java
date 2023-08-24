@@ -13,6 +13,9 @@ import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
 import xyz.felh.openai.file.RetrieveFileContentResponse;
+import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
+import xyz.felh.openai.fineTuning.FineTuningJob;
+import xyz.felh.openai.fineTuning.FineTuningJobEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.model.Model;
@@ -183,5 +186,51 @@ public interface OpenAiApi {
      */
     @GET("/v1/files/{file_id}/content")
     Single<RetrieveFileContentResponse> retrieveFileContent(@Path("file_id") String fileId);
+
+    // fine-tuning job
+
+    /**
+     * Creates a job that fine-tunes a specified model from a given dataset.
+     * Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
+     *
+     * @param request create fine tuning job request
+     * @return fine tuning
+     */
+    @POST("/v1/fine_tuning/jobs")
+    Single<FineTuningJob> createFineTuningJob(@Body CreateFineTuningJobRequest request);
+
+    /**
+     * Immediately cancel a fine-tune job.
+     *
+     * @param fineTuningJobId fine_tuning_job_id
+     * @return The cancelled fine-tuning object.
+     */
+    @POST("/v1/fine_tuning/jobs/{fine_tuning_job_id}/cancel")
+    Single<FineTuningJob> cancelFineTuningJob(@Path("fine_tuning_job_id") String fineTuningJobId);
+
+
+    /**
+     * Get info about a fine-tuning job.
+     *
+     * @param fineTuningJobId fine_tuning_job_id
+     * @return fine tuning
+     */
+    @GET("/v1/fine_tuning/jobs/{fine_tuning_job_id}")
+    Single<FineTuningJob> retrieveFineTuningJob(@Path("fine_tuning_job_id") String fineTuningJobId);
+
+
+    /**
+     * Get status updates for a fine-tuning job.
+     *
+     * @param fineTuningJobId fine_tuning_job_id
+     * @param after           Optional Identifier for the last event from the previous pagination request.
+     * @param limit           Optional Defaults to 20 Number of events to retrieve.
+     * @return A list of fine-tuning event objects.
+     */
+    @GET("/v1/fine_tuning/jobs/{fine_tuning_job_id}/events")
+    Single<OpenAiApiListResponse<FineTuningJobEvent>> listFineTuningEvents(
+            @Path("fine_tuning_job_id") String fineTuningJobId,
+            @Query("after") String after,
+            @Query("limit") Integer limit);
 
 }
