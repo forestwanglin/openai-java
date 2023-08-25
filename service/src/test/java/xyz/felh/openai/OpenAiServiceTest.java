@@ -128,7 +128,7 @@ public class OpenAiServiceTest {
 //                        new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
 //                        new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
                         new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123")))
-                .model("gpt-3.5-turbo")
+                .model("ft:gpt-3.5-turbo-0613:felh-xyz:fu9158101019494482:7qzn41NE")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -413,7 +413,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void retrieveFineTuning() {
-        FineTuningJob fineTuningJob = getOpenAiService().retrieveFineTuningJob("ftjob-7uMofI4pJtLAuBmi1CxWQvCa");
+        FineTuningJob fineTuningJob = getOpenAiService().retrieveFineTuningJob("ftjob-FMcBPBM3nnyVCZAmrzqRQjX2");
         log.info("retrieveFineTuning: {}", toJSONString(fineTuningJob));
     }
 
