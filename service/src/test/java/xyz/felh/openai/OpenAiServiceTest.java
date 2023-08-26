@@ -397,8 +397,8 @@ public class OpenAiServiceTest {
 
     @Test
     public void retrieveFileContent() {
-        RetrieveFileContentResponse fileContent = getOpenAiService().retrieveFileContent("file-x2URJppDcP6GpvKnyWP8S16g");
-        log.info("retrieve file content: {}", toJSONString(fileContent));
+        String fileContent = getOpenAiService().retrieveFileContent("file-XpOmNCcbTrckHjGqV9KuKNjG");
+        log.info("retrieve file content: {}", fileContent);
     }
 
     @Test

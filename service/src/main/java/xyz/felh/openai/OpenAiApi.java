@@ -22,6 +22,8 @@ import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
 
+import java.util.List;
+
 /**
  * Retrofit2 API interface
  */
@@ -185,7 +187,7 @@ public interface OpenAiApi {
      * @return the contents of the specified file
      */
     @GET("/v1/files/{file_id}/content")
-    Single<RetrieveFileContentResponse> retrieveFileContent(@Path("file_id") String fileId);
+    Single<String> retrieveFileContent(@Path("file_id") String fileId);
 
     // fine-tuning job
 

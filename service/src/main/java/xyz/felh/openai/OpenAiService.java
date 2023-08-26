@@ -17,6 +17,7 @@ import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -143,6 +144,7 @@ public class OpenAiService {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .build();
@@ -430,7 +432,7 @@ public class OpenAiService {
      * @param fileId file id
      * @return file content
      */
-    public RetrieveFileContentResponse retrieveFileContent(String fileId) {
+    public String retrieveFileContent(String fileId) {
         return execute(api.retrieveFileContent(fileId));
     }
 
