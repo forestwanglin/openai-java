@@ -26,7 +26,6 @@ import xyz.felh.openai.completion.chat.func.Function;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
-import xyz.felh.openai.file.RetrieveFileContentResponse;
 import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
 import xyz.felh.openai.fineTuning.FineTuningJob;
 import xyz.felh.openai.fineTuning.FineTuningJobEvent;
