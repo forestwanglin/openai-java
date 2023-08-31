@@ -1,9 +1,11 @@
-package xyz.felh.openai;
+package xyz.felh.openai.constant;
 
 /**
  * OpenAI constants
  */
 public interface OpenAiConstants {
+
+    String BASE_URL = "https://api.openai.com";
 
     /***********  headers' name from response *************/
 

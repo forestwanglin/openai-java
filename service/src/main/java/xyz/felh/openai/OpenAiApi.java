@@ -12,7 +12,6 @@ import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
-import xyz.felh.openai.file.RetrieveFileContentResponse;
 import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
 import xyz.felh.openai.fineTuning.FineTuningJob;
 import xyz.felh.openai.fineTuning.FineTuningJobEvent;
@@ -21,8 +20,6 @@ import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-
-import java.util.List;
 
 /**
  * Retrofit2 API interface

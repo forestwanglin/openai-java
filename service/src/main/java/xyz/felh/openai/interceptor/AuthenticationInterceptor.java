@@ -1,4 +1,4 @@
-package xyz.felh.openai;
+package xyz.felh.openai.interceptor;
 
 import lombok.NonNull;
 import okhttp3.Interceptor;

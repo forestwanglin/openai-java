@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static xyz.felh.openai.OpenAiConstants.*;
+import static xyz.felh.openai.constant.OpenAiConstants.*;
 
 /**
  * interceptor to get headers from response

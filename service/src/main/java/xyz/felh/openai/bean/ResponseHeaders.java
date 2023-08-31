@@ -13,7 +13,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ResponseHeaders implements Serializable {
 
-
     private String model;
 
     private String organization;

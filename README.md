@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v1.7.2&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v1.8.0&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -46,7 +46,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.7.2</version>
+    <version>1.8.0</version>
 </dependency>
 ```
 
@@ -55,22 +55,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>1.7.2</version>
+    <version>1.8.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '1.7.2'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '1.7.2'
+implementation group: 'xyz.felh', name: 'service', version: '1.8.0'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '1.8.0'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "1.7.2"
-libraryDependencies += "xyz.felh" % "jtokkit" % "1.7.2"
+libraryDependencies += "xyz.felh" % "service" % "1.8.0"
+libraryDependencies += "xyz.felh" % "jtokkit" % "1.8.0"
 ```
 
 ## Example (Spring Boot 3)
@@ -81,7 +81,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "1.7.2"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>1.7.2</version>
+    <version>1.8.0</version>
 </dependency>
 ```
 
