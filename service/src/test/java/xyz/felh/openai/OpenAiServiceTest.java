@@ -127,7 +127,7 @@ public class OpenAiServiceTest {
 //                        new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
 //                        new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
                         new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123")))
-                .model("ft:gpt-3.5-turbo-0613:felh-xyz:fu9158101019494482:7qzn41NE")
+                .model("gpt-3.5-turbo")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -283,7 +283,7 @@ public class OpenAiServiceTest {
 
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
-                .model("gpt-3.5-turbo-0613")
+                .model("gpt-3.5-turbo")
                 .functions(functions)
                 .functionCall("auto")
                 .build();

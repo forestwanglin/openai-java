@@ -13,6 +13,13 @@ public class ChatCompletionChoice implements IOpenAiApiObject {
     // stream = true
     private ChatMessage delta;
 
+    /**
+     * stop: API returned complete message, or a message terminated by one of the stop sequences provided via the stop parameter
+     * length: Incomplete model output due to max_tokens parameter or token limit
+     * function_call: The model decided to call a function
+     * content_filter: Omitted content due to a flag from our content filters
+     * null: API response still in progress or incomplete
+     */
     private String finishReason;
 
 }
