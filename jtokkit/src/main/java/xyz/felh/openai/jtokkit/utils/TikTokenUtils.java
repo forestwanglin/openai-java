@@ -184,7 +184,7 @@ public class TikTokenUtils {
             tokensPerName = 1;
         }
         // 2023-06-13 update api, new model
-        if (modelName.endsWith("-0613")
+        if (modelName.endsWith("-0613") || modelName.endsWith("-1106")
                 || modelName.equals("gpt-3.5-turbo-16k")) {
             tokensPerMessage = 3;
             tokensPerName = 1;

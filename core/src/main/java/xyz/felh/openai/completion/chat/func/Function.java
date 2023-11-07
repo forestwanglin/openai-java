@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * support from gpt-3.5-turbo-0613 and gpt-4-0613 (2023)
+ * support gpt-3.5-turbo-1006 / gpt-4-1106-preview
  */
 @Data
 @Builder
