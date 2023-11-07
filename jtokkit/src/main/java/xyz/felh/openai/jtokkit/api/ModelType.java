@@ -14,7 +14,7 @@ public enum ModelType {
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
     // Will point to gpt-3.5-turbo-1106 starting Dec 11, 2023.
-    GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE, 16385),
+    GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE, 4097),
     // Will point to gpt-3.5-turbo-1106 starting Dec 11, 2023.
     GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k", EncodingType.CL100K_BASE, 16385),
 
