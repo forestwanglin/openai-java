@@ -3,7 +3,7 @@ package xyz.felh.openai.completion.chat;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import xyz.felh.openai.completion.BaseCreateCompletionRequest;
-import xyz.felh.openai.completion.chat.func.Function;
+import xyz.felh.openai.completion.chat.tool.Tool;
 
 import java.util.List;
 
@@ -24,16 +24,24 @@ public class CreateChatCompletionRequest extends BaseCreateCompletionRequest {
     private List<ChatMessage> messages;
 
     /**
-     * A list of functions the model may generate JSON inputs for.
+     * This feature is in Beta. If specified, our system will make a best effort to sample deterministically,
+     * such that repeated requests with the same seed and parameters should return the same result.
+     * Determinism is not guaranteed, and you should refer to the system_fingerprint response parameter
+     * to monitor changes in the backend.
      */
-    private List<Function> functions;
+    private Integer seed;
 
     /**
-     * Controls how the model responds to function calls. "none" means the model does not call a function,
-     * and responds to the end-user. "auto" means the model can pick between an end-user or calling a function.
-     * Specifying a particular function via {"name":\ "my_function"} forces the model to call that function.
-     * "none" is the default when no functions are present. "auto" is the default if functions are present.
+     * A list of functions the model may generate JSON inputs for.
      */
-    private Object functionCall;
+    private List<Tool> tools;
+
+    /**
+     * Controls which (if any) function is called by the model.
+     * none means the model will not call a function and instead generates a message.
+     * auto means the model can pick between generating a message or calling a function.
+     * Specifying a particular function via {"type: "function", "function": {"name": "my_function"}} forces the model to call that function.
+     */
+    private Object toolChoice;
 
 }

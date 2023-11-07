@@ -23,6 +23,9 @@ import xyz.felh.openai.completion.chat.ChatMessage;
 import xyz.felh.openai.completion.chat.ChatMessageRole;
 import xyz.felh.openai.completion.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.completion.chat.func.Function;
+import xyz.felh.openai.completion.chat.func.FunctionCall;
+import xyz.felh.openai.completion.chat.tool.Tool;
+import xyz.felh.openai.completion.chat.tool.ToolCall;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
@@ -89,15 +92,15 @@ public class OpenAiServiceTest {
 
             @Override
             public void onFailure(String requestId, Throwable t, Response response) {
+                log.error("requestId: {}", requestId);
+                log.info("{}", JSON.toJSONString(response));
                 t.printStackTrace();
             }
         };
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses."),
-                        new ChatMessage(ChatMessageRole.USER, "你好，讲个笑话", "FU0837801026829335"),
-                        new ChatMessage(ChatMessageRole.ASSISTANT, "抱歉，我是一名助手，不会开玩笑。有什么需要我帮忙的吗?"),
-                        new ChatMessage(ChatMessageRole.USER, "真的不会吗?", "FU0837801026829335")))
+                        new ChatMessage(ChatMessageRole.USER, "count from 1 to 3")))
                 .model("gpt-3.5-turbo")
                 .build();
         getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener);
@@ -124,10 +127,11 @@ public class OpenAiServiceTest {
     public void createChatCompletion() {
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(Arrays.asList(
-//                        new ChatMessage(ChatMessageRole.USER, "Hello", "u1"),
-//                        new ChatMessage(ChatMessageRole.ASSISTANT, "Hi there! How may I assist you today?"),
-                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3", "u123")))
-                .model("gpt-3.5-turbo")
+                        new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
+                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3"),
+                        new ChatMessage(ChatMessageRole.ASSISTANT, "1，2, 3"),
+                        new ChatMessage(ChatMessageRole.USER, " 中国和美国距离有多远？😄😄😄✅ ")))
+                .model("gpt-4")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -175,7 +179,7 @@ public class OpenAiServiceTest {
 
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "How many miles from here to Beijing?", "forest"));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "How many miles from here to Beijing?"));
 
         SchemaBuilder objectSchemaBuilder2 = objectSchema()
                 .property("location", stringSchema()
@@ -187,54 +191,59 @@ public class OpenAiServiceTest {
         removeId(jsonObject2);
 
 
-        List<Function> functions = Arrays.asList(
-                Function.builder()
-                        .name("get_current_weather")
-                        .description("Get the current weather in a given location")
-                        .parameters(jsonObject)
-                        .build(),
-                Function.builder()
-                        .name("get_location")
-                        .description("Get the current user's location")
-                        .parameters(jsonObject2)
-                        .build()
-
+        List<Tool> tools = Arrays.asList(
+                Tool.builder()
+                        .type("function")
+                        .function(Function.builder()
+                                .name("get_current_weather")
+                                .description("Get the current weather in a given location")
+                                .parameters(jsonObject)
+                                .build()).build(),
+                Tool.builder()
+                        .type("function")
+                        .function(Function.builder()
+                                .name("get_location")
+                                .description("Get the current user's location")
+                                .parameters(jsonObject2)
+                                .build()).build()
         );
 
         JSONObject fc = new JSONObject();
         fc.put("name", "get_location");
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
-                .model("gpt-3.5-turbo-0613")
-                .functions(functions)
-                .functionCall(fc)
+                .model("gpt-3.5-turbo")
+                .tools(tools)
+                .toolChoice("auto")
 //                .maxTokens(1)
                 .stream(false)
                 .build();
-        log.info("prompts: {} {} {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages),
-                TikTokenUtils.tokens("gpt-3.5-turbo-0613", fc, functions)
-                , TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages) + TikTokenUtils.tokens("gpt-3.5-turbo-0613", fc, functions));
-//        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-//        log.info("request: " + toJSONString(chatCompletionRequest));
-//        log.info("chatCompletion: " + toJSONString(chatCompletion));
-//
-//        FunctionCall functionCall = chatCompletion.getChoices().get(0).getMessage().getFunctionCall();
-//        if (Preconditions.isNotBlank(functionCall)) {
-//            log.info("fc: {}", chatCompletion.getChoices().get(0).getMessage().getFunctionCall());
-//
-//            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
-//            chatMessage.setContent("");
-//            messages.add(chatMessage);
-//            messages.add(new ChatMessage(ChatMessageRole.FUNCTION, "shanghai", functionCall.getName()));
-//
-//            log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo-0613", messages));
-//            chatCompletionRequest.setFunctions(null);
-//            chatCompletionRequest.setFunctionCall(null);
-//            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-//            log.info("request: " + toJSONString(chatCompletionRequest));
-//            log.info("chatCompletion: " + toJSONString(chatCompletion));
-//
-//        }
+        log.info("prompts: {} {} {}", TikTokenUtils.tokens("gpt-3.5-turbo", messages),
+                TikTokenUtils.tokens("gpt-3.5-turbo", null, tools)
+                , TikTokenUtils.tokens("gpt-3.5-turbo", messages) + TikTokenUtils.tokens("gpt-3.5-turbo", null, tools));
+        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+        log.info("request: " + toJSONString(chatCompletionRequest));
+        log.info("chatCompletion: " + toJSONString(chatCompletion));
+
+        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
+        if (Preconditions.isNotBlank(toolCalls)) {
+            log.info("fc: {}",toolCalls.get(0).getFunction());
+
+            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
+            chatMessage.setContent("");
+            messages.add(chatMessage);
+            ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, "shanghai");
+            cm.setToolCallId(toolCalls.get(0).getId());
+            messages.add(cm);
+
+            log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo", messages));
+            chatCompletionRequest.setToolChoice(null);
+            chatCompletionRequest.setTools(null);
+            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            log.info("request: " + toJSONString(chatCompletionRequest));
+            log.info("chatCompletion: " + toJSONString(chatCompletion));
+
+        }
 //
 //        List<ChatMessage> messages1 = new ArrayList<>();
 //        messages1.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Shanghai?", "u12323"));
@@ -265,7 +274,7 @@ public class OpenAiServiceTest {
         };
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Beijing?", "forest"));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Beijing?"));
 
         SchemaBuilder objectSchemaBuilder = objectSchema()
                 .property("location", stringSchema()
@@ -284,8 +293,8 @@ public class OpenAiServiceTest {
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
                 .model("gpt-3.5-turbo")
-                .functions(functions)
-                .functionCall("auto")
+//                .functions(functions)
+//                .functionCall("auto")
                 .build();
         getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener);
 

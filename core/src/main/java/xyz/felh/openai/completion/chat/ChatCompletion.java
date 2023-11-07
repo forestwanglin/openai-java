@@ -19,6 +19,12 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
 
     private List<ChatCompletionChoice> choices;
 
+    /**
+     * This fingerprint represents the backend configuration that the model runs with.
+     * Can be used in conjunction with the seed request parameter to understand when backend changes have been made that might impact determinism.
+     */
+    private String systemFingerprint;
+
     private Usage usage;
 
     @Getter
@@ -49,6 +55,7 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
         /**
          * gpt-3.5-turbo-16k
          * Currently points to gpt-3.5-turbo-0613. Will point to gpt-3.5-turbo-1106 starting Dec 11, 2023.
+         * 2023-12-11之后会被GPT_3_5_TURBO取代
          */
         GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k"),
         /**
@@ -111,6 +118,7 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
         GPT_4_VISION_PREVIEW("gpt-4-vision-preview");
 
         private final String name;
+
     }
 
 }

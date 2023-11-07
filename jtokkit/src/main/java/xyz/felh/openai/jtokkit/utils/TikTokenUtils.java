@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import xyz.felh.openai.completion.chat.ChatCompletion;
 import xyz.felh.openai.completion.chat.ChatMessage;
 import xyz.felh.openai.completion.chat.func.Function;
+import xyz.felh.openai.completion.chat.tool.Tool;
+import xyz.felh.openai.completion.chat.tool.ToolCall;
 import xyz.felh.openai.jtokkit.Encodings;
 import xyz.felh.openai.jtokkit.api.Encoding;
 import xyz.felh.openai.jtokkit.api.EncodingRegistry;
@@ -171,38 +173,18 @@ public class TikTokenUtils {
      */
     public static int tokens(String modelName, List<ChatMessage> messages) {
         Encoding encoding = getEncoding(modelName);
-        int tokensPerMessage = 0;
-        int tokensPerName = 0;
-        //3.5统一处理
-        if (modelName.startsWith("gpt-3.5-turbo")) {
-            tokensPerMessage = 4; // every message follows <|start|>{role/name}\n{content}<|end|>\n
-            tokensPerName = -1;  // if there's a name, the role is omitted
-        }
-        //4.0统一处理
-        if (modelName.startsWith("gpt-4")) {
-            tokensPerMessage = 3;
-            tokensPerName = 1;
-        }
-        // 2023-06-13 update api, new model
-        if (modelName.endsWith("-0613") || modelName.endsWith("-1106")
-                || modelName.equals("gpt-3.5-turbo-16k")) {
-            tokensPerMessage = 3;
-            tokensPerName = 1;
-        }
         int sum = 0;
         for (ChatMessage msg : messages) {
-            sum += tokensPerMessage;
+            sum += 3;
             sum += tokens(encoding, msg.getContent());
             sum += tokens(encoding, msg.getRole().value());
-            if (Preconditions.isNotBlank(msg.getName())) {
-                sum += tokens(encoding, msg.getName());
-                sum += tokensPerName;
-            }
-            if (Preconditions.isNotBlank(msg.getFunctionCall())) {
-                sum += 1;
-                sum += tokens(encoding, msg.getFunctionCall().getName());
-                if (Preconditions.isNotBlank(msg.getFunctionCall().getArguments())) {
-                    sum += tokens(encoding, msg.getFunctionCall().getArguments());
+            if (Preconditions.isNotBlank(msg.getToolCalls())) {
+                for (ToolCall toolCall : msg.getToolCalls()) {
+                    sum += 1;
+                    sum += tokens(encoding, toolCall.getFunction().getName());
+                    if (Preconditions.isNotBlank(toolCall.getFunction().getArguments())) {
+                        sum += tokens(encoding, toolCall.getFunction().getArguments());
+                    }
                 }
             }
         }
@@ -210,7 +192,7 @@ public class TikTokenUtils {
         return sum;
     }
 
-    public static int tokens(String modelName, Object functionCall, List<Function> functions) {
+    public static int tokens(String modelName, Object functionCall, List<Tool> tools) {
         Encoding encoding = getEncoding(modelName);
         int sum = 0;
         if (Preconditions.isNotBlank(functionCall)) {
@@ -218,7 +200,8 @@ public class TikTokenUtils {
                 sum += tokens(encoding, functionCall.toString());
             }
         }
-        for (Function function : functions) {
+        for (Tool tool : tools) {
+            Function function = tool.getFunction();
             sum += tokens(encoding, function.getName());
             sum += tokens(encoding, function.getDescription());
             if (Preconditions.isNotBlank(function.getParameters())) {
@@ -275,7 +258,8 @@ public class TikTokenUtils {
     public static ModelType getModelTypeByName(String name) {
         if (ChatCompletion.Model.GPT_3_5_TURBO_0301.getName().equals(name)
                 || ChatCompletion.Model.GPT_3_5_TURBO_0613.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_16K.getName().equals(name)) {
+                || ChatCompletion.Model.GPT_3_5_TURBO_16K.getName().equals(name)
+                || ChatCompletion.Model.GPT_3_5_TURBO_1106.getName().equals(name)) {
             return ModelType.GPT_3_5_TURBO;
         }
         if (ChatCompletion.Model.GPT_4.getName().equals(name)
