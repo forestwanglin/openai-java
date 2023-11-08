@@ -36,7 +36,8 @@ public class ChatMessage {
 
     /**
      * The contents of message
-     * string or array
+     * string or array when role = user
+     * otherwise string or null
      */
     private Object content;
 
