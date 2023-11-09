@@ -21,7 +21,7 @@ public enum ModelType {
     // 20231106 update
     GPT_3_5_TURBO_1106("gpt-3.5-turbo-1106", EncodingType.CL100K_BASE, 16385),
     GPT_4_1106_PREVIEW("gpt-4-1106-preview", EncodingType.CL100K_BASE, 128000),
-    GPT_4_1106_VISION_PREVIEW("gpt-4-1106-vision-preview", EncodingType.CL100K_BASE, 128000),
+    GPT_4_VISION_PREVIEW("gpt-4-vision-preview", EncodingType.CL100K_BASE, 128000),
 
     // text
     TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
