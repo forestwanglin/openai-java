@@ -8,6 +8,7 @@ import xyz.felh.openai.chat.tool.ToolCall;
 import xyz.felh.openai.utils.Preconditions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -173,6 +174,11 @@ public class ChatMessage implements IOpenAiBean {
         public String value() {
             return value;
         }
+
+        public static ContentType findByValue(String value) {
+            return Arrays.stream(values()).filter(it ->
+                    it.value.equals(value)).findFirst().orElse(null);
+        }
     }
 
     public enum ImageUrlDetail {
@@ -189,6 +195,12 @@ public class ChatMessage implements IOpenAiBean {
         public String value() {
             return value;
         }
+
+        public static ImageUrlDetail findByValue(String value) {
+            return Arrays.stream(values()).filter(it ->
+                    it.value.equals(value)).findFirst().orElse(null);
+        }
+
     }
 
 }
