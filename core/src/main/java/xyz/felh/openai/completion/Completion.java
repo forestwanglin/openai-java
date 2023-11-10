@@ -15,12 +15,24 @@ import java.util.List;
 @Data
 public class Completion extends OpenAiApiObjectWithId {
 
+    /**
+     * The Unix timestamp (in seconds) of when the completion was created.
+     */
     private Long created;
 
+    /**
+     * The model used for completion.
+     */
     private String model;
 
+    /**
+     * The list of completion choices the model generated for the input prompt.
+     */
     private List<CompletionChoice> choices;
 
+    /**
+     * Usage statistics for the completion request.
+     */
     private Usage usage;
 
 }

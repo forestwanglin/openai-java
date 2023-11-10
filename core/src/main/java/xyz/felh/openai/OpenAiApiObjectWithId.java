@@ -14,7 +14,7 @@ public abstract class OpenAiApiObjectWithId implements IOpenAiApiObject {
     private String id;
 
     /**
-     * The object type, which is always {@linkplain  chat.completion}.
+     * The object type
      */
     private String object;
 
