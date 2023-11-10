@@ -36,7 +36,7 @@ public abstract class StreamChatCompletionListener {
     }
 
     /**
-     * event message finished
+     * event message finished, get payload [DONE]
      *
      * @param requestId request ID
      */
