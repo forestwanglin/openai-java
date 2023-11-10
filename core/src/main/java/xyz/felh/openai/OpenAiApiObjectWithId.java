@@ -9,12 +9,12 @@ import lombok.Data;
 public abstract class OpenAiApiObjectWithId implements IOpenAiApiObject {
 
     /**
-     * An identifier for this model, used to specify the model when making completions, etc
+     * A unique identifier for the chat completion.
      */
     private String id;
 
     /**
-     * The type of object returned
+     * The object type, which is always {@linkplain  chat.completion}.
      */
     private String object;
 

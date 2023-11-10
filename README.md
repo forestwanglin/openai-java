@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v2.0.4&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v2.5.0304&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -37,6 +37,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-08-23] Remove api for [Fine-tunes](https://platform.openai.com/docs/api-reference/fine-tunes) and [Edits](https://platform.openai.com/docs/api-reference/edits)
 - [2023-08-24] Support Fine-tuning
 - [2023-11-08] Add Model Type gpt-4-1106-preview/gpt-4-vision-preview/gpt-3.5-turbo-instruct. Add param tools and tool_call instead of functions and function_call when send create completion request.
+- [2023-11-10] Reconstruct Completion and ChatCompletion
 
 ## How to use
 
@@ -47,7 +48,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>2.0.4</version>
+    <version>2.5.0304</version>
 </dependency>
 ```
 
@@ -56,22 +57,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>2.0.4</version>
+    <version>2.5.0304</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '2.0.4'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '2.0.4'
+implementation group: 'xyz.felh', name: 'service', version: '2.5.0304'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '2.5.0304'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "2.0.4"
-libraryDependencies += "xyz.felh" % "jtokkit" % "2.0.4"
+libraryDependencies += "xyz.felh" % "service" % "2.5.0304"
+libraryDependencies += "xyz.felh" % "jtokkit" % "2.5.0304"
 ```
 
 ## Example (Spring Boot 3)
@@ -82,7 +83,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "2.0.4"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>2.0.4</version>
+    <version>2.5.0304</version>
 </dependency>
 ```
 

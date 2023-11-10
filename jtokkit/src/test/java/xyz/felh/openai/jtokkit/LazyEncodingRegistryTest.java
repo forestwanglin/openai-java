@@ -2,9 +2,9 @@ package xyz.felh.openai.jtokkit;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import xyz.felh.openai.completion.chat.ChatCompletion;
-import xyz.felh.openai.completion.chat.ChatMessage;
-import xyz.felh.openai.completion.chat.ChatMessageRole;
+import xyz.felh.openai.chat.ChatCompletion;
+import xyz.felh.openai.chat.ChatMessage;
+import xyz.felh.openai.chat.ChatMessageRole;
 import xyz.felh.openai.jtokkit.api.Encoding;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 
@@ -30,7 +30,6 @@ public class LazyEncodingRegistryTest extends BaseEncodingRegistryTest<LazyEncod
         final ConcurrentHashMap<String, Encoding> encodings = (ConcurrentHashMap<String, Encoding>) field.get(registry);
         assertTrue(encodings.isEmpty());
     }
-
 
     @Test
     public void testTokens() {

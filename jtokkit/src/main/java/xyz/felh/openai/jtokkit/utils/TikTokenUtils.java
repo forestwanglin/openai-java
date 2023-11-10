@@ -1,14 +1,13 @@
 package xyz.felh.openai.jtokkit.utils;
 
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import xyz.felh.openai.completion.chat.ChatCompletion;
-import xyz.felh.openai.completion.chat.ChatMessage;
-import xyz.felh.openai.completion.chat.func.Function;
-import xyz.felh.openai.completion.chat.tool.Tool;
-import xyz.felh.openai.completion.chat.tool.ToolCall;
+import xyz.felh.openai.chat.ChatCompletion;
+import xyz.felh.openai.chat.ChatMessage;
+import xyz.felh.openai.chat.tool.Function;
+import xyz.felh.openai.chat.tool.Tool;
+import xyz.felh.openai.chat.tool.ToolCall;
 import xyz.felh.openai.jtokkit.Encodings;
 import xyz.felh.openai.jtokkit.api.Encoding;
 import xyz.felh.openai.jtokkit.api.EncodingRegistry;
@@ -38,12 +37,11 @@ public class TikTokenUtils {
         for (ModelType modelType : ModelType.values()) {
             modelMap.put(modelType.getName(), registry.getEncodingForModel(modelType));
         }
-        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0301.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
-        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0613.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
-        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_16K.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_1106.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
         modelMap.put(ChatCompletion.Model.GPT_4_32K.getName(), registry.getEncodingForModel(ModelType.GPT_4));
-        modelMap.put(ChatCompletion.Model.GPT_4_32K_0314.getName(), registry.getEncodingForModel(ModelType.GPT_4));
-        modelMap.put(ChatCompletion.Model.GPT_4_0314.getName(), registry.getEncodingForModel(ModelType.GPT_4));
+        modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
+        modelMap.put(ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
     }
 
     /**
@@ -187,17 +185,17 @@ public class TikTokenUtils {
                 content = msg.getContent().toString();
                 sum += tokens(encoding, content);
             } else {
-                List<ChatMessage.MessageContentItem> items = (List<ChatMessage.MessageContentItem>) msg.getContent();
-                for (ChatMessage.MessageContentItem item : items) {
-                    if (ChatMessage.MSG_CONTENT_ITEM_TYPE_TEXT.equals(item.getType())) {
+                List<ChatMessage.ContentItem> items = (List<ChatMessage.ContentItem>) msg.getContent();
+                for (ChatMessage.ContentItem item : items) {
+                    if (item.getType() == ChatMessage.ContentType.TEXT) {
                         // 不需要计算type
                         sum += tokens(encoding, item.getText());
-                    } else if (ChatMessage.MSG_CONTENT_ITEM_TYPE_IMAGE_URL.equals(item.getType())) {
+                    } else if (item.getType() == ChatMessage.ContentType.IMAGE_URL) {
                         ChatMessage.ImageUrl imageUrl = item.getImageUrl();
                         // https://openai.com/pricing
-                        if (ChatMessage.IMG_DETAIL_LOW.equals(imageUrl.getDetail())) {
+                        if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.LOW) {
                             sum += 85;
-                        } else if (ChatMessage.IMG_DETAIL_HIGH.equals(imageUrl.getDetail())) {
+                        } else if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.HIGH) {
                             sum += 85;
                             int width = 0;
                             int height = 0;
@@ -316,16 +314,15 @@ public class TikTokenUtils {
      * @return
      */
     public static ModelType getModelTypeByName(String name) {
-        if (ChatCompletion.Model.GPT_3_5_TURBO_0301.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_0613.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_16K.getName().equals(name)
+        if (ChatCompletion.Model.GPT_3_5_TURBO.getName().equals(name)
+                || ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName().equals(name)
                 || ChatCompletion.Model.GPT_3_5_TURBO_1106.getName().equals(name)) {
             return ModelType.GPT_3_5_TURBO;
         }
         if (ChatCompletion.Model.GPT_4.getName().equals(name)
                 || ChatCompletion.Model.GPT_4_32K.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_32K_0314.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_0314.getName().equals(name)) {
+                || ChatCompletion.Model.GPT_4_1106_PREVIEW.getName().equals(name)
+                || ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName().equals(name)) {
             return ModelType.GPT_4;
         }
 

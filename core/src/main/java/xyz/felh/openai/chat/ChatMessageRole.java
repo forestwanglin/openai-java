@@ -1,9 +1,8 @@
-package xyz.felh.openai.completion.chat;
+package xyz.felh.openai.chat;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ChatMessageRole {
-
 
     /**
      * content - Required The contents of the user message.
