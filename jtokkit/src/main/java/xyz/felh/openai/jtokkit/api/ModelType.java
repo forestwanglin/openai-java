@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum ModelType {
+
     // chat
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
@@ -118,4 +119,5 @@ public enum ModelType {
     public static Optional<ModelType> fromName(final String name) {
         return Optional.ofNullable(nameToModelType.get(name));
     }
+
 }
