@@ -33,8 +33,9 @@ import xyz.felh.openai.fineTuning.FineTuningJob;
 import xyz.felh.openai.fineTuning.FineTuningJobEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
-import xyz.felh.openai.image.edit.CreateImageEditRequest;
-import xyz.felh.openai.image.variation.CreateImageVariationRequest;
+import xyz.felh.openai.image.ImageSize;
+import xyz.felh.openai.image.edit.CreateEditRequest;
+import xyz.felh.openai.image.variation.CreateVariationRequest;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
@@ -128,7 +129,7 @@ public class OpenAiServiceTest {
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
                         new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
-                .model("gpt-3.5-turbo")
+                .model("gpt-3.5-turbo-1106")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -334,7 +335,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void createImageEdit() {
-        CreateImageEditRequest createImageEditRequest = CreateImageEditRequest.builder()
+        CreateEditRequest createImageEditRequest = CreateEditRequest.builder()
                 .prompt("A cute baby sea otter wearing a beret")
                 .imagePath("/Users/forest/image_edit_original.png")
                 .maskPath("/Users/forest/image_edit_mask.png")
@@ -346,10 +347,10 @@ public class OpenAiServiceTest {
 
     @Test
     public void createImageVariation() {
-        CreateImageVariationRequest createImageVariationRequest = CreateImageVariationRequest.builder()
+        CreateVariationRequest createImageVariationRequest = CreateVariationRequest.builder()
 //                    .image("/Users/forest/image_edit_original.png")
                 .n(2)
-                .size("256x256")
+                .size(ImageSize.R_256X256)
                 .build();
         ImageResponse imageVariationResponse = getOpenAiService().createImageVariation(createImageVariationRequest);
         log.info("imageVariationResponse: {} ", toJSONString(imageVariationResponse));

@@ -1,6 +1,6 @@
 package xyz.felh.openai.image.variation;
 
-import xyz.felh.openai.image.BaseCreateImageRequest;
+import xyz.felh.openai.image.BaseRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -10,14 +10,14 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(force = true)
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
-public class CreateImageVariationRequest extends BaseCreateImageRequest {
+public class CreateVariationRequest extends BaseRequest {
 
     /**
-     * Required image or imagePath
      * The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
+     * <p>
+     * string, Required
      */
-    private String imagePath;
-
     private byte[] image;
+    private String imagePath;
 
 }

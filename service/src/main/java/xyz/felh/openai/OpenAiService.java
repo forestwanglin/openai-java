@@ -32,12 +32,13 @@ import xyz.felh.openai.fineTuning.FineTuningJob;
 import xyz.felh.openai.fineTuning.FineTuningJobEvent;
 import xyz.felh.openai.image.CreateImageRequest;
 import xyz.felh.openai.image.ImageResponse;
-import xyz.felh.openai.image.edit.CreateImageEditRequest;
-import xyz.felh.openai.image.variation.CreateImageVariationRequest;
+import xyz.felh.openai.image.edit.CreateEditRequest;
+import xyz.felh.openai.image.variation.CreateVariationRequest;
 import xyz.felh.openai.interceptor.AuthenticationInterceptor;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
+import xyz.felh.openai.utils.Preconditions;
 
 import java.io.File;
 import java.io.IOException;
@@ -243,7 +244,7 @@ public class OpenAiService {
         return execute(api.createImage(request));
     }
 
-    public ImageResponse createImageEdit(CreateImageEditRequest request) {
+    public ImageResponse createImageEdit(CreateEditRequest request) {
         byte[] imageBytes;
         if (request.getImage() != null && request.getImage().length > 0) {
             imageBytes = request.getImage();
@@ -269,7 +270,7 @@ public class OpenAiService {
         return createImageEdit(request, imageBytes, maskBytes);
     }
 
-    private ImageResponse createImageEdit(CreateImageEditRequest request, byte[] image, byte[] mask) {
+    private ImageResponse createImageEdit(CreateEditRequest request, byte[] image, byte[] mask) {
         RequestBody imageBody = RequestBody.create(image, MediaType.parse("image"));
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MediaType.get("multipart/form-data"))
@@ -279,10 +280,10 @@ public class OpenAiService {
             builder.addFormDataPart("n", request.getN().toString());
         }
         if (request.getSize() != null) {
-            builder.addFormDataPart("size", request.getSize());
+            builder.addFormDataPart("size", request.getSize().value());
         }
         if (request.getResponseFormat() != null) {
-            builder.addFormDataPart("response_format", request.getResponseFormat());
+            builder.addFormDataPart("response_format", request.getResponseFormat().value());
         }
         if (mask != null) {
             RequestBody maskBody = RequestBody.create(mask, MediaType.parse("image"));
@@ -291,7 +292,7 @@ public class OpenAiService {
         return execute(api.createImageEdit(builder.build()));
     }
 
-    public ImageResponse createImageVariation(CreateImageVariationRequest request) {
+    public ImageResponse createImageVariation(CreateVariationRequest request) {
         RequestBody imageBody;
         if (request.getImage() != null && request.getImage().length > 0) {
             imageBody = RequestBody.create(request.getImage(), MediaType.parse("image"));
@@ -311,10 +312,10 @@ public class OpenAiService {
             builder.addFormDataPart("n", request.getN().toString());
         }
         if (request.getSize() != null) {
-            builder.addFormDataPart("size", request.getSize());
+            builder.addFormDataPart("size", request.getSize().value());
         }
         if (request.getResponseFormat() != null) {
-            builder.addFormDataPart("response_format", request.getResponseFormat());
+            builder.addFormDataPart("response_format", request.getResponseFormat().value());
         }
         return execute(api.createImageVariation(builder.build()));
     }
