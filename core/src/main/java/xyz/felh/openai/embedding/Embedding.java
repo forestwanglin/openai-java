@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 public class Embedding implements IOpenAiApiObject {
 
+    public static String OBJECT = "embedding";
+
     private String object;
 
     private List<Double> embedding;

@@ -1,9 +1,9 @@
 package xyz.felh.openai.completion;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
 import xyz.felh.openai.Usage;
-import lombok.Data;
 
 import java.util.List;
 
@@ -14,6 +14,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Completion extends OpenAiApiObjectWithId {
+
+    public static String OBJECT = "text_completion";
 
     /**
      * The Unix timestamp (in seconds) of when the completion was created.

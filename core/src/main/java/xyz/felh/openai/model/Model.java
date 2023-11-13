@@ -15,6 +15,8 @@ import java.util.List;
 @Data
 public class Model extends OpenAiApiObjectWithId {
 
+    public static String OBJECT = "model";
+
     public Long created;
 
     private String ownedBy;

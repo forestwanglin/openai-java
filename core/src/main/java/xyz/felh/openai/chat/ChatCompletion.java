@@ -13,6 +13,9 @@ import java.util.List;
 @Data
 public class ChatCompletion extends OpenAiApiObjectWithId {
 
+    public static String OBJECT = "chat.completion";
+    public static String CHUNK_OBJECT = "chat.completion.chunk";
+
     /**
      * A list of chat completion choices. Can be more than one if n is greater than 1.
      * <p>

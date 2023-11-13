@@ -12,6 +12,8 @@ import java.util.List;
 @ToString(callSuper = true)
 public class FineTuningJob extends OpenAiApiObjectWithId {
 
+    public static String OBJECT = "fine_tuning.job";
+
     /**
      * The unix timestamp for when the fine-tuning job was created.
      */
