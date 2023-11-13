@@ -17,14 +17,14 @@ public class Model extends OpenAiApiObjectWithId {
 
     public static String OBJECT = "model";
 
+    /**
+     * The Unix timestamp (in seconds) when the model was created.
+     */
     public Long created;
 
+    /**
+     * The organization that owns the model.
+     */
     private String ownedBy;
-
-    private List<Permission> permission;
-
-    private String root;
-
-    private String parent;
 
 }

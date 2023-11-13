@@ -94,4 +94,8 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
 
     }
 
+    public boolean isChunked() {
+        return CHUNK_OBJECT.equals(getObject());
+    }
+
 }

@@ -15,59 +15,60 @@ public class FineTuningJob extends OpenAiApiObjectWithId {
     public static String OBJECT = "fine_tuning.job";
 
     /**
-     * The unix timestamp for when the fine-tuning job was created.
+     * The Unix timestamp (in seconds) for when the fine-tuning job was created.
      */
-    Long createdAt;
+    private Long createdAt;
 
     /**
-     * The unix timestamp for when the fine-tuning job was finished.
+     * The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
      */
-    Long finishedAt;
+    private Long finishedAt;
 
     /**
      * The base model that is being fine-tuned.
      */
-    String model;
+    private String model;
 
     /**
-     * The name of the fine-tuned model that is being created.
+     * The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
      */
-    String fineTunedModel;
+    private String fineTunedModel;
 
     /**
      * The organization that owns the fine-tuning job.
      */
-    String organizationId;
+    private String organizationId;
 
     /**
-     * The current status of the fine-tuning job, which can be either created, pending, running, succeeded, failed, or cancelled.
+     * The current status of the fine-tuning job, which can be either validating_files, queued, running, succeeded, failed, or cancelled.
      */
-    String status;
+    private String status;
 
     /**
-     * The hyperparameters used for the fine-tuning job.
+     * The hyperparameters used for the fine-tuning job. See the <a href="https://platform.openai.com/docs/guides/fine-tuning">fine-tuning</a> guide for more details.
+     * See {@link Hyperparameters}
      */
-    Hyperparameters hyperparameters;
+    private Hyperparameters hyperparameters;
 
     /**
      * The file ID used for training.
      */
-    String trainingFile;
+    private String trainingFile;
 
     /**
      * string or null
      * The file ID used for validation.
      */
-    String validationFile;
+    private String validationFile;
 
     /**
-     * The compiled results files for the fine-tuning job.
+     * The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the <a href="https://platform.openai.com/docs/api-reference/files/retrieve-contents">Files API</a>.
      */
-    List<String> resultFiles;
+    private List<String> resultFiles;
 
     /**
      * The total number of billable tokens processed by this fine tuning job.
      */
-    Long trainedTokens;
+    private Long trainedTokens;
 
 }
