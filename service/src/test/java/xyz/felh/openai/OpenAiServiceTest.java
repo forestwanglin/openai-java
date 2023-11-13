@@ -31,9 +31,7 @@ import xyz.felh.openai.file.File;
 import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
 import xyz.felh.openai.fineTuning.FineTuningJob;
 import xyz.felh.openai.fineTuning.FineTuningJobEvent;
-import xyz.felh.openai.image.CreateImageRequest;
-import xyz.felh.openai.image.ImageResponse;
-import xyz.felh.openai.image.ImageSize;
+import xyz.felh.openai.image.*;
 import xyz.felh.openai.image.edit.CreateEditRequest;
 import xyz.felh.openai.image.variation.CreateVariationRequest;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
@@ -327,7 +325,9 @@ public class OpenAiServiceTest {
         CreateImageRequest createImageRequest = CreateImageRequest.builder()
                 .prompt("A cute baby dea otter")
                 .n(1)
-//                .responseFormat("b64_json") // or url
+                .size(ImageSize.R_1024X1024)
+                .responseFormat(ImageResponseFormat.URL)
+                .model(ImageModelType.DALL_E_2.value())
                 .build();
         ImageResponse imageResponse = getOpenAiService().createImage(createImageRequest);
         log.info("imageResponse: {}", toJSONString(imageResponse));
