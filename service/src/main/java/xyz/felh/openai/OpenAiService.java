@@ -18,6 +18,10 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.http.*;
+import xyz.felh.openai.assistant.Assistant;
+import xyz.felh.openai.assistant.CreateAssistantRequest;
+import xyz.felh.openai.assistant.ModifyAssistantRequest;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -38,7 +42,6 @@ import xyz.felh.openai.interceptor.AuthenticationInterceptor;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import xyz.felh.openai.utils.Preconditions;
 
 import java.io.File;
 import java.io.IOException;
@@ -491,6 +494,74 @@ public class OpenAiService {
                                                          String after,
                                                          Integer limit) {
         return execute(api.listFineTuningEvents(fineTuningJobId, after, limit)).getData();
+    }
+
+    /***************** Assistant BETA ****************/
+
+    /**
+     * {@literal POST https://api.openai.com/v1/assistants}
+     * <p>
+     * Create an assistant with a model and instructions.
+     *
+     * @param request Request body
+     * @return An {@link Assistant} object.
+     */
+    public Assistant createAssistant(CreateAssistantRequest request) {
+        return execute(api.createAssistant(request));
+    }
+
+    /**
+     * Retrieves an assistant.
+     *
+     * @param assistantId The ID of the assistant to retrieve.
+     * @return The {@link Assistant} object matching the specified ID.
+     */
+    public Assistant retrieveAssistant(String assistantId) {
+        return execute(api.retrieveAssistant(assistantId));
+    }
+
+    /**
+     * {@literal POST https://api.openai.com/v1/assistants/{assistant_id}}
+     * <p>
+     * Modifies an assistant.
+     *
+     * @param assistantId The ID of the assistant to modify.
+     * @param request     Request body
+     * @return The modified {@link Assistant} object.
+     */
+    public Assistant modifyAssistant(String assistantId, ModifyAssistantRequest request) {
+        return execute(api.modifyAssistant(assistantId, request));
+    }
+
+    /**
+     * {@literal DELETE https://api.openai.com/v1/assistants/{assistant_id}}
+     * <p>
+     * Delete an assistant.
+     *
+     * @param assistantId The ID of the assistant to delete.
+     * @return Deletion status
+     */
+    public DeleteResponse deleteAssistant(String assistantId) {
+        return execute(api.deleteAssistant(assistantId));
+    }
+
+    /**
+     * {@literal  GET https://api.openai.com/v1/assistants}
+     * <p>
+     * Returns a list of assistants.
+     *
+     * @param order  Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after  A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param limit  A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @return A list of {@link Assistant} objects.
+     */
+    public OpenAiApiListResponse<Assistant> listAssistants(Integer limit, String order, String after, String before) {
+        return execute(api.listAssistants(limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<Assistant> listAssistants() {
+        return listAssistants(null, null, null, null);
     }
 
 }

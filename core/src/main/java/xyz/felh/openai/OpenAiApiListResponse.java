@@ -28,4 +28,14 @@ public class OpenAiApiListResponse<T extends IOpenAiApiObject> implements IOpenA
      */
     private Boolean hasMore;
 
+    /**
+     * add when list assistants
+     */
+    private String firstId;
+
+    /**
+     * add when list assistants
+     */
+    private String lastId;
+
 }
