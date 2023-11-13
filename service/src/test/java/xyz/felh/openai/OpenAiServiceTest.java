@@ -47,6 +47,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static io.vertx.json.schema.common.dsl.Schemas.*;
 import static xyz.felh.openai.OpenAiService.*;
@@ -192,9 +193,6 @@ public class OpenAiServiceTest {
         JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
         removeId(jsonObject);
 
-        List<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "How many miles from here to Beijing?"));
 
         SchemaBuilder objectSchemaBuilder2 = objectSchema()
                 .property("location", stringSchema()
@@ -213,51 +211,58 @@ public class OpenAiServiceTest {
                                 .name("get_current_weather")
                                 .description("Get the current weather in a given location")
                                 .parameters(jsonObject)
-                                .build()).build(),
-                Tool.builder()
-                        .type("function")
-                        .function(Function.builder()
-                                .name("get_location")
-                                .description("Get the current user's location")
-                                .parameters(jsonObject2)
                                 .build()).build()
+//                , Tool.builder()
+//                        .type("function")
+//                        .function(Function.builder()
+//                                .name("get_location")
+//                                .description("Get the current user's location")
+//                                .parameters(jsonObject2)
+//                                .build()).build()
         );
 
         JSONObject fc = new JSONObject();
         fc.put("name", "get_location");
+
+        String model = "gpt-3.5-turbo-1106";
+        List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
+//        messages.add(new ChatMessage(ChatMessageRole.USER, "How many miles from here to Beijing?"));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like tomorrow in Beijing and Shanghai?"));
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
-                .model("gpt-3.5-turbo")
+                .model(model)
                 .tools(tools)
                 .toolChoice("auto")
 //                .maxTokens(1)
                 .stream(false)
                 .build();
-        log.info("prompts: {} {} {}", TikTokenUtils.tokens("gpt-3.5-turbo", messages),
-                TikTokenUtils.tokens("gpt-3.5-turbo", null, tools)
-                , TikTokenUtils.tokens("gpt-3.5-turbo", messages) + TikTokenUtils.tokens("gpt-3.5-turbo", null, tools));
+        log.info("prompts: {} {} {}", TikTokenUtils.tokens(model, messages),
+                TikTokenUtils.tokens(model, null, tools)
+                , TikTokenUtils.tokens(model, messages) + TikTokenUtils.tokens(model, null, tools));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("request: " + toJSONString(chatCompletionRequest));
         log.info("chatCompletion: " + toJSONString(chatCompletion));
 
         List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
         if (Preconditions.isNotBlank(toolCalls)) {
-            log.info("fc: {}", toolCalls.get(0).getFunction());
-
+            // add response message to new request
             ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
             chatMessage.setContent("");
             messages.add(chatMessage);
-            ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, "shanghai");
-            cm.setToolCallId(toolCalls.get(0).getId());
-            messages.add(cm);
-
-            log.info("prompts: {}", TikTokenUtils.tokens("gpt-3.5-turbo", messages));
+            // You can change to call your own function to get weather in parallel
+            for (ToolCall toolCall : toolCalls) {
+                log.info("fc: {}", toolCall.getFunction());
+                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, new Random().nextInt() % 2 == 0 ? "Raining" : "Sunny");
+                cm.setToolCallId(toolCall.getId());
+                messages.add(cm);
+            }
+            log.info("prompts: {}", TikTokenUtils.tokens(model, messages));
             chatCompletionRequest.setToolChoice(null);
             chatCompletionRequest.setTools(null);
             chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
             log.info("request: " + toJSONString(chatCompletionRequest));
             log.info("chatCompletion: " + toJSONString(chatCompletion));
-
         }
 //
 //        List<ChatMessage> messages1 = new ArrayList<>();
