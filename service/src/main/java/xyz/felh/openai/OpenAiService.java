@@ -19,9 +19,9 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.*;
-import xyz.felh.openai.assistant.Assistant;
-import xyz.felh.openai.assistant.CreateAssistantRequest;
-import xyz.felh.openai.assistant.ModifyAssistantRequest;
+import xyz.felh.openai.assistant.*;
+import xyz.felh.openai.assistant.file.AssistantFile;
+import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -42,6 +42,9 @@ import xyz.felh.openai.interceptor.AuthenticationInterceptor;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
+import xyz.felh.openai.thread.CreateThreadRequest;
+import xyz.felh.openai.thread.ModifyThreadRequest;
+import xyz.felh.openai.thread.Thread;
 
 import java.io.File;
 import java.io.IOException;
@@ -562,6 +565,121 @@ public class OpenAiService {
 
     public OpenAiApiListResponse<Assistant> listAssistants() {
         return listAssistants(null, null, null, null);
+    }
+
+
+    // Assistant Files
+
+    /**
+     * {@literal POST https://api.openai.com/v1/assistants/{assistant_id}/files}
+     * <p>
+     * Create assistant file
+     *
+     * @param assistantId The ID of the assistant for which to create a File.
+     * @param request     Request body
+     * @return An {@link AssistantFile} object.
+     */
+    public AssistantFile createAssistantFile(String assistantId, CreateAssistantFileRequest request) {
+        return execute(api.createAssistantFile(assistantId, request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
+     * <p>
+     * Retrieve assistant file
+     *
+     * @param assistantId The ID of the assistant who the file belongs to.
+     * @param fileId      The ID of the file we're getting.
+     * @return The {@link AssistantFile} object matching the specified ID.
+     */
+    public AssistantFile retrieveAssistantFile(String assistantId, String fileId) {
+        return execute(api.retrieveAssistantFile(assistantId, fileId));
+    }
+
+    /**
+     * {@literal DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
+     * <p>
+     * Delete an assistant file.
+     *
+     * @param assistantId The ID of the assistant who the file belongs to.
+     * @param fileId      The ID of the file to delete.
+     * @return Deletion status
+     */
+    public DeleteResponse deleteAssistantFile(String assistantId, String fileId) {
+        return execute(api.deleteAssistantFile(assistantId, fileId));
+    }
+
+    /**
+     * {@literal  GET https://api.openai.com/v1/assistants/{assistant_id}/files}
+     * <p>
+     * Returns a list of assistant files.
+     *
+     * @param assistantId The ID of the assistant the file belongs to.
+     * @param order       Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after       A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before      A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param limit       A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @return A list of {@link AssistantFile} objects.
+     */
+    public OpenAiApiListResponse<AssistantFile> listAssistantFiles(String assistantId,
+                                                                   Integer limit,
+                                                                   String order,
+                                                                   String after,
+                                                                   String before) {
+        return execute(api.listAssistantFiles(assistantId, limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<AssistantFile> listAssistantFiles(String assistantId) {
+        return listAssistantFiles(assistantId, null, null, null, null);
+    }
+
+    /**
+     * {@literal POST https://api.openai.com/v1/threads}
+     * <p>
+     * Create thread
+     *
+     * @param request Request body
+     * @return An {@link Thread} object.
+     */
+    public Thread createThread(CreateThreadRequest request) {
+        return execute(api.createThread(request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}}
+     * <p>
+     * Retrieve thread
+     *
+     * @param threadId The ID of the thread to retrieve.
+     * @return The {@link Thread} object matching the specified ID.
+     */
+    public Thread retrieveThread(String threadId) {
+        return execute(api.retrieveThread(threadId));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}}
+     * <p>
+     * Modify thread
+     *
+     * @param threadId The ID of the thread to modify. Only the metadata can be modified.
+     * @param request  Request body
+     * @return The modified {@link java.lang.Thread} object matching the specified ID.
+     */
+    public Thread modifyThread(String threadId, ModifyThreadRequest request) {
+        return execute(api.modifyThread(threadId, request));
+    }
+
+    /**
+     * {@literal DELETE https://api.openai.com/v1/threads/{thread_id}}
+     * <p>
+     * Delete thread
+     *
+     * @param threadId The ID of the thread to delete.
+     * @return Deletion status
+     */
+    public DeleteResponse deleteThread(String threadId) {
+        return execute(api.deleteThread(threadId));
     }
 
 }

@@ -1,4 +1,4 @@
-package xyz.felh.openai.assistant;
+package xyz.felh.openai.assistant.file;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

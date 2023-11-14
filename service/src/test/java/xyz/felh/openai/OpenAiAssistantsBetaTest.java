@@ -1,26 +1,26 @@
 package xyz.felh.openai;
 
 import com.alibaba.fastjson2.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
-import xyz.felh.openai.assistant.Assistant;
-import xyz.felh.openai.assistant.CreateAssistantRequest;
-import xyz.felh.openai.assistant.ModifyAssistantRequest;
-import xyz.felh.openai.chat.CreateChatCompletionRequest;
+import xyz.felh.openai.assistant.*;
+import xyz.felh.openai.assistant.file.AssistantFile;
+import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
-import xyz.felh.openai.jtokkit.api.ModelType;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
+import java.util.List;
 
 import static xyz.felh.openai.OpenAiService.*;
 
 @Slf4j
-public class OpenAiAssistantsTest {
+public class OpenAiAssistantsBetaTest {
 
     private OpenAiService getOpenAiService() {
         String sk = System.getenv("OPENAI_TOKEN");
@@ -54,8 +54,11 @@ public class OpenAiAssistantsTest {
 
     @Test
     public void modifyAssistant() {
-        Assistant assistant = getOpenAiService().modifyAssistant("asst_FvKu7nYBXL5pmdKF8FEklRop",
-                ModifyAssistantRequest.builder().name("test-name").build());
+        Assistant assistant = getOpenAiService().modifyAssistant("asst_U9F4fKQyomAUgdibQpM5D2bs",
+                ModifyAssistantRequest.builder().name("test-name")
+                        .tools(List.of(AssistantTool.builder().type(AssistantTool.Type.CODE_INTERPRETER.value()).build()))
+                        .fileIds(List.of("file-8gJUEdEOixA2pjsbN8NDDWvg"))
+                        .build());
         log.info("assistant: {} ", JSON.toJSONString(assistant));
     }
 
@@ -68,7 +71,47 @@ public class OpenAiAssistantsTest {
     @Test
     public void listAssistants() {
         OpenAiApiListResponse<Assistant> rsp = getOpenAiService().listAssistants();
-        log.info("assistants: {} ", JSON.toJSONString(rsp));
+        log.info("assistants: {} ", toJSONString(rsp));
+    }
+
+
+    @Test
+    public void createAssistantFile() {
+        AssistantFile assistantFile = getOpenAiService().createAssistantFile("asst_U9F4fKQyomAUgdibQpM5D2bs",
+                CreateAssistantFileRequest.builder()
+                .fileId("file-8gJUEdEOixA2pjsbN8NDDWvg")
+                .build());
+        log.info("assistantFile: {} ", JSON.toJSONString(assistantFile));
+    }
+
+    @Test
+    public void retrieveAssistantFile() {
+        AssistantFile assistantFile = getOpenAiService().retrieveAssistantFile(
+                "asst_U9F4fKQyomAUgdibQpM5D2bs",
+                "file-8gJUEdEOixA2pjsbN8NDDWvg");
+        log.info("assistantFile: {} ", JSON.toJSONString(assistantFile));
+    }
+
+    @Test
+    public void deleteAssistantFile() {
+        DeleteResponse deleteResponse = getOpenAiService().deleteAssistantFile("asst_U9F4fKQyomAUgdibQpM5D2bs",
+                "file-8gJUEdEOixA2pjsbN8NDDWvg");
+        log.info("deleteResponse: {} ", JSON.toJSONString(deleteResponse));
+    }
+
+    @Test
+    public void listAssistantFiles() {
+        OpenAiApiListResponse<AssistantFile> rsp = getOpenAiService().listAssistantFiles("asst_U9F4fKQyomAUgdibQpM5D2bs");
+        log.info("assistant files: {} ", toJSONString(rsp));
+    }
+
+    private String toJSONString(Object obj) {
+        ObjectMapper ob = new ObjectMapper();
+        try {
+            return ob.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

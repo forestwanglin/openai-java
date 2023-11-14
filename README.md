@@ -40,7 +40,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-11-10] Reconstruct Completion and ChatCompletion
 - [2023-11-11] Update Image API to support dall-e-3
 - [2023-11-13] Update model with latest API
-- [2023-11-14] Add API support for Assistants(Beta)
+- [2023-11-14] Add API support for Assistants, Threads, Messages and Runs, all of these are Beta version.
 
 ## How to use
 

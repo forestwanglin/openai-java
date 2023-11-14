@@ -5,9 +5,10 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
 import xyz.felh.openai.assistant.Assistant;
-import xyz.felh.openai.assistant.AssistantTool;
 import xyz.felh.openai.assistant.CreateAssistantRequest;
 import xyz.felh.openai.assistant.ModifyAssistantRequest;
+import xyz.felh.openai.assistant.file.AssistantFile;
+import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
@@ -24,6 +25,9 @@ import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
+import xyz.felh.openai.thread.CreateThreadRequest;
+import xyz.felh.openai.thread.ModifyThreadRequest;
+import xyz.felh.openai.thread.Thread;
 
 /**
  * Retrofit2 API interface
@@ -236,7 +240,7 @@ public interface OpenAiApi {
             @Query("after") String after,
             @Query("limit") Integer limit);
 
-    /*********************8 Assistants BETA *************/
+    /********************* Assistants BETA *************/
 
     /**
      * {@literal POST https://api.openai.com/v1/assistants}
@@ -300,5 +304,115 @@ public interface OpenAiApi {
             @Query("order") String order,
             @Query("after") String after,
             @Query("before") String before);
+
+    /**
+     * {@literal POST https://api.openai.com/v1/assistants/{assistant_id}/files}
+     * <p>
+     * Create assistant file
+     *
+     * @param assistantId The ID of the assistant for which to create a File.
+     * @param request     Request body
+     * @return An {@link AssistantFile} object.
+     */
+    @POST("/v1/assistants/{assistant_id}/files")
+    Single<AssistantFile> createAssistantFile(@Path("assistant_id") String assistantId,
+                                              @Body CreateAssistantFileRequest request);
+
+    /**
+     * {@literal GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
+     * <p>
+     * Retrieve assistant file
+     *
+     * @param assistantId The ID of the assistant who the file belongs to.
+     * @param fileId      The ID of the file we're getting.
+     * @return The {@link AssistantFile} object matching the specified ID.
+     */
+    @GET("/v1/assistants/{assistant_id}/files/{file_id}")
+    Single<AssistantFile> retrieveAssistantFile(@Path("assistant_id") String assistantId,
+                                                @Path("file_id") String fileId);
+
+    /**
+     * {@literal DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
+     * <p>
+     * Delete an assistant file.
+     *
+     * @param assistantId The ID of the assistant who the file belongs to.
+     * @param fileId      The ID of the file to delete.
+     * @return Deletion status
+     */
+    @DELETE("/v1/assistants/{assistant_id}/files/{file_id}")
+    Single<DeleteResponse> deleteAssistantFile(@Path("assistant_id") String assistantId,
+                                               @Path("file_id") String fileId);
+
+    /**
+     * {@literal  GET https://api.openai.com/v1/assistants/{assistant_id}/files}
+     * <p>
+     * Returns a list of assistant files.
+     *
+     * @param assistantId The ID of the assistant the file belongs to.
+     * @param order       Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after       A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before      A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param limit       A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @return A list of {@link AssistantFile} objects.
+     */
+    @GET("/v1/assistants/{assistant_id}/files")
+    Single<OpenAiApiListResponse<AssistantFile>> listAssistantFiles(
+            @Path("assistant_id") String assistantId,
+            @Query("limit") Integer limit,
+            @Query("order") String order,
+            @Query("after") String after,
+            @Query("before") String before);
+
+    /********************* Threads BETA *************/
+    /**
+     * {@literal POST https://api.openai.com/v1/threads}
+     * <p>
+     * Create thread
+     *
+     * @param request Request body
+     * @return An {@link Thread} object.
+     */
+    @POST("/v1/threads")
+    Single<Thread> createThread(@Body CreateThreadRequest request);
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}}
+     * <p>
+     * Retrieve thread
+     *
+     * @param threadId The ID of the thread to retrieve.
+     * @return The {@link Thread} object matching the specified ID.
+     */
+    @GET("/v1/threads/{thread_id}")
+    Single<Thread> retrieveThread(@Path("thread_id") String threadId);
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}}
+     * <p>
+     * Modify thread
+     *
+     * @param threadId The ID of the thread to modify. Only the metadata can be modified.
+     * @param request  Request body
+     * @return The modified {@link java.lang.Thread} object matching the specified ID.
+     */
+    @POST("/v1/threads/{thread_id}")
+    Single<Thread> modifyThread(@Path("thread_id") String threadId,
+                                @Body ModifyThreadRequest request);
+
+    /**
+     * {@literal DELETE https://api.openai.com/v1/threads/{thread_id}}
+     * <p>
+     * Delete thread
+     *
+     * @param threadId The ID of the thread to delete.
+     * @return Deletion status
+     */
+    @DELETE("/v1/threads/{thread_id}")
+    Single<DeleteResponse> deleteThread(@Path("thread_id") String threadId);
+
+    /********************* Messages BETA *************/
+
+    /********************* Runs BETA *************/
 
 }

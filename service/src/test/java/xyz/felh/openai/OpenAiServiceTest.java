@@ -403,7 +403,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void uploadFile() {
-        File file = getOpenAiService().uploadFile("/Users/forest/ft.jsonl", "fine-tune");
+        File file = getOpenAiService().uploadFile("/Users/forest/a.java", "assistants");
         log.info("update file: " + toJSONString(file));
     }
 

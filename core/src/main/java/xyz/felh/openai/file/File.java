@@ -29,6 +29,8 @@ public class File extends OpenAiApiObjectWithId {
 
     /**
      * Description of the file's purpose.
+     * one of ['fine-tune', 'assistants']
+     * assistants -  Supported formats: ['c', 'cpp', 'csv', 'docx', 'html', 'java', 'json', 'md', 'pdf', 'php', 'pptx', 'py', 'rb', 'tex', 'txt', 'css', 'jpeg', 'jpg', 'js', 'gif', 'png', 'tar', 'ts', 'xlsx', 'xml', 'zip']
      */
     String purpose;
 
