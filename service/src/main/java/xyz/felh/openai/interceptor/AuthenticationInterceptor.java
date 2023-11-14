@@ -35,7 +35,8 @@ public class AuthenticationInterceptor implements Interceptor {
             requestBuilder.header("OpenAI-Organization", orgId);
         }
         // https://platform.openai.com/docs/assistants/overview
-        if (chain.request().url().url().getPath().startsWith("/v1/assistants")) {
+        if (chain.request().url().url().getPath().startsWith("/v1/assistants")
+                || chain.request().url().url().getPath().startsWith("/v1/threads")) {
             requestBuilder.header("OpenAI-Beta", "assistants=v1");
         }
         return chain.proceed(requestBuilder.build());

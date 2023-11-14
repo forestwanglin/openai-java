@@ -22,7 +22,7 @@ public class OpenAiError implements IOpenAiApiObject {
 
         /**
          * OpenAI error type, for example "invalid_request_error"
-         * https://platform.openai.com/docs/guides/error-codes/python-library-error-types
+         * <a href="https://platform.openai.com/docs/guides/error-codes/python-library-error-types">Reference</a>
          */
         private String type;
 

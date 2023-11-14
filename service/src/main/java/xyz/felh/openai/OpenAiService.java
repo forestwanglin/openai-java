@@ -45,6 +45,12 @@ import xyz.felh.openai.moderation.CreateModerationResponse;
 import xyz.felh.openai.thread.CreateThreadRequest;
 import xyz.felh.openai.thread.ModifyThreadRequest;
 import xyz.felh.openai.thread.Thread;
+import xyz.felh.openai.thread.message.CreateMessageRequest;
+import xyz.felh.openai.thread.message.Message;
+import xyz.felh.openai.thread.message.ModifyMessageRequest;
+import xyz.felh.openai.thread.message.file.MessageFile;
+import xyz.felh.openai.thread.run.*;
+import xyz.felh.openai.thread.run.step.RunStep;
 
 import java.io.File;
 import java.io.IOException;
@@ -680,6 +686,257 @@ public class OpenAiService {
      */
     public DeleteResponse deleteThread(String threadId) {
         return execute(api.deleteThread(threadId));
+    }
+
+
+    /********************* Messages BETA *************/
+
+    /**
+     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/messages}
+     * <p>
+     * Create message
+     *
+     * @param threadId The ID of the {@link Thread} to create a message for.
+     * @param request  Request body
+     * @return An {@link Message} object.
+     */
+    public Message createThreadMessage(String threadId, CreateMessageRequest request) {
+        return execute(api.createThreadMessage(threadId, request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}}
+     * <p>
+     * Retrieve message
+     *
+     * @param threadId  The ID of the {@link Thread} to which this message belongs.
+     * @param messageId The ID of the message to retrieve.
+     * @return The {@link Message} object matching the specified ID.
+     */
+    public Message retrieveThreadMessage(String threadId, String messageId) {
+        return execute(api.retrieveThreadMessage(threadId, messageId));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}}
+     * <p>
+     * Modify message
+     *
+     * @param threadId  The ID of the thread to which this message belongs.
+     * @param messageId The ID of the message to modify.
+     * @param request   Request body
+     * @return The modified {@link Message} object.
+     */
+    public Message modifyThreadMessage(String threadId, String messageId, ModifyMessageRequest request) {
+        return execute(api.modifyThreadMessage(threadId, messageId, request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages}
+     * <p>
+     * List messages
+     *
+     * @param threadId The ID of the {@link Thread} the messages belong to.
+     * @param limit    A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before   A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link Message} objects.
+     */
+    public OpenAiApiListResponse<Message> listThreadMessages(String threadId,
+                                                             Integer limit,
+                                                             String order,
+                                                             String after,
+                                                             String before) {
+        return execute(api.listThreadMessages(threadId, limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<Message> listThreadMessages(String threadId) {
+        return listThreadMessages(threadId, null, null, null, null);
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}}
+     * <p>
+     * Retrieves a message file.
+     *
+     * @param threadId  The ID of the thread to which the message and File belong.
+     * @param messageId The ID of the message the file belongs to.
+     * @param fileId    The ID of the file being retrieved.
+     * @return The {@link MessageFile} object.
+     */
+    public MessageFile retrieveThreadMessageFile(String threadId, String messageId, String fileId) {
+        return execute(api.retrieveThreadMessageFile(threadId, messageId, fileId));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files}
+     * <p>
+     * Returns a list of message files.
+     *
+     * @param threadId  The ID of the thread that the message and files belong to.
+     * @param messageId The ID of the message that the files belongs to.
+     * @param limit     A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order     Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after     A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before    A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link MessageFile} objects.
+     */
+    public OpenAiApiListResponse<MessageFile> listThreadMessageFiles(String threadId,
+                                                                     String messageId,
+                                                                     Integer limit,
+                                                                     String order,
+                                                                     String after,
+                                                                     String before) {
+        return execute(api.listThreadMessageFiles(threadId, messageId, limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<MessageFile> listThreadMessageFiles(String threadId, String messageId) {
+        return listThreadMessageFiles(threadId, messageId, null, null, null, null);
+    }
+
+    /********************* Runs BETA *************/
+
+    /**
+     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs}
+     * <p>
+     * Create a run.
+     *
+     * @param threadId The ID of the thread to run.
+     * @param request  Request body
+     * @return An {@link Run} object.
+     */
+    public Run createThreadRun(String threadId, CreateRunRequest request) {
+        return execute(api.createThreadRun(threadId, request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
+     * <p>
+     * Retrieves a run.
+     *
+     * @param threadId The ID of the {@link Thread} that was run.
+     * @param runId    The ID of the run to retrieve.
+     * @return The {@link Run} object matching the specified ID.
+     */
+    public Run retrieveThreadRun(String threadId, String runId) {
+        return execute(api.retrieveThreadRun(threadId, runId));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
+     * <p>
+     * Modify message
+     *
+     * @param threadId The ID of the {@link Thread} that was run.
+     * @param runId    The ID of the run to modify.
+     * @param request  Request body
+     * @return The modified {@link Run} object.
+     */
+    public Run modifyThreadRun(String threadId, String runId, ModifyRunRequest request) {
+        return execute(api.modifyThreadRun(threadId, runId, request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs}
+     * <p>
+     * List messages
+     *
+     * @param threadId The ID of the {@link Thread} the messages belong to.
+     * @param limit    A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before   A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link Run} objects.
+     */
+    public OpenAiApiListResponse<Run> listThreadRuns(
+            String threadId,
+            Integer limit,
+            String order,
+            String after,
+            String before) {
+        return execute(api.listThreadRuns(threadId, limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<Run> listThreadRuns(String threadId) {
+        return listThreadRuns(threadId, null, null, null, null);
+    }
+
+    /**
+     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs}
+     *
+     * @param threadId The ID of the {@link Thread} to which this run belongs.
+     * @param runId    The ID of the run that requires the tool output submission.
+     * @param request  Request body
+     * @return The modified {@link Run} object matching the specified ID.
+     */
+    public Run submitToolOutputs(String threadId, String runId, SubmitToolOutputsRequest request) {
+        return execute(api.submitToolOutputs(threadId, runId, request));
+    }
+
+    /**
+     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/cancel}
+     * <p>
+     * Cancels a run that is in_progress.
+     *
+     * @param threadId The ID of the thread to which this run belongs.
+     * @param runId    The ID of the run to cancel.
+     * @return The modified {@link Run} object matching the specified ID.
+     */
+    public Run cancelThreadRun(String threadId, String runId) {
+        return execute(api.cancelThreadRun(threadId, runId));
+    }
+
+    /**
+     * {@literal POST https://api.openai.com/v1/threads/runs}
+     * <p>
+     * Create a thread and run it in one request.
+     *
+     * @param request Request body
+     * @return A {@link Run} object.
+     */
+    public Run createThreadAndRun(CreateThreadAndRunRequest request) {
+        return execute(api.createThreadAndRun(request));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}}
+     * <p>
+     * Retrieves a run step.
+     *
+     * @param threadId The ID of the thread to which the run and run step belongs.
+     * @param runId    The ID of the run to which the run step belongs.
+     * @param stepId   The ID of the run step to retrieve.
+     * @return The {@link RunStep} object matching the specified ID.
+     */
+    public RunStep retrieveThreadRunStep(String threadId, String runId, String stepId) {
+        return execute(api.retrieveThreadRunStep(threadId, runId, stepId));
+    }
+
+    /**
+     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps}
+     * <p>
+     * List run steps
+     *
+     * @param threadId The ID of the {@link Thread} the messages belong to.
+     * @param runId    The ID of the run the run steps belong to.
+     * @param limit    A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before   A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link RunStep} objects.
+     */
+    public OpenAiApiListResponse<RunStep> listThreadRunSteps(String threadId,
+                                                             String runId,
+                                                             Integer limit,
+                                                             String order,
+                                                             String after,
+                                                             String before) {
+        return execute(api.listThreadRunSteps(threadId, runId, limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<RunStep> listThreadRunSteps(String threadId, String runId) {
+        return listThreadRunSteps(threadId, runId, null, null, null, null);
     }
 
 }
