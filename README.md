@@ -24,10 +24,10 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 - [Fine-tuning](https://platform.openai.com/docs/api-reference/fine-tuning)
-- [Assistants Beta](https://platform.openai.com/docs/api-reference/assistants)
-- [Threads Beta](https://platform.openai.com/docs/api-reference/threads)
-- [Messages Beta](https://platform.openai.com/docs/api-reference/messages)
-- [Runs Beta](https://platform.openai.com/docs/api-reference/runs)
+- [Assistants Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/assistants)
+- [Threads Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/threads)
+- [Messages Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/messages)
+- [Runs Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/runs)
 
 ## Supported Methods
 
