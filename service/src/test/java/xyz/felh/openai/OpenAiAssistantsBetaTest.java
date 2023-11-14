@@ -10,7 +10,14 @@ import retrofit2.Retrofit;
 import xyz.felh.openai.assistant.*;
 import xyz.felh.openai.assistant.file.AssistantFile;
 import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
+import xyz.felh.openai.chat.ChatMessageRole;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
+import xyz.felh.openai.thread.CreateThreadRequest;
+import xyz.felh.openai.thread.Thread;
+import xyz.felh.openai.thread.message.CreateMessageRequest;
+import xyz.felh.openai.thread.message.Message;
+import xyz.felh.openai.thread.run.CreateRunRequest;
+import xyz.felh.openai.thread.run.Run;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -48,7 +55,7 @@ public class OpenAiAssistantsBetaTest {
 
     @Test
     public void retrieveAssistant() {
-        Assistant assistant = getOpenAiService().retrieveAssistant("asst_FvKu7nYBXL5pmdKF8FEklRop");
+        Assistant assistant = getOpenAiService().retrieveAssistant("asst_U9F4fKQyomAUgdibQpM5D2bs");
         log.info("assistant: {} ", JSON.toJSONString(assistant));
     }
 
@@ -56,7 +63,7 @@ public class OpenAiAssistantsBetaTest {
     public void modifyAssistant() {
         Assistant assistant = getOpenAiService().modifyAssistant("asst_U9F4fKQyomAUgdibQpM5D2bs",
                 ModifyAssistantRequest.builder().name("test-name")
-                        .tools(List.of(AssistantTool.builder().type(AssistantTool.Type.CODE_INTERPRETER.value()).build()))
+                        .tools(List.of(AssistantTool.builder().type(AssistantTool.Type.CODE_INTERPRETER).build()))
                         .fileIds(List.of("file-8gJUEdEOixA2pjsbN8NDDWvg"))
                         .build());
         log.info("assistant: {} ", JSON.toJSONString(assistant));
@@ -79,8 +86,8 @@ public class OpenAiAssistantsBetaTest {
     public void createAssistantFile() {
         AssistantFile assistantFile = getOpenAiService().createAssistantFile("asst_U9F4fKQyomAUgdibQpM5D2bs",
                 CreateAssistantFileRequest.builder()
-                .fileId("file-8gJUEdEOixA2pjsbN8NDDWvg")
-                .build());
+                        .fileId("file-8gJUEdEOixA2pjsbN8NDDWvg")
+                        .build());
         log.info("assistantFile: {} ", JSON.toJSONString(assistantFile));
     }
 
@@ -103,6 +110,52 @@ public class OpenAiAssistantsBetaTest {
     public void listAssistantFiles() {
         OpenAiApiListResponse<AssistantFile> rsp = getOpenAiService().listAssistantFiles("asst_U9F4fKQyomAUgdibQpM5D2bs");
         log.info("assistant files: {} ", toJSONString(rsp));
+    }
+
+    @Test
+    public void createThread() {
+        Thread thread = getOpenAiService().createThread(
+                CreateThreadRequest.builder().build());
+        log.info("thread: {} ", JSON.toJSONString(thread));
+    }
+
+    @Test
+    public void retrieveThread() {
+        Thread thread = getOpenAiService().retrieveThread("thread_lx8VJee28W7vGxMo8gcSBtvJ");
+        log.info("thread: {} ", JSON.toJSONString(thread));
+    }
+
+    @Test
+    public void createMessage() {
+        Message message = getOpenAiService().createThreadMessage("thread_lx8VJee28W7vGxMo8gcSBtvJ",
+                CreateMessageRequest.builder()
+                        .role(ChatMessageRole.USER.value())
+                        .content("请问北京到纽约有多远?")
+                        .build());
+        log.info("message: {} ", JSON.toJSONString(message));
+    }
+
+    @Test
+    public void retrieveThreadMessage() {
+        Message message = getOpenAiService().retrieveThreadMessage("thread_lx8VJee28W7vGxMo8gcSBtvJ",
+                "msg_Hhvr2Nb6QfqKxPOyr3lnK7ar");
+        log.info("message: {} ", JSON.toJSONString(message));
+    }
+
+    @Test
+    public void createThreadRun() {
+        Run run = getOpenAiService().createThreadRun("thread_lx8VJee28W7vGxMo8gcSBtvJ",
+                CreateRunRequest.builder()
+                        .assistantId("asst_U9F4fKQyomAUgdibQpM5D2bs")
+                        .build());
+        log.info("run: {} ", JSON.toJSONString(run));
+    }
+
+    @Test
+    public void retrieveThreadRun() {
+        Run run = getOpenAiService().retrieveThreadRun("thread_lx8VJee28W7vGxMo8gcSBtvJ",
+                "run_Jt191oxKEH0h6evQArDd2Sah");
+        log.info("run: {} ", JSON.toJSONString(run));
     }
 
     private String toJSONString(Object obj) {

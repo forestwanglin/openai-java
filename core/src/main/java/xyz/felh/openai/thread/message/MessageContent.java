@@ -15,7 +15,17 @@ public class MessageContent implements IOpenAiBean {
      * <p>
      * See {@link Type}
      */
-    private String type;
+    private Type type;
+
+    /**
+     * References an image {@link xyz.felh.openai.file.File} in the content of a message.
+     */
+    private ImageFile imageFile;
+
+    /**
+     * The text content that is part of a message.
+     */
+    private Text text;
 
     @Data
     public static class ImageFile {

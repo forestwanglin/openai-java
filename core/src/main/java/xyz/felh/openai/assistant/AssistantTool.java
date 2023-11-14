@@ -14,7 +14,7 @@ public class AssistantTool implements IOpenAiBean {
     /**
      * The type of tool being defined: code_interpreter, retrieval, function
      */
-    private String type;
+    private Type type;
 
     /**
      * When type is function

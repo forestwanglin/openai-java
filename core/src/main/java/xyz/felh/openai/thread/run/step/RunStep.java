@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
 import xyz.felh.openai.chat.ChatMessage;
+import xyz.felh.openai.thread.run.LastError;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -41,18 +42,28 @@ public class RunStep extends OpenAiApiObjectWithId {
      * <p>
      * {@link Type}
      */
-    private String type;
+    private Type type;
 
     /**
      * The status of the run step, which can be either in_progress, cancelled, failed, completed, or expired.
      * <p>
      * {@link Status}
      */
-    private String status;
+    private Status status;
 
-    private Object stepDetails;
+    /**
+     * The details of the run step.
+     * <p>
+     * See {@link StepDetails}
+     */
+    private StepDetails stepDetails;
 
-    private Object lastError;
+    /**
+     * The last error associated with this run step. Will be null if there are no errors.
+     * <p>
+     * See {@link LastError}
+     */
+    private LastError lastError;
 
     /**
      * The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.

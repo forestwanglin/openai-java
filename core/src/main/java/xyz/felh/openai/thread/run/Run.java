@@ -35,7 +35,7 @@ public class Run extends OpenAiApiObjectWithId {
      * The status of the run, which can be either queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired.
      * See {@link Status}
      */
-    private String status;
+    private Status status;
 
     /**
      * Details on the action required to continue the run. Will be null if no action is required.
