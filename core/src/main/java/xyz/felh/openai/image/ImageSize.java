@@ -2,6 +2,8 @@ package xyz.felh.openai.image;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Arrays;
+
 public enum ImageSize {
 
     // dall-e-2
@@ -24,6 +26,10 @@ public enum ImageSize {
     @JsonValue
     public String value() {
         return value;
+    }
+
+    public static ImageSize findByValue(String value) {
+        return Arrays.stream(values()).filter(it -> it.value().equals(value)).findFirst().orElse(null);
     }
 
 }
