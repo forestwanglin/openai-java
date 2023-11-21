@@ -7,7 +7,8 @@ public enum ImageSize {
     // dall-e-2
     R_256X256("256x256"),
     R_512X512("512x512"),
-        // dall-e-2 and dall-e-3
+
+    // dall-e-2 and dall-e-3
     R_1024X1024("1024x1024"),
 
     // dall-e-3
