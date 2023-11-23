@@ -13,6 +13,9 @@ public class Embedding implements IOpenAiApiObject {
 
     public static String OBJECT = "embedding";
 
+    /**
+     * The object type, which is always "embedding".
+     */
     private String object;
 
     /**

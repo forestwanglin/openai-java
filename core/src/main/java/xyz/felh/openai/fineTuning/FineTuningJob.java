@@ -1,10 +1,14 @@
 package xyz.felh.openai.fineTuning;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import xyz.felh.openai.OpenAiApiObjectWithId;
+import xyz.felh.openai.chat.ChatMessage;
 
+import java.util.Arrays;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -41,8 +45,10 @@ public class FineTuningJob extends OpenAiApiObjectWithId {
 
     /**
      * The current status of the fine-tuning job, which can be either validating_files, queued, running, succeeded, failed, or cancelled.
+     * <p>
+     * See {@link FineTuningJobStatus}
      */
-    private String status;
+    private FineTuningJobStatus status;
 
     /**
      * The hyperparameters used for the fine-tuning job. See the <a href="https://platform.openai.com/docs/guides/fine-tuning">fine-tuning</a> guide for more details.
@@ -70,5 +76,32 @@ public class FineTuningJob extends OpenAiApiObjectWithId {
      * The total number of billable tokens processed by this fine tuning job.
      */
     private Long trainedTokens;
+
+    @Getter
+    public enum FineTuningJobStatus {
+
+        VALIDATING_FILES("validating_files"),
+        QUEUED("queued"),
+        RUNNING("running"),
+        SUCCEEDED("succeeded"),
+        FAILED("failed"),
+        CANCELLED("cancelled");
+
+        private final String value;
+
+        FineTuningJobStatus(final String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String value() {
+            return value;
+        }
+
+        public static FineTuningJobStatus findByValue(String value) {
+            return Arrays.stream(values()).filter(it ->
+                    it.value.equals(value)).findFirst().orElse(null);
+        }
+    }
 
 }

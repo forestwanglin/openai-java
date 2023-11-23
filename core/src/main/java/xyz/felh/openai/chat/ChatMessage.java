@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import xyz.felh.openai.IOpenAiBean;
 import xyz.felh.openai.chat.tool.ToolCall;
+import xyz.felh.openai.utils.ListUtils;
 import xyz.felh.openai.utils.Preconditions;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class ChatMessage implements IOpenAiBean {
      * Tool call that this message is responding to.
      * <p>
      * String, Required
-     * It is provided when role is tool
+     * It is provided when role is {@link ChatMessageRole#TOOL}
      */
     private String toolCallId;
 
@@ -95,7 +96,7 @@ public class ChatMessage implements IOpenAiBean {
     private List<ContentItem> getListExtractFromContent() {
         if (Preconditions.isNotBlank(content)) {
             if (content instanceof List<?>) {
-                return ((List<ContentItem>) content);
+                return ListUtils.castList(content, ContentItem.class);
             }
         }
         return new ArrayList<>();
@@ -158,9 +159,12 @@ public class ChatMessage implements IOpenAiBean {
                     .imageUrl(ImageUrl.builder().url(imageUrl).detail(detail).build())
                     .build();
         }
+
     }
 
+    @Getter
     public enum ContentType {
+
         TEXT("text"),
         IMAGE_URL("image_url");
 
@@ -181,7 +185,9 @@ public class ChatMessage implements IOpenAiBean {
         }
     }
 
+    @Getter
     public enum ImageUrlDetail {
+
         LOW("low"),
         HIGH("high");
 
@@ -200,7 +206,6 @@ public class ChatMessage implements IOpenAiBean {
             return Arrays.stream(values()).filter(it ->
                     it.value.equals(value)).findFirst().orElse(null);
         }
-
     }
 
 }

@@ -10,14 +10,16 @@ import xyz.felh.openai.OpenAiApiObjectWithId;
 @ToString(callSuper = true)
 public class FineTuningJobEvent extends OpenAiApiObjectWithId {
 
-    Long createdAt;
+    public static String OBJECT = "fine_tuning.job.event";
 
-    String level;
+    private Long createdAt;
 
-    String message;
+    private String level;
 
-    Object data;
+    private String message;
 
-    String type;
+    private Object data;
+
+    private String type;
 
 }

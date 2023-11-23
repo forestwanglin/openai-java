@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.0.0304&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.1.0304&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -59,7 +59,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.0.0304</version>
+    <version>3.1.0304</version>
 </dependency>
 ```
 
@@ -68,22 +68,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.0.0304</version>
+    <version>3.1.0304</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.0.0304'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.0.0304'
+implementation group: 'xyz.felh', name: 'service', version: '3.1.0304'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.1.0304'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.0.0304"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.0.0304"
+libraryDependencies += "xyz.felh" % "service" % "3.1.0304"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.1.0304"
 ```
 
 ## Example (Spring Boot 3)
@@ -95,7 +95,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.0.0304"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.0.0304</version>
+    <version>3.1.0304</version>
 </dependency>
 ```
 

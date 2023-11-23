@@ -20,7 +20,7 @@ public class RequestResponseFormat implements IOpenAiBean {
      * <p>
      * String, Optional
      * <p>
-     * Defaults to text
+     * Defaults to text, See {@link TypeValue}
      */
     private TypeValue type;
 

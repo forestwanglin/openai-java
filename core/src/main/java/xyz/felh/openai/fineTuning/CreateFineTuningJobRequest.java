@@ -14,7 +14,7 @@ public class CreateFineTuningJobRequest implements IOpenAiApiRequest {
      * Your dataset must be formatted as a JSONL file. Additionally, you must upload your file with the purpose fine-tune.
      */
     @NonNull
-    String trainingFile;
+    private String trainingFile;
 
     /**
      * Optional
@@ -26,28 +26,25 @@ public class CreateFineTuningJobRequest implements IOpenAiApiRequest {
      * <p>
      * Your dataset must be formatted as a JSONL file. You must upload your file with the purpose fine-tune.
      */
-    String validationFile;
+    private String validationFile;
 
     /**
-     * The name of the model to fine-tune. You can select one of the supported models.
+     * The name of the model to fine-tune. You can select one of the <a href="https://platform.openai.com/docs/guides/fine-tuning/what-models-can-be-fine-tuned">supported models</a>.
      */
     @NonNull
-    String model;
+    private String model;
 
     /**
      * Optional
      * The hyperparameters used for the fine-tuning job.
      */
-    Hyperparameters hyperparameters;
+    private Hyperparameters hyperparameters;
 
     /**
-     * Optional
-     * Defaults to null
-     * <p>
-     * A string of up to 40 characters that will be added to your fine-tuned model name.
+     * A string of up to 18 characters that will be added to your fine-tuned model name.
      * <p>
      * For example, a suffix of "custom-model-name" would produce a model name like ft:gpt-3.5-turbo:openai:custom-model-name:7p4lURel.
      */
-    String suffix;
+    private String suffix;
 
 }

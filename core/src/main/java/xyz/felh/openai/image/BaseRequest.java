@@ -19,6 +19,10 @@ public abstract class BaseRequest implements IOpenAiApiRequest {
      * <p>
      * string, Optional
      * Defaults to dall-e-2
+     * <p>
+     * When creating edit image
+     * <p>
+     * The model to use for image generation. Only dall-e-2 is supported at this time.
      */
     private String model;
 

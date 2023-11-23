@@ -22,6 +22,7 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
 
     /**
      * A list of messages comprising the conversation so far. See <a href="https://platform.openai.com/docs/api-reference/chat/create#chat-create-model">api document</a>
+     * <p>
      * See {@link ChatMessage}
      */
     @NonNull
