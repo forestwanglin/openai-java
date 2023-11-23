@@ -412,7 +412,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void uploadFile() {
-        File file = getOpenAiService().uploadFile("/Users/forest/a.java", "assistants");
+        File file = getOpenAiService().uploadFile("/Users/forest/a.java", File.Purpose.ASSISTANTS);
         log.info("update file: " + toJSONString(file));
     }
 

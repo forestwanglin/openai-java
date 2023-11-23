@@ -423,14 +423,14 @@ public class OpenAiService {
         return execute(api.listFiles()).getData();
     }
 
-    public xyz.felh.openai.file.File uploadFile(File file, String purpose) {
-        RequestBody purposeBody = RequestBody.create(purpose, okhttp3.MultipartBody.FORM);
+    public xyz.felh.openai.file.File uploadFile(File file, xyz.felh.openai.file.File.Purpose purpose) {
+        RequestBody purposeBody = RequestBody.create(purpose.value(), okhttp3.MultipartBody.FORM);
         RequestBody fileBody = RequestBody.create(file, MediaType.parse("text"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
         return execute(api.uploadFile(body, purposeBody));
     }
 
-    public xyz.felh.openai.file.File uploadFile(String filepath, String purpose) {
+    public xyz.felh.openai.file.File uploadFile(String filepath, xyz.felh.openai.file.File.Purpose purpose) {
         File file = new File(filepath);
         return uploadFile(file, purpose);
     }
