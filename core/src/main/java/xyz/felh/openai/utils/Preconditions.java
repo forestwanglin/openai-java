@@ -9,31 +9,28 @@ import java.util.Map;
  * @class Preconditions
  * @email forest@magicwindow.cn
  * @date 22/08/2017 17:26
- * @description
+ * @description Preconditions class
  */
 public class Preconditions {
 
     /**
      * check if object is null for List Map String
      *
-     * @param t
-     * @param <T>
-     * @return
+     * @param t   object
+     * @param <T> Type T
+     * @return isBlank
      */
     public static <T> boolean isBlank(T t) {
-
         boolean result = false;
-
         if (t == null) {
             return true;
         }
-
         if (t instanceof List) {
-            if (((List) t).size() == 0) {
+            if (((List<?>) t).isEmpty()) {
                 return true;
             }
         } else if (t instanceof Map) {
-            if (((Map) t).size() == 0) {
+            if (((Map<?, ?>) t).isEmpty()) {
                 return true;
             }
         } else if (t instanceof Object[]) {
@@ -41,22 +38,17 @@ public class Preconditions {
                 return true;
             }
         } else if (t instanceof String) {
-            int strLen;
-
-            strLen = ((String) t).length();
+            int strLen = ((String) t).length();
             if (strLen == 0) {
                 return true;
             }
-
             for (int i = 0; i < strLen; i++) {
-                if ((Character.isWhitespace(((String) t).charAt(i)) == false)) {
+                if (!Character.isWhitespace(((String) t).charAt(i))) {
                     return false;
                 }
             }
-
             return true;
         }
-
         return result;
     }
 

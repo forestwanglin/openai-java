@@ -8,7 +8,6 @@ import xyz.felh.openai.IOpenAiApiRequest;
 
 import java.util.Map;
 
-
 @Data
 @Builder
 @AllArgsConstructor
