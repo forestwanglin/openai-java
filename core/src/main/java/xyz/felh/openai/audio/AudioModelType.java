@@ -1,4 +1,4 @@
-package xyz.felh.openai.image;
+package xyz.felh.openai.audio;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
@@ -6,15 +6,15 @@ import lombok.Getter;
 import java.util.Arrays;
 
 @Getter
-public enum ImageModelType {
+public enum AudioModelType {
 
-    DALL_E_2("dall-e-2"),
-
-    DALL_E_3("dall-e-3");
+    WHISPER_1("whisper-1"),
+    TTS_1("tts-1"),
+    TTS_1_HD("tts-1-hd");
 
     private final String value;
 
-    ImageModelType(final String value) {
+    AudioModelType(final String value) {
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public enum ImageModelType {
         return value;
     }
 
-    public static ImageModelType findByValue(String value) {
+    public static AudioModelType findByValue(String value) {
         return Arrays.stream(values()).filter(it -> it.value().equals(value)).findFirst().orElse(null);
     }
 

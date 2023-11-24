@@ -1,8 +1,12 @@
 package xyz.felh.openai.audio;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import xyz.felh.openai.IOpenAiApiRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import xyz.felh.openai.chat.ChatMessage;
+
+import java.util.Arrays;
 
 @Data
 @SuperBuilder(toBuilder = true)
@@ -11,12 +15,11 @@ import lombok.experimental.SuperBuilder;
 public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
 
     /**
-     * Required
-     * must set filePath or file
-     * The audio file to transcribe, in one of these formats: mp3, mp4, mpeg, mpga, m4a, wav, or webm.
+     * Required must set filePath or file
+     * <p>
+     * The audio file object (not file name) translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm.
      */
     private String filePath;
-
     private byte[] file;
 
     /**
@@ -33,19 +36,46 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
     private String prompt;
 
     /**
-     * Optional
-     * Defaults to json
+     * Optional Defaults to json
+     * <p>
      * The format of the transcript output, in one of these options: json, text, srt, verbose_json, or vtt.
+     * <p>
+     * See {@link ResponseFormat}
      */
-    private String responseFormat;
+    private ResponseFormat responseFormat;
 
     /**
      * Optional
      * Defaults to 0
-     * The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random,
-     * while lower values like 0.2 will make it more focused and deterministic. If set to 0,
-     * the model will use log probability to automatically increase the temperature until certain thresholds are hit.
+     * <p>
+     * The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit.
      */
     private Double temperature;
+
+    @Getter
+    public enum ResponseFormat {
+
+        JSON("json"),
+        TEXT("text"),
+        SRT("srt"),
+        VERBOSE_JSON("verbose_json"),
+        VTT("vtt");
+
+        private final String value;
+
+        ResponseFormat(final String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String value() {
+            return value;
+        }
+
+        public static ResponseFormat findByValue(String value) {
+            return Arrays.stream(values()).filter(it ->
+                    it.value.equals(value)).findFirst().orElse(null);
+        }
+    }
 
 }

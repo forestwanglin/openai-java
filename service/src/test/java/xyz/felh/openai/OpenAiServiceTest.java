@@ -11,11 +11,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
-import xyz.felh.openai.audio.AudioResponse;
-import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
-import xyz.felh.openai.audio.CreateAudioTranslationRequest;
+import xyz.felh.openai.audio.*;
 import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
@@ -38,8 +37,10 @@ import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
 import xyz.felh.openai.utils.Preconditions;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -388,6 +389,18 @@ public class OpenAiServiceTest {
                 .build();
         CreateModerationResponse createModerationResponse = getOpenAiService().createModeration(createModerationRequest);
         log.info("createModerationResponse: {}", toJSONString(createModerationResponse));
+    }
+
+    @Test
+    public void createSpeech() throws IOException {
+        CreateSpeechRequest createSpeechRequest = CreateSpeechRequest.builder()
+                .model(AudioModelType.TTS_1.value())
+                .input("我的名字是FW，出生在四川省，现在在北京工作。")
+                .voice(CreateSpeechRequest.Voice.ALLOY)
+                .build();
+        byte[] obj = getOpenAiService().createSpeech(createSpeechRequest);
+        java.io.File file = new java.io.File("/Users/forest/f.mp3");
+        Files.write(file.toPath(), obj);
     }
 
     @Test

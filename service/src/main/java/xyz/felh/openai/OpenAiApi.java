@@ -3,6 +3,7 @@ package xyz.felh.openai;
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.*;
 import xyz.felh.openai.assistant.Assistant;
 import xyz.felh.openai.assistant.CreateAssistantRequest;
@@ -10,6 +11,7 @@ import xyz.felh.openai.assistant.ModifyAssistantRequest;
 import xyz.felh.openai.assistant.file.AssistantFile;
 import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
 import xyz.felh.openai.audio.AudioResponse;
+import xyz.felh.openai.audio.CreateSpeechRequest;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.completion.Completion;
@@ -118,6 +120,15 @@ public interface OpenAiApi {
      */
     @POST("/v1/embeddings")
     Single<CreateEmbeddingResponse> createEmbedding(@Body CreateEmbeddingRequest request);
+
+    /**
+     * Generates audio from the input text.
+     *
+     * @param request create speech request
+     * @return audio file
+     */
+    @POST("/v1/audio/speech")
+    Single<ResponseBody> createSpeech(@Body CreateSpeechRequest request);
 
     /**
      * Create transcriptionBeta

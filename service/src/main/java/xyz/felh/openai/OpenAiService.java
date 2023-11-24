@@ -18,13 +18,16 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import retrofit2.http.*;
-import xyz.felh.openai.assistant.*;
+import retrofit2.http.POST;
+import xyz.felh.openai.assistant.Assistant;
+import xyz.felh.openai.assistant.CreateAssistantRequest;
+import xyz.felh.openai.assistant.ModifyAssistantRequest;
 import xyz.felh.openai.assistant.file.AssistantFile;
 import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
+import xyz.felh.openai.audio.CreateSpeechRequest;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.completion.Completion;
@@ -343,6 +346,17 @@ public class OpenAiService {
     }
 
     /**
+     * Generates audio from the input text.
+     *
+     * @param request create speech request
+     * @return audio file
+     */
+    @POST("/v1/audio/speech")
+    public byte[] createSpeech(CreateSpeechRequest request) throws IOException {
+        return execute(api.createSpeech(request)).bytes();
+    }
+
+    /**
      * whisper-1
      * <p>
      * TODO only support mp3 so far
@@ -371,7 +385,7 @@ public class OpenAiService {
             builder.addFormDataPart("prompt", request.getModel());
         }
         if (request.getResponseFormat() != null) {
-            builder.addFormDataPart("response_format", request.getResponseFormat());
+            builder.addFormDataPart("response_format", request.getResponseFormat().value());
         }
         if (request.getTemperature() != null) {
             builder.addFormDataPart("temperature", request.getTemperature().toString());
@@ -411,7 +425,7 @@ public class OpenAiService {
             builder.addFormDataPart("prompt", request.getModel());
         }
         if (request.getResponseFormat() != null) {
-            builder.addFormDataPart("response_format", request.getResponseFormat());
+            builder.addFormDataPart("response_format", request.getResponseFormat().value());
         }
         if (request.getTemperature() != null) {
             builder.addFormDataPart("temperature", request.getTemperature().toString());
