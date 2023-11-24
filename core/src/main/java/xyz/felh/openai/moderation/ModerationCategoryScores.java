@@ -16,7 +16,7 @@ public class ModerationCategoryScores implements IOpenAiApiObject {
      * The score for the category 'hate/threatening'.
      */
     @JsonProperty("hate/threatening")
-    public Double hateThreatening;
+    private Double hateThreatening;
 
     /**
      * The score for the category 'harassment'.
@@ -33,40 +33,40 @@ public class ModerationCategoryScores implements IOpenAiApiObject {
      * The score for the category 'self-harm'.
      */
     @JsonProperty("self-harm")
-    public Double selfHarm;
+    private Double selfHarm;
 
     /**
      * The score for the category 'self-harm/intent'.
      */
     @JsonProperty("self-harm/intent")
-    public Double selfHarmIntent;
+    private Double selfHarmIntent;
 
     /**
      * The score for the category 'self-harm/instructions'.
      */
     @JsonProperty("self-harm/instructions")
-    public Double selfHarmInstructions;
+    private Double selfHarmInstructions;
 
     /**
      * The score for the category 'sexual'.
      */
-    public Double sexual;
+    private Double sexual;
 
     /**
      * The score for the category 'sexual/minors'.
      */
     @JsonProperty("sexual/minors")
-    public Double sexualMinors;
+    private Double sexualMinors;
 
     /**
      * The score for the category 'violence'.
      */
-    public Double violence;
+    private Double violence;
 
     /**
      * The score for the category 'violence/graphic'.
      */
     @JsonProperty("violence/graphic")
-    public Double violenceGraphic;
+    private Double violenceGraphic;
 
 }
