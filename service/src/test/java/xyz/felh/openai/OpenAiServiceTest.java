@@ -384,7 +384,7 @@ public class OpenAiServiceTest {
     @Test
     public void createModeration() {
         CreateModerationRequest createModerationRequest = CreateModerationRequest.builder()
-                .input("I want to kill them.")
+                .input(List.of("I want to kill them.", "可以裸聊吗"))
                 .build();
         CreateModerationResponse createModerationResponse = getOpenAiService().createModeration(createModerationRequest);
         log.info("createModerationResponse: {}", toJSONString(createModerationResponse));

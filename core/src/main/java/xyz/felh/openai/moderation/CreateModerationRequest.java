@@ -1,7 +1,7 @@
 package xyz.felh.openai.moderation;
 
-import xyz.felh.openai.IOpenAiApiRequest;
 import lombok.*;
+import xyz.felh.openai.IOpenAiApiRequest;
 
 @Data
 @Builder
@@ -10,14 +10,16 @@ import lombok.*;
 public class CreateModerationRequest implements IOpenAiApiRequest {
 
     /**
+     * string or array Required
+     * <p>
      * The input text to classify
      */
     @NonNull
-    private String input;
+    private Object input;
 
     /**
-     * Optional
-     * Defaults to text-moderation-latest
+     * Optional Defaults to text-moderation-latest
+     * <p>
      * Two content moderations models are available: text-moderation-stable and text-moderation-latest.
      * <p>
      * The default is text-moderation-latest which will be automatically upgraded over time. This ensures you are always
