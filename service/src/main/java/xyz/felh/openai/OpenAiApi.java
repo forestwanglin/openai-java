@@ -14,8 +14,6 @@ import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateSpeechRequest;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
-import xyz.felh.openai.completion.Completion;
-import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
@@ -60,16 +58,6 @@ public interface OpenAiApi {
      */
     @GET("/v1/models/{model_id}")
     Single<Model> getModel(@Path("model_id") String modelId);
-
-    /**
-     * Create completion
-     * Creates a completion for the provided prompt and parameters
-     *
-     * @param request Create completion request
-     * @return Completion detail information
-     */
-    @POST("/v1/completions")
-    Single<Completion> createCompletion(@Body CreateCompletionRequest request);
 
     /**
      * Create chat completionBeta

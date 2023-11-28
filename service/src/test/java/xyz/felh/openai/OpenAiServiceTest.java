@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
 import xyz.felh.openai.audio.*;
@@ -19,8 +18,6 @@ import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
 import xyz.felh.openai.chat.tool.ToolCall;
-import xyz.felh.openai.completion.Completion;
-import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
@@ -107,17 +104,6 @@ public class OpenAiServiceTest {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    public void createCompletion() {
-        CreateCompletionRequest completionRequest = CreateCompletionRequest.builder()
-                .prompt("Somebody once told me the world is gonna roll me")
-                .echo(true)
-                .model("ada")
-                .build();
-        Completion completion = getOpenAiService().createCompletion(completionRequest);
-        log.info("completion: {}", toJSONString(completion));
     }
 
     @Test

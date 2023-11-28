@@ -30,8 +30,6 @@ import xyz.felh.openai.audio.CreateAudioTranslationRequest;
 import xyz.felh.openai.audio.CreateSpeechRequest;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
-import xyz.felh.openai.completion.Completion;
-import xyz.felh.openai.completion.CreateCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.fineTuning.CreateFineTuningJobRequest;
@@ -173,17 +171,6 @@ public class OpenAiService {
 
     public Model getModel(String modelId) {
         return execute(api.getModel(modelId));
-    }
-
-    /**
-     * text-davinci-003, text-davinci-002, text-curie-001, text-babbage-001,
-     * text-ada-001, davinci, curie, babbage, ada
-     *
-     * @param request create completion request
-     * @return completion
-     */
-    public Completion createCompletion(CreateCompletionRequest request) {
-        return execute(api.createCompletion(request));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.1.0304&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.2.0304&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -16,7 +16,6 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 ## Supported APIs
 
 - [Models](https://platform.openai.com/docs/api-reference/models)
-- [Completions](https://platform.openai.com/docs/api-reference/completions)
 - [Chat Completions(2023-04-18 support stream)](https://platform.openai.com/docs/api-reference/chat/create)
 - [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
 - [Images](https://platform.openai.com/docs/api-reference/images)
@@ -50,6 +49,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-11-13] Update model with latest API
 - [2023-11-14] Add API support for Assistants, Threads, Messages and Runs, all of these are Beta version.
 - [2023-11-24] Add create speech api - Generates audio from the input text.
+- [2023-11-28] Remove api for [Completions](https://platform.openai.com/docs/api-reference/completions)
 
 ## How to use
 
@@ -60,7 +60,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.1.0304</version>
+    <version>3.2.0304</version>
 </dependency>
 ```
 
@@ -69,22 +69,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.1.0304</version>
+    <version>3.2.0304</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.1.0304'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.1.0304'
+implementation group: 'xyz.felh', name: 'service', version: '3.2.0304'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.2.0304'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.1.0304"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.1.0304"
+libraryDependencies += "xyz.felh" % "service" % "3.2.0304"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.2.0304"
 ```
 
 ## Example (Spring Boot 3)
@@ -96,7 +96,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.1.0304"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.1.0304</version>
+    <version>3.2.0304</version>
 </dependency>
 ```
 
