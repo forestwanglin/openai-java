@@ -23,10 +23,10 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 - [Fine-tuning](https://platform.openai.com/docs/api-reference/fine-tuning)
-- [Assistants Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/assistants)
-- [Threads Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/threads)
-- [Messages Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/messages)
-- [Runs Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/runs)
+- [Assistants - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/assistants)
+- [Threads - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/threads)
+- [Messages - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/messages)
+- [Runs - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/runs)
 
 ## Supported Methods
 
@@ -153,7 +153,7 @@ public class OpenAiApiConfig {
 }
 ```
 
-Below is the settings in yml file.
+Here is the settings in yml file.
 
 ```yaml
 openai:
@@ -167,17 +167,21 @@ openai:
 #### 3.1.a Create Chat Completion (Without stream)
 
 ```java
-CreateChatCompletionRequest request=CreateChatCompletionRequest.builder()
-        .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER,"Hello, Please count 1 to 10")))
-        .model("gpt-3.5-turbo")
-        .maxTokens(2048)
-        .temperature(0.8)
-        .stream(false)
-        .user("LOGIC_USER_KEY")
-        .build();
-        log.info("chatCompletion Request:\n{}",JsonUtils.toPrettyJSONString(request));
-        xyz.felh.openai.completion.chat.ChatCompletion completionResult=openAiService.createChatCompletion(request);
-        log.info("chatCompletion Response:\n{}",JsonUtils.toPrettyJSONString(completionResult));
+public class OpenAiService {
+
+    public void createStreamChatCompletion() {
+        CreateChatCompletionRequest request = CreateChatCompletionRequest.builder()
+                .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello, Please count 1 to 10")))
+                .model("gpt-3.5-turbo")
+                .maxTokens(2048)
+                .temperature(0.6)
+                .stream(false)
+                .build();
+        log.info("chatCompletion Request:\n{}", JsonUtils.toPrettyJSONString(request));
+        ChatCompletion completionResult = openAiService.createChatCompletion(request);
+        log.info("chatCompletion Response:\n{}", JsonUtils.toPrettyJSONString(completionResult));
+    }
+}
 ``` 
 
 #### 3.1.b Create Chat Completion (With stream)
@@ -185,77 +189,86 @@ CreateChatCompletionRequest request=CreateChatCompletionRequest.builder()
 ##### 3.1.b.1 Register listener for stream (use Flux to serve server-sent events)
 
 ```java
-private Flux<ServerSentEvent<List<String>>>buildFlux(String messageId){
-        Flux<ServerSentEvent<List<String>>>flux=Flux.create(fluxSink->{
+public class OpenAiService {
 
-        StreamChatCompletionListener listener=new StreamChatCompletionListener(){
-@Override
-public void onOpen(String requestId,Response response){
-        log.debug("onOpen {}",requestId);
-        }
+    private Flux<ServerSentEvent<List<String>>> buildFlux(String messageId) {
+        Flux<ServerSentEvent<List<String>>> flux = Flux.create(fluxSink -> {
 
-@Override
-public void onEvent(String requestId,xyz.felh.openai.completion.chat.ChatCompletion chatCompletion){
-        ChatCompletionChoice chatCompletionChoice=chatCompletion.getChoices().get(0);
-        if("stop".equalsIgnoreCase(chatCompletionChoice.getFinishReason())){
-        log.info("chatCompletion stream is stopped");
-        // send stop signature to client
-        fluxSink.next(ServerSentEvent.<List<String>>builder()
-        .id(requestId)
-        .event("stop")
-        .data(Collections.singletonList("stop"))
-        .build());
-        }else{
-        if(chatCompletionChoice.getDelta()!=null&&chatCompletionChoice.getDelta().getContent()!=null){
-        // send delta message to client
-        fluxSink.next(ServerSentEvent.<List<String>>builder()
-        .id(requestId)
-        .event("message")
-        .data(Collections.singletonList(chatCompletionChoice.getDelta().getContent()))
-        .build());
-        }
-        }
-        }
-        }
+            StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+                @Override
+                public void onOpen(String requestId, Response response) {
+                    log.debug("onOpen {}", requestId);
+                }
 
-        // create stream chat message
-        CreateChatCompletionRequest request=CreateChatCompletionRequest.builder()
-        .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER,"Hello, Please count 1 to 10")))
-        .model("gpt-3.5-turbo")
-        .maxTokens(2048)
-        .temperature(0.8)
-        .stream(true)
-        .build();
-        log.info("chatCompletion Request:\n{}",JsonUtils.toPrettyJSONString(request));
-        openAiService.createSteamChatCompletion(messageId,request,listener);
+                @Override
+                public void onEvent(String requestId, xyz.felh.openai.completion.chat.ChatCompletion chatCompletion) {
+                    ChatCompletionChoice chatCompletionChoice = chatCompletion.getChoices().get(0);
+                    if ("stop".equalsIgnoreCase(chatCompletionChoice.getFinishReason())) {
+                        log.info("chatCompletion stream is stopped");
+                        // send stop signature to client
+                        fluxSink.next(ServerSentEvent.<List<String>>builder()
+                                .id(requestId)
+                                .event("stop")
+                                .data(Collections.singletonList("stop"))
+                                .build());
+                    } else {
+                        if (chatCompletionChoice.getDelta() != null && chatCompletionChoice.getDelta().getContent() != null) {
+                            // send delta message to client
+                            fluxSink.next(ServerSentEvent.<List<String>>builder()
+                                    .id(requestId)
+                                    .event("message")
+                                    .data(Collections.singletonList(chatCompletionChoice.getDelta().getContent()))
+                                    .build());
+                        }
+                    }
+                }
+            };
 
-        // unsubscribe when user disconnect
-        fluxSink.onCancel(()->{
-        log.info("flux cancel {}",messageId);
-        listener.close();
-        });
-        },FluxSink.OverflowStrategy.LATEST);
+            // create stream chat message
+            CreateChatCompletionRequest request = CreateChatCompletionRequest.builder()
+                    .messages(Arrays.asList(new ChatMessage(ChatMessageRole.USER, "Hello, Please count 1 to 10")))
+                    .model("gpt-3.5-turbo")
+                    .maxTokens(2048)
+                    .temperature(0.8)
+                    .stream(true)
+                    .build();
+            log.info("chatCompletion Request:\n{}", JsonUtils.toPrettyJSONString(request));
+            openAiService.createSteamChatCompletion(messageId, request, listener);
+
+            // unsubscribe when user disconnect
+            fluxSink.onCancel(() -> {
+                log.info("flux cancel {}", messageId);
+                listener.close();
+            });
+        }, FluxSink.OverflowStrategy.LATEST);
         return flux;
-        }
+    }
+}
 ```
 
-#### 3.2 Create Completion
+#### 3.2 Create Image
 
 ```java
-CreateCompletionRequest request=CreateCompletionRequest.builder()
-        .prompt("Somebody once told me the world is gonna roll me")
-        .model("ada")
-        .echo(true)
-        .n(1)
-        .user("LOGIC_USER_KEY")
-        .build();
-        log.info("completion Request:\n{}",JsonUtils.toPrettyJSONString(request));
-        xyz.felh.openai.completion.Completion completionResult=openAiService.createCompletion(request);
-        log.info("completionResult:\n{}",JsonUtils.toPrettyJSONString(completionResult));
+public class OpenAiService {
+    public void createImage() {
+        CreateImageRequest createImageRequest = CreateImageRequest.builder()
+                .prompt("A cute baby dea otter")
+                .n(1)
+                .size(ImageSize.R_1024X1024)
+                .responseFormat(ImageResponseFormat.URL)
+                .model(ImageModelType.DALL_E_2.value())
+                .build();
+        ImageResponse imageResponse = getOpenAiService().createImage(createImageRequest);
+        log.info("imageResponse: {}", toJSONString(imageResponse));
+    }
+}
 ```
 
 You can find more examples
-in [OpenAiServiceTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiServiceTest.java)
+in
+
+- [OpenAiServiceTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiServiceTest.java)
+- [OpenAiAssistantsBeaTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiAssistantsBetaTest.java)
 
 ## License
 
