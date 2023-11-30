@@ -3,10 +3,13 @@ package xyz.felh.openai;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vertx.json.schema.common.dsl.SchemaBuilder;
-import io.vertx.json.schema.common.dsl.SchemaType;
+import com.github.victools.jsonschema.generator.*;
+import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -17,7 +20,7 @@ import xyz.felh.openai.audio.*;
 import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
-import xyz.felh.openai.chat.tool.ToolCall;
+import xyz.felh.openai.chat.tool.Type;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
 import xyz.felh.openai.file.File;
@@ -42,9 +45,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
-import static io.vertx.json.schema.common.dsl.Schemas.*;
 import static xyz.felh.openai.OpenAiService.*;
 
 @Slf4j
@@ -179,30 +180,54 @@ public class OpenAiServiceTest {
         return "10-20度,多云，大风";
     }
 
+    @Data
+    public static class GetWeatherParam {
+        @JsonPropertyDescription("The city and state, e.g. San Francisco, CA")
+        @JsonProperty(value = "location")
+        private String location;
+        @JsonProperty("unit")
+        private Unit unit;
+        @JsonProperty("age")
+        private int age;
+    }
+
+    public enum Unit {
+        celsius, fahrenheit, degree
+    }
+
     @Test
     public void createFunctionChatCompletion() {
-        SchemaBuilder objectSchemaBuilder = objectSchema()
-                .property("location", stringSchema()
-                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
-                .property("unit", enumSchema("celsius", "fahrenheit").type(SchemaType.STRING))
-                .property("age", intSchema());
-        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
-        removeId(jsonObject);
+//        SchemaBuilder objectSchemaBuilder = objectSchema()
+//                .property("location", stringSchema()
+//                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
+//                .property("unit", enumSchema("celsius", "fahrenheit").type(SchemaType.STRING))
+//                .property("age", intSchema())
+//                .property("p001", stringSchema().withKeyword("description", "key parameter 001."))
+//                .property("p002", stringSchema().withKeyword("description", "key parameter 002."));
+//        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
+//        removeId(jsonObject);
 
+        SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
+                .with(new JacksonModule());
+        SchemaGeneratorConfig config = configBuilder.build();
+        SchemaGenerator generator = new SchemaGenerator(config);
+        JsonNode jsonSchema = generator.generateSchema(GetWeatherParam.class);
 
-        SchemaBuilder objectSchemaBuilder2 = objectSchema()
-                .property("location", stringSchema()
-                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
-                .property("city", stringSchema().withKeyword("description", "The city or state of the location"))
-                .property("longitude", intSchema().withKeyword("description", "The longitude of the location"))
-                .property("latitude", intSchema().withKeyword("description", "The latitude of the location"));
-        JSONObject jsonObject2 = JSON.parseObject(objectSchemaBuilder2.toJson().toString());
-        removeId(jsonObject2);
+        JSONObject jsonObject = JSONObject.parseObject(jsonSchema.toString());
+
+//        SchemaBuilder objectSchemaBuilder2 = objectSchema()
+//                .property("location", stringSchema()
+//                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
+//                .property("city", stringSchema().withKeyword("description", "The city or state of the location"))
+//                .property("longitude", intSchema().withKeyword("description", "The longitude of the location"))
+//                .property("latitude", intSchema().withKeyword("description", "The latitude of the location"));
+//        JSONObject jsonObject2 = JSON.parseObject(objectSchemaBuilder2.toJson().toString());
+//        removeId(jsonObject2);
 
 
         List<Tool> tools = Arrays.asList(
                 Tool.builder()
-                        .type("function")
+                        .type(Type.FUNCTION)
                         .function(Function.builder()
                                 .name("get_current_weather")
                                 .description("Get the current weather in a given location")
@@ -223,43 +248,43 @@ public class OpenAiServiceTest {
         String model = "gpt-3.5-turbo-1106";
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-//        messages.add(new ChatMessage(ChatMessageRole.USER, "How many miles from here to Beijing?"));
         messages.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like tomorrow in Beijing and Shanghai?"));
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
                 .model(model)
                 .tools(tools)
                 .toolChoice("auto")
-//                .maxTokens(1)
+                .maxTokens(1000)
                 .stream(false)
                 .build();
-        log.info("prompts: {} {} {}", TikTokenUtils.tokens(model, messages),
+        log.info("prompts: tools: {}", TikTokenUtils.tokens(model, null, tools));
+        log.info("prompts: message: {}, tools: {}, total: {}", TikTokenUtils.tokens(model, messages),
                 TikTokenUtils.tokens(model, null, tools)
                 , TikTokenUtils.tokens(model, messages) + TikTokenUtils.tokens(model, null, tools));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("request: " + toJSONString(chatCompletionRequest));
         log.info("chatCompletion: " + toJSONString(chatCompletion));
 
-        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
-        if (Preconditions.isNotBlank(toolCalls)) {
-            // add response message to new request
-            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
-            chatMessage.setContent("");
-            messages.add(chatMessage);
-            // You can change to call your own function to get weather in parallel
-            for (ToolCall toolCall : toolCalls) {
-                log.info("fc: {}", toolCall.getFunction());
-                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, new Random().nextInt() % 2 == 0 ? "Raining" : "Sunny");
-                cm.setToolCallId(toolCall.getId());
-                messages.add(cm);
-            }
-            log.info("prompts: {}", TikTokenUtils.tokens(model, messages));
-            chatCompletionRequest.setToolChoice(null);
-            chatCompletionRequest.setTools(null);
-            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-            log.info("request: " + toJSONString(chatCompletionRequest));
-            log.info("chatCompletion: " + toJSONString(chatCompletion));
-        }
+//        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
+//        if (Preconditions.isNotBlank(toolCalls)) {
+//            // add response message to new request
+//            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
+//            chatMessage.setContent("");
+//            messages.add(chatMessage);
+//            // You can change to call your own function to get weather in parallel
+//            for (ToolCall toolCall : toolCalls) {
+//                log.info("fc: {}", toolCall.getFunction());
+//                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, new Random().nextInt() % 2 == 0 ? "Raining" : "Sunny");
+//                cm.setToolCallId(toolCall.getId());
+//                messages.add(cm);
+//            }
+//            log.info("prompts: {}", TikTokenUtils.tokens(model, messages));
+//            chatCompletionRequest.setToolChoice(null);
+//            chatCompletionRequest.setTools(null);
+//            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+//            log.info("request: " + toJSONString(chatCompletionRequest));
+//            log.info("chatCompletion: " + toJSONString(chatCompletion));
+//        }
 //
 //        List<ChatMessage> messages1 = new ArrayList<>();
 //        messages1.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Shanghai?", "u12323"));
@@ -292,19 +317,19 @@ public class OpenAiServiceTest {
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
         messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Beijing?"));
 
-        SchemaBuilder objectSchemaBuilder = objectSchema()
-                .property("location", stringSchema()
-                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"));
-        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
-        removeId(jsonObject);
-        List<Function> functions = Arrays.asList(
-                Function.builder()
-                        .name("get_current_weather")
-                        .description("Get the current weather in a given location")
-                        .parameters(jsonObject)
-                        .build()
-
-        );
+//        SchemaBuilder objectSchemaBuilder = objectSchema()
+//                .property("location", stringSchema()
+//                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"));
+//        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
+//        removeId(jsonObject);
+//        List<Function> functions = Arrays.asList(
+//                Function.builder()
+//                        .name("get_current_weather")
+//                        .description("Get the current weather in a given location")
+//                        .parameters(jsonObject)
+//                        .build()
+//
+//        );
 
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)

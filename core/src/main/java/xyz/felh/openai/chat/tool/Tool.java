@@ -11,9 +11,11 @@ public class Tool implements IOpenAiBean {
 
     /**
      * The type of the tool. Currently, only function is supported.
+     *
+     * See {@link Type}
      */
     @NonNull
-    private String type;
+    private Type type;
 
     /**
      * See {@link Function}

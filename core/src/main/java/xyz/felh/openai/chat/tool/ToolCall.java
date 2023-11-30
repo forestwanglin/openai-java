@@ -17,9 +17,11 @@ public class ToolCall implements IOpenAiBean {
 
     /**
      * The type of the tool. Currently, only function is supported.
+     * <p>
+     * See {@link Type}
      */
     @NonNull
-    private String type;
+    private Type type;
 
     /**
      * The function that the model called.

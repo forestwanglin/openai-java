@@ -259,35 +259,37 @@ public class TikTokenUtils {
             }
         }
         for (Tool tool : tools) {
+            sum += tokens(encoding, tool.getType().value());
             Function function = tool.getFunction();
             sum += tokens(encoding, function.getName());
             sum += tokens(encoding, function.getDescription());
             if (Preconditions.isNotBlank(function.getParameters())) {
                 JSONObject jsonObject = (JSONObject) function.getParameters();
+                sum += 11;//tokens(encoding, jsonObject.getString("$schema"));
                 if (jsonObject.containsKey("properties")) {
-                    for (String propertiesKey : jsonObject.getJSONObject("properties").keySet()) {
-                        sum += tokens(encoding, propertiesKey);
-                        JSONObject v = jsonObject.getJSONObject("properties").getJSONObject(propertiesKey);
+                    JSONObject properties = jsonObject.getJSONObject("properties");
+                    for (String propertyKey : properties.keySet()) {
+                        sum += tokens(encoding, propertyKey);
+                        JSONObject v = properties.getJSONObject(propertyKey);
                         for (String field : v.keySet()) {
                             if ("type".equals(field)) {
                                 sum += 2;
                                 sum += tokens(encoding, v.getString("type"));
                             } else if ("description".equals(field)) {
-                                sum += 2;
+                                sum += 1;
                                 sum += tokens(encoding, v.getString("description"));
                             } else if ("enum".equals(field)) {
-                                sum -= 3;
                                 for (Object o : v.getJSONArray(field)) {
                                     sum += 3;
                                     sum += tokens(encoding, o.toString());
                                 }
+                                sum -= 3;
                             } else {
                                 log.warn("not supported field {}", field);
                             }
                         }
                     }
                 }
-                sum += 11;
             }
         }
         sum += 12;
