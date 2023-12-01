@@ -34,6 +34,11 @@ public class FineTuningJob extends OpenAiApiObjectWithId {
     private String model;
 
     /**
+     * For fine-tuning jobs that have failed, this will contain more information on the cause of the failure.
+     */
+    private FineTuningJobError error;
+
+    /**
      * The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
      */
     private String fineTunedModel;
@@ -52,6 +57,7 @@ public class FineTuningJob extends OpenAiApiObjectWithId {
 
     /**
      * The hyperparameters used for the fine-tuning job. See the <a href="https://platform.openai.com/docs/guides/fine-tuning">fine-tuning</a> guide for more details.
+     * <p>
      * See {@link Hyperparameters}
      */
     private Hyperparameters hyperparameters;
