@@ -150,31 +150,6 @@ public class OpenAiServiceTest {
         log.info("chatCompletion: {}", toJSONString(chatCompletion));
     }
 
-    @Data
-    class GetWeather {
-        private String location;
-        private int hour;
-        private String height;
-        private boolean good;
-    }
-
-    private void removeId(Object obj) {
-        if (Preconditions.isNotBlank(obj)) {
-            if (obj instanceof JSONObject) {
-                JSONObject jsonObject = (JSONObject) obj;
-                jsonObject.remove("$id");
-                for (String key : jsonObject.keySet()) {
-                    removeId(jsonObject.get(key));
-                }
-            } else if (obj instanceof JSONArray) {
-                JSONArray jsonArray = ((JSONArray) obj);
-                for (Object o : jsonArray) {
-                    removeId(o);
-                }
-            }
-        }
-    }
-
     private String get_current_weather_of_the_world(String location, String unit) {
         log.info("a {}, b {}", location, unit);
         return "10-20度,多云，大风";
@@ -192,21 +167,11 @@ public class OpenAiServiceTest {
     }
 
     public enum Unit {
-        celsius, fahrenheit, degree
+        celsius, fahrenheit
     }
 
     @Test
     public void createFunctionChatCompletion() {
-//        SchemaBuilder objectSchemaBuilder = objectSchema()
-//                .property("location", stringSchema()
-//                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
-//                .property("unit", enumSchema("celsius", "fahrenheit").type(SchemaType.STRING))
-//                .property("age", intSchema())
-//                .property("p001", stringSchema().withKeyword("description", "key parameter 001."))
-//                .property("p002", stringSchema().withKeyword("description", "key parameter 002."));
-//        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
-//        removeId(jsonObject);
-
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
                 .with(new JacksonModule());
         SchemaGeneratorConfig config = configBuilder.build();
