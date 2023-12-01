@@ -1,5 +1,7 @@
 package xyz.felh.openai.audio;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import xyz.felh.openai.IOpenAiApiRequest;
 import lombok.*;
@@ -19,7 +21,11 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
      * <p>
      * The audio file object (not file name) translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm.
      */
+    @JSONField(name = "file_path")
+    @JsonProperty("file_path")
     private String filePath;
+    @JSONField(name = "file")
+    @JsonProperty("file")
     private byte[] file;
 
     /**
@@ -27,12 +33,16 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
      * ID of the model to use. Only whisper-1 is currently available.
      */
     @NonNull
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
     /**
      * Optional
      * An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.
      */
+    @JSONField(name = "prompt")
+    @JsonProperty("prompt")
     private String prompt;
 
     /**
@@ -42,6 +52,8 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
      * <p>
      * See {@link ResponseFormat}
      */
+    @JSONField(name = "response_format")
+    @JsonProperty("response_format")
     private ResponseFormat responseFormat;
 
     /**
@@ -50,6 +62,8 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
      * <p>
      * The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit.
      */
+    @JSONField(name = "temperature")
+    @JsonProperty("temperature")
     private Double temperature;
 
     @Getter

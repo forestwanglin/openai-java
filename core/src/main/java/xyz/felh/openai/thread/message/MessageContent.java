@@ -1,5 +1,7 @@
 package xyz.felh.openai.thread.message;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import xyz.felh.openai.IOpenAiBean;
@@ -15,16 +17,22 @@ public class MessageContent implements IOpenAiBean {
      * <p>
      * See {@link Type}
      */
+    @JSONField(name = "type")
+    @JsonProperty("type")
     private Type type;
 
     /**
      * References an image {@link xyz.felh.openai.file.File} in the content of a message.
      */
+    @JSONField(name = "image_file")
+    @JsonProperty("image_file")
     private ImageFile imageFile;
 
     /**
      * The text content that is part of a message.
      */
+    @JSONField(name = "text")
+    @JsonProperty("text")
     private Text text;
 
     @Data
@@ -32,6 +40,8 @@ public class MessageContent implements IOpenAiBean {
         /**
          * The {@link xyz.felh.openai.file.File} ID of the image in the message content.
          */
+        @JSONField(name = "file_id")
+        @JsonProperty("file_id")
         private String fileId;
     }
 
@@ -40,6 +50,8 @@ public class MessageContent implements IOpenAiBean {
         /**
          * The data that makes up the text.
          */
+        @JSONField(name = "value")
+        @JsonProperty("value")
         private String value;
 
         /**
@@ -51,6 +63,8 @@ public class MessageContent implements IOpenAiBean {
          * File path
          * A URL for the file that's generated when the assistant used the code_interpreter tool to generate a file.
          */
+        @JSONField(name = "annotations")
+        @JsonProperty("annotations")
         private List<TextAnnotation> annotations;
     }
 
@@ -59,17 +73,32 @@ public class MessageContent implements IOpenAiBean {
         /**
          * file_citation or file_path
          */
+        @JSONField(name = "type")
+        @JsonProperty("type")
         private String type;
 
         /**
          * The text in the message content that needs to be replaced.
          */
+        @JSONField(name = "text")
+        @JsonProperty("text")
         private String text;
 
+        @JSONField(name = "file_citation")
+        @JsonProperty("file_citation")
         private FileCitation fileCitation;
+
+        @JSONField(name = "file_path")
+        @JsonProperty("file_path")
         private FilePath filePath;
-        private Integer start_index;
-        private Integer end_index;
+
+        @JSONField(name = "start_index")
+        @JsonProperty("start_index")
+        private Integer startIndex;
+
+        @JSONField(name = "end_index")
+        @JsonProperty("end_index")
+        private Integer endIndex;
     }
 
     @Data
@@ -77,11 +106,15 @@ public class MessageContent implements IOpenAiBean {
         /**
          * The ID of the specific File the citation is from.
          */
+        @JSONField(name = "file_id")
+        @JsonProperty("file_id")
         private String fileId;
 
         /**
          * The specific quote in the file.
          */
+        @JSONField(name = "quote")
+        @JsonProperty("quote")
         private String quote;
     }
 
@@ -90,6 +123,8 @@ public class MessageContent implements IOpenAiBean {
         /**
          * The ID of the specific File the citation is from.
          */
+        @JSONField(name = "file_id")
+        @JsonProperty("file_id")
         private String fileId;
     }
 

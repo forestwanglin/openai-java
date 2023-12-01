@@ -1,5 +1,7 @@
 package xyz.felh.openai.moderation;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import xyz.felh.openai.IOpenAiApiRequest;
 
@@ -15,6 +17,8 @@ public class CreateModerationRequest implements IOpenAiApiRequest {
      * The input text to classify
      */
     @NonNull
+    @JSONField(name = "input")
+    @JsonProperty("input")
     private Object input;
 
     /**
@@ -26,6 +30,8 @@ public class CreateModerationRequest implements IOpenAiApiRequest {
      * using our most accurate model. If you use text-moderation-stable, we will provide advanced notice before updating the model.
      * Accuracy of text-moderation-stable may be slightly lower than for text-moderation-latest.
      */
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
 }

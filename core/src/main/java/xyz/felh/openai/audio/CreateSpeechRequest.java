@@ -1,5 +1,7 @@
 package xyz.felh.openai.audio;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -17,12 +19,16 @@ public class CreateSpeechRequest implements IOpenAiApiRequest {
      * One of the available <a href="https://platform.openai.com/docs/models/tts">TTS models</a>: tts-1 or tts-1-hd
      */
     @NonNull
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
     /**
      * The text to generate audio for. The maximum length is 4096 characters.
      */
     @NonNull
+    @JSONField(name = "input")
+    @JsonProperty("input")
     private String input;
 
     /**
@@ -31,6 +37,8 @@ public class CreateSpeechRequest implements IOpenAiApiRequest {
      * See {@link Voice}
      */
     @NonNull
+    @JSONField(name = "voice")
+    @JsonProperty("voice")
     private Voice voice;
 
     /**
@@ -40,6 +48,8 @@ public class CreateSpeechRequest implements IOpenAiApiRequest {
      * <p>
      * See {@link ResponseFormat}
      */
+    @JSONField(name = "response_format")
+    @JsonProperty("response_format")
     private ResponseFormat responseFormat;
 
     /**
@@ -47,6 +57,8 @@ public class CreateSpeechRequest implements IOpenAiApiRequest {
      * <p>
      * The speed of the generated audio. Select a value from 0.25 to 4.0. 1.0 is the default.
      */
+    @JSONField(name = "speed")
+    @JsonProperty("speed")
     private Double speed;
 
     @Getter

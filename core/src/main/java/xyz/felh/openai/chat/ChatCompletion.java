@@ -1,5 +1,7 @@
 package xyz.felh.openai.chat;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,16 +23,22 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
      * <p>
      * See {@link ChatCompletionChoice}
      */
+    @JSONField(name = "choices")
+    @JsonProperty("choices")
     private List<ChatCompletionChoice> choices;
 
     /**
      * The Unix timestamp (in seconds) of when the chat completion was created.
      */
+    @JSONField(name = "created")
+    @JsonProperty("created")
     private Long created;
 
     /**
      * The model used for the chat completion.
      */
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
     /**
@@ -38,12 +46,16 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
      * <p>
      * Can be used in conjunction with the {@linkplain  CreateChatCompletionRequest#getSeed()} request parameter to understand when backend changes have been made that might impact determinism.
      */
+    @JSONField(name = "system_fingerprint")
+    @JsonProperty("system_fingerprint")
     private String systemFingerprint;
 
     /**
      * Usage statistics for the completion request.
      * See {@link Usage}
      */
+    @JSONField(name = "usage")
+    @JsonProperty("usage")
     private Usage usage;
 
     @Getter

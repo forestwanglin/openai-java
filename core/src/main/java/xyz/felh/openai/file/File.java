@@ -1,5 +1,7 @@
 package xyz.felh.openai.file;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,16 +22,22 @@ public class File extends OpenAiApiObjectWithId {
     /**
      * File size in bytes.
      */
+    @JSONField(name = "bytes")
+    @JsonProperty("bytes")
     private Long bytes;
 
     /**
      * The creation time in epoch seconds.
      */
+    @JSONField(name = "created_at")
+    @JsonProperty("created_at")
     private Long createdAt;
 
     /**
      * The name of the file.
      */
+    @JSONField(name = "filename")
+    @JsonProperty("filename")
     private String filename;
 
     /**
@@ -39,6 +47,8 @@ public class File extends OpenAiApiObjectWithId {
      * <p>
      * assistants -  Supported formats: ['c', 'cpp', 'csv', 'docx', 'html', 'java', 'json', 'md', 'pdf', 'php', 'pptx', 'py', 'rb', 'tex', 'txt', 'css', 'jpeg', 'jpg', 'js', 'gif', 'png', 'tar', 'ts', 'xlsx', 'xml', 'zip']
      */
+    @JSONField(name = "purpose")
+    @JsonProperty("purpose")
     private Purpose purpose;
 
 

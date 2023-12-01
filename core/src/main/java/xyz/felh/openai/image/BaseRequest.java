@@ -1,5 +1,7 @@
 package xyz.felh.openai.image;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import xyz.felh.openai.IOpenAiApiRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +26,8 @@ public abstract class BaseRequest implements IOpenAiApiRequest {
      * <p>
      * The model to use for image generation. Only dall-e-2 is supported at this time.
      */
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
     /**
@@ -33,6 +37,8 @@ public abstract class BaseRequest implements IOpenAiApiRequest {
      * <p>
      * Defaults to 1
      */
+    @JSONField(name = "n")
+    @JsonProperty("n")
     private Integer n;
 
     /**
@@ -44,6 +50,8 @@ public abstract class BaseRequest implements IOpenAiApiRequest {
      * <p>
      * See {@link ImageSize}
      */
+    @JSONField(name = "size")
+    @JsonProperty("size")
     private ImageSize size;
 
     /**
@@ -55,6 +63,8 @@ public abstract class BaseRequest implements IOpenAiApiRequest {
      * <p>
      * See {@link ImageResponseFormat}
      */
+    @JSONField(name = "response_format")
+    @JsonProperty("response_format")
     private ImageResponseFormat responseFormat;
 
     /**
@@ -64,6 +74,8 @@ public abstract class BaseRequest implements IOpenAiApiRequest {
      * <p>
      * string, Optional
      */
+    @JSONField(name = "user")
+    @JsonProperty("user")
     private String user;
 
 }

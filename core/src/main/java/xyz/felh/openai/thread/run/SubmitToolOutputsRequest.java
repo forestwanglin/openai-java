@@ -1,5 +1,7 @@
 package xyz.felh.openai.thread.run;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import xyz.felh.openai.IOpenAiApiRequest;
 
@@ -17,6 +19,8 @@ public class SubmitToolOutputsRequest implements IOpenAiApiRequest {
      * See {@link ToolOutput}
      */
     @NonNull
+    @JSONField(name = "tool_outputs")
+    @JsonProperty("tool_outputs")
     private List<ToolOutput> toolOutputs;
 
 }

@@ -1,5 +1,7 @@
 package xyz.felh.openai.image;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -17,6 +19,8 @@ public class CreateImageRequest extends BaseRequest {
      * string, Required
      */
     @NonNull
+    @JSONField(name = "prompt")
+    @JsonProperty("prompt")
     private String prompt;
 
     /**
@@ -28,6 +32,8 @@ public class CreateImageRequest extends BaseRequest {
      * <p>
      * See {@link ImageQuality}
      */
+    @JSONField(name = "quality")
+    @JsonProperty("quality")
     private ImageQuality quality;
 
     /**
@@ -39,6 +45,8 @@ public class CreateImageRequest extends BaseRequest {
      * <p>
      * See {@link ImageStyle}
      */
+    @JSONField(name = "style")
+    @JsonProperty("style")
     private ImageStyle style;
 
 }

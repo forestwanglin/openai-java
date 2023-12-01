@@ -1,5 +1,7 @@
 package xyz.felh.openai.thread.run.step;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import xyz.felh.openai.IOpenAiBean;
 
@@ -11,11 +13,15 @@ public class StepDetails implements IOpenAiBean {
     /**
      * message_creation, tool_calls
      */
+    @JSONField(name = "type")
+    @JsonProperty("type")
     private String type;
 
     /**
      * Details of the message creation by the run step.
      */
+    @JSONField(name = "message_creation")
+    @JsonProperty("message_creation")
     private MessageCreation messageCreation;
 
     /**
@@ -23,6 +29,8 @@ public class StepDetails implements IOpenAiBean {
      * <p>
      * See {@link StepToolCall}
      */
+    @JSONField(name = "tool_calls")
+    @JsonProperty("tool_calls")
     private List<StepToolCall> toolCalls;
 
     @Data
@@ -30,6 +38,8 @@ public class StepDetails implements IOpenAiBean {
         /**
          * The ID of the message that was created by this run step.
          */
+        @JSONField(name = "message_id")
+        @JsonProperty("message_id")
         private String messageId;
     }
 }

@@ -1,5 +1,7 @@
 package xyz.felh.openai.chat.tool;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -14,6 +16,8 @@ public class Function {
      * String
      */
     @NonNull
+    @JSONField(name = "name")
+    @JsonProperty("name")
     private String name;
 
     /**
@@ -21,6 +25,8 @@ public class Function {
      * <p>
      * string, Optional
      */
+    @JSONField(name = "description")
+    @JsonProperty("description")
     private String description;
 
     /**
@@ -29,6 +35,8 @@ public class Function {
      * To describe a function that accepts no parameters, provide the value {"type": "object", "properties": {}}.
      */
     @NonNull
+    @JSONField(name = "parameters")
+    @JsonProperty("parameters")
     private Object parameters;
 
 }

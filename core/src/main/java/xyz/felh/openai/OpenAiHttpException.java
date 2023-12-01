@@ -1,5 +1,8 @@
 package xyz.felh.openai;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Runtime Exception for HTTP
  */
@@ -8,13 +11,19 @@ public class OpenAiHttpException extends RuntimeException {
     /**
      * HTTP status code
      */
+    @JSONField(name = "status_code")
+    @JsonProperty("status_code")
     public final int statusCode;
 
     /**
      * OpenAI error code, for example "invalid_api_key"
      */
+    @JSONField(name = "code")
+    @JsonProperty("code")
     public final String code;
 
+    @JSONField(name = "param")
+    @JsonProperty("param")
     public final String param;
 
     /**

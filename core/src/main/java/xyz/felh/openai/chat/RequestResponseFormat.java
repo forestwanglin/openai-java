@@ -1,5 +1,7 @@
 package xyz.felh.openai.chat;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +24,8 @@ public class RequestResponseFormat implements IOpenAiBean {
      * <p>
      * Defaults to text, See {@link TypeValue}
      */
+    @JSONField(name = "type")
+    @JsonProperty("type")
     private TypeValue type;
 
 
@@ -44,8 +48,6 @@ public class RequestResponseFormat implements IOpenAiBean {
             return Arrays.stream(values()).filter(it ->
                     it.value.equals(value)).findFirst().orElse(null);
         }
-
     }
-
 
 }

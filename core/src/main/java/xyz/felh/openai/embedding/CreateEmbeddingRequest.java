@@ -1,5 +1,7 @@
 package xyz.felh.openai.embedding;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import xyz.felh.openai.IOpenAiApiRequest;
 import lombok.*;
@@ -18,6 +20,8 @@ public class CreateEmbeddingRequest implements IOpenAiApiRequest {
      * ID of the model to use. You can use the List models API to see all of your available models, or see our Model overview for descriptions of them.
      */
     @NonNull
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
     /**
@@ -34,6 +38,8 @@ public class CreateEmbeddingRequest implements IOpenAiApiRequest {
      * array array - The array of arrays containing integers that will be turned into an embedding.
      */
     @NonNull
+    @JSONField(name = "input")
+    @JsonProperty("input")
     private Object input;
 
     /**
@@ -42,6 +48,8 @@ public class CreateEmbeddingRequest implements IOpenAiApiRequest {
      * The format to return the embeddings in. Can be either float or base64.
      * See {@link EncodingFormat}
      */
+    @JSONField(name = "encoding_format")
+    @JsonProperty("encoding_format")
     private EncodingFormat encodingFormat;
 
     /**
@@ -49,6 +57,8 @@ public class CreateEmbeddingRequest implements IOpenAiApiRequest {
      * <p>
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. Learn more.
      */
+    @JSONField(name = "user")
+    @JsonProperty("user")
     private String user;
 
     @Getter

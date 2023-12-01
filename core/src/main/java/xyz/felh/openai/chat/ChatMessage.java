@@ -1,6 +1,8 @@
 package xyz.felh.openai.chat;
 
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import xyz.felh.openai.IOpenAiBean;
@@ -28,6 +30,8 @@ public class ChatMessage implements IOpenAiBean {
      * You may use {@link ChatMessage} enum.
      */
     @NonNull
+    @JSONField(name = "role")
+    @JsonProperty("role")
     private ChatMessageRole role;
 
     /**
@@ -38,6 +42,8 @@ public class ChatMessage implements IOpenAiBean {
      * 3. role=assistant, string or null, required<br/>
      * 4. role=tool, string or null, required<br/>
      */
+    @JSONField(name = "content")
+    @JsonProperty("content")
     private Object content;
 
     /**
@@ -47,6 +53,8 @@ public class ChatMessage implements IOpenAiBean {
      * <p>
      * Do not provide this field when role is tool.
      */
+    @JSONField(name = "name")
+    @JsonProperty("name")
     private String name;
 
     /**
@@ -57,6 +65,8 @@ public class ChatMessage implements IOpenAiBean {
      * <p>
      * See {@link ToolCall}
      */
+    @JSONField(name = "tool_calls")
+    @JsonProperty("tool_calls")
     private List<ToolCall> toolCalls;
 
     /**
@@ -65,6 +75,8 @@ public class ChatMessage implements IOpenAiBean {
      * String, Required
      * It is provided when role is {@link ChatMessageRole#TOOL}
      */
+    @JSONField(name = "tool_call_id")
+    @JsonProperty("tool_call_id")
     private String toolCallId;
 
     public void addTextToContent(String text) {
@@ -111,12 +123,16 @@ public class ChatMessage implements IOpenAiBean {
          * Either a URL of the image or the base64 encoded image data.
          */
         @NonNull
+        @JSONField(name = "url")
+        @JsonProperty("url")
         private String url;
         /**
          * Specifies the detail level of the image.
          * <p>
          * Optional, Defaults to auto
          */
+        @JSONField(name = "detail")
+        @JsonProperty("detail")
         private ImageUrlDetail detail;
     }
 
@@ -129,16 +145,22 @@ public class ChatMessage implements IOpenAiBean {
         /**
          * The type of the content part.
          */
+        @JSONField(name = "type")
+        @JsonProperty("type")
         private ContentType type;
 
         /**
          * The text content.
          */
+        @JSONField(name = "text")
+        @JsonProperty("text")
         private String text;
 
         /**
          * Image url
          */
+        @JSONField(name = "image_url")
+        @JsonProperty("image_url")
         private ImageUrl imageUrl;
 
         private static ContentItem buildText(String text) {

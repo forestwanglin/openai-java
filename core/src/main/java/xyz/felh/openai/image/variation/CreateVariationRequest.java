@@ -1,5 +1,7 @@
 package xyz.felh.openai.image.variation;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import xyz.felh.openai.image.BaseRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -17,7 +19,11 @@ public class CreateVariationRequest extends BaseRequest {
      * <p>
      * string, Required
      */
+    @JSONField(name = "image")
+    @JsonProperty("image")
     private byte[] image;
+    @JSONField(name = "image_path")
+    @JsonProperty("image_path")
     private String imagePath;
 
 }

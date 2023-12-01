@@ -1,5 +1,7 @@
 package xyz.felh.openai.image.edit;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import xyz.felh.openai.image.BaseRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -18,6 +20,8 @@ public class CreateEditRequest extends BaseRequest {
      * string
      */
     @NonNull
+    @JSONField(name = "prompt")
+    @JsonProperty("prompt")
     private String prompt;
 
     /**
@@ -25,7 +29,11 @@ public class CreateEditRequest extends BaseRequest {
      * <p>
      * string, Required
      */
+    @JSONField(name = "image")
+    @JsonProperty("image")
     private byte[] image;
+    @JSONField(name = "image_path")
+    @JsonProperty("image_path")
     private String imagePath;
 
     /**
@@ -33,7 +41,11 @@ public class CreateEditRequest extends BaseRequest {
      * <p>
      * string, Optional
      */
+    @JSONField(name = "mask")
+    @JsonProperty("mask")
     private byte[] mask;
+    @JSONField(name = "mask_path")
+    @JsonProperty("mask_path")
     private String maskPath;
 
 }

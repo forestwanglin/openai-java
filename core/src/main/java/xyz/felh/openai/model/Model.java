@@ -1,5 +1,7 @@
 package xyz.felh.openai.model;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
@@ -19,11 +21,15 @@ public class Model extends OpenAiApiObjectWithId {
     /**
      * The Unix timestamp (in seconds) when the model was created.
      */
+    @JSONField(name = "created")
+    @JsonProperty("created")
     public Long created;
 
     /**
      * The organization that owns the model.
      */
+    @JSONField(name = "owned_by")
+    @JsonProperty("owned_by")
     private String ownedBy;
 
 }

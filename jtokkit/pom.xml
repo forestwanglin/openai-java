@@ -6,7 +6,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>3.3.0304</version>
+        <version>3.4.0304</version>
     </parent>
 
     <artifactId>jtokkit</artifactId>
@@ -28,12 +28,6 @@
             <groupId>xyz.felh</groupId>
             <artifactId>core</artifactId>
             <version>${openai-java.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>2.0.26</version>
         </dependency>
 
         <dependency>

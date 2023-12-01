@@ -1,5 +1,7 @@
 package xyz.felh.openai.assistant;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import xyz.felh.openai.IOpenAiBean;
@@ -14,6 +16,8 @@ public class AssistantTool implements IOpenAiBean {
     /**
      * The type of tool being defined: code_interpreter, retrieval, function
      */
+    @JSONField(name = "type")
+    @JsonProperty("type")
     private Type type;
 
     /**
@@ -21,6 +25,8 @@ public class AssistantTool implements IOpenAiBean {
      * <p>
      * See {@link Function}
      */
+    @JSONField(name = "function")
+    @JsonProperty("function")
     private Function function;
 
     @Getter

@@ -1,5 +1,7 @@
 package xyz.felh.openai.chat.tool;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import xyz.felh.openai.IOpenAiBean;
 
@@ -13,14 +15,19 @@ public class ToolChoice implements IOpenAiBean {
      * The type of the tool. Currently, only function is supported.
      * <p>
      * string, Optional
+     * <p>
+     * See {@link Type}
      */
-    private String type;
+    @JSONField(name = "type")
+    @JsonProperty("type")
+    private Type type;
 
     /**
      * function object
      */
+    @JSONField(name = "function")
+    @JsonProperty("function")
     private Function function;
-
 
     @Data
     @Builder
@@ -34,6 +41,8 @@ public class ToolChoice implements IOpenAiBean {
          * string
          */
         @NonNull
+        @JSONField(name = "name")
+        @JsonProperty("name")
         private String name;
 
     }

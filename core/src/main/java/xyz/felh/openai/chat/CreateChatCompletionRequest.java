@@ -1,5 +1,7 @@
 package xyz.felh.openai.chat;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import xyz.felh.openai.IOpenAiApiRequest;
 import xyz.felh.openai.chat.tool.Tool;
@@ -18,6 +20,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * ID of the model to use. See the <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility">model endpoint compatibility</a> table for details on which models work with the Chat API.
      */
     @NonNull
+    @JSONField(name = "model")
+    @JsonProperty("model")
     private String model;
 
     /**
@@ -26,6 +30,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * See {@link ChatMessage}
      */
     @NonNull
+    @JSONField(name = "messages")
+    @JsonProperty("messages")
     private List<ChatMessage> messages;
 
     /**
@@ -35,6 +41,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * <a href="https://platform.openai.com/docs/guides/text-generation/parameter-details">See more information about frequency and presence penalties.</a>
      */
+    @JSONField(name = "frequency_penalty")
+    @JsonProperty("frequency_penalty")
     private Double frequencyPenalty;
 
     /**
@@ -45,6 +53,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * Map, Optional
      * Defaults to null
      */
+    @JSONField(name = "logit_bias")
+    @JsonProperty("logit_bias")
     private Map<String, Integer> logitBias;
 
     /**
@@ -56,6 +66,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Defaults to inf
      */
+    @JSONField(name = "max_tokens")
+    @JsonProperty("max_tokens")
     private Integer maxTokens;
 
     /**
@@ -65,6 +77,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Defaults to 1
      */
+    @JSONField(name = "n")
+    @JsonProperty("n")
     private Integer n;
 
     /**
@@ -74,6 +88,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * <a href="https://platform.openai.com/docs/guides/text-generation/parameter-details">See more information about frequency and presence penalties.</a>
      */
+    @JSONField(name = "presence_penalty")
+    @JsonProperty("presence_penalty")
     private Double presencePenalty;
 
     /**
@@ -87,6 +103,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * See {@link RequestResponseFormat}
      */
+    @JSONField(name = "response_format")
+    @JsonProperty("response_format")
     private RequestResponseFormat responseFormat;
 
     /**
@@ -94,6 +112,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * integer or null, Optional
      */
+    @JSONField(name = "seed")
+    @JsonProperty("seed")
     private Integer seed;
 
     /**
@@ -103,6 +123,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Optional Defaults to null
      */
+    @JSONField(name = "stop")
+    @JsonProperty("stop")
     private String stop;
 
     /**
@@ -112,6 +134,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Defaults to false
      */
+    @JSONField(name = "stream")
+    @JsonProperty("stream")
     private Boolean stream;
 
     /**
@@ -123,6 +147,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Defaults to 1
      */
+    @JSONField(name = "temperature")
+    @JsonProperty("temperature")
     private Double temperature;
 
     /**
@@ -134,6 +160,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Defaults to 1
      */
+    @JSONField(name = "top_p")
+    @JsonProperty("top_p")
     private Double topP;
 
     /**
@@ -143,6 +171,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * See {@link Tool}
      */
+    @JSONField(name = "tools")
+    @JsonProperty("tools")
     private List<Tool> tools;
 
     /**
@@ -155,6 +185,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * string - none means the model will not call a function and instead generates a message. auto means the model can pick between generating a message or calling a function.
      * object - Specifies a tool the model should use. Use to force the model to call a specific function.{@link ToolChoice}
      */
+    @JSONField(name = "tool_choice")
+    @JsonProperty("tool_choice")
     private Object toolChoice;
 
     /**
@@ -164,6 +196,8 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * string, Optional
      */
+    @JSONField(name = "user")
+    @JsonProperty("user")
     private String user;
 
 }
