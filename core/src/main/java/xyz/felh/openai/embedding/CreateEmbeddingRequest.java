@@ -31,7 +31,7 @@ public class CreateEmbeddingRequest implements IOpenAiApiRequest {
      * <p>
      * string string - The string that will be turned into an embedding.
      * <p>
-     * array array - The array of strings that will be turned into an embedding.
+     * array array - The array of strings that will be turned into an embedding. Each line's max is 8191
      * <p>
      * array array - The array of integers that will be turned into an embedding.
      * <p>

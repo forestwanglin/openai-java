@@ -31,6 +31,7 @@ import xyz.felh.openai.image.*;
 import xyz.felh.openai.image.edit.CreateEditRequest;
 import xyz.felh.openai.image.variation.CreateVariationRequest;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
+import xyz.felh.openai.jtokkit.api.EncodingType;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
@@ -350,8 +351,18 @@ public class OpenAiServiceTest {
 
     @Test
     public void createEmbedding() {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 4096; i++) {
+            sb.append("AGI ");
+        }
+
+       log.info("f:"+ TikTokenUtils.tokens(EncodingType.CL100K_BASE, sb.toString().trim()));
+
+        List<String> inputs = new ArrayList<>();
+        inputs.add(sb.toString().trim());
         CreateEmbeddingRequest createEmbeddingRequest = CreateEmbeddingRequest.builder()
-                .input("The food was delicious and the waiter...")
+                .input(inputs)
+                .encodingFormat(CreateEmbeddingRequest.EncodingFormat.FLOAT)
                 .model("text-embedding-ada-002")
                 .build();
         CreateEmbeddingResponse createEmbeddingResponse = getOpenAiService().createEmbeddings(createEmbeddingRequest);
