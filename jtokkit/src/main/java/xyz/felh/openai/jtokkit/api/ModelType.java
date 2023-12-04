@@ -16,10 +16,8 @@ public enum ModelType {
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
     // Will point to gpt-3.5-turbo-1106 starting Dec 11, 2023.
     GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE, 4097),
-    // Will point to gpt-3.5-turbo-1106 starting Dec 11, 2023.
-    GPT_3_5_TURBO_16K("gpt-3.5-turbo-16k", EncodingType.CL100K_BASE, 16385),
 
-    // 20231106 update
+    // 20231106 update, instead of GPT_3_5_TURBO_16K
     GPT_3_5_TURBO_1106("gpt-3.5-turbo-1106", EncodingType.CL100K_BASE, 16385),
     GPT_4_1106_PREVIEW("gpt-4-1106-preview", EncodingType.CL100K_BASE, 128000),
     GPT_4_VISION_PREVIEW("gpt-4-vision-preview", EncodingType.CL100K_BASE, 128000),
@@ -66,8 +64,28 @@ public enum ModelType {
     private static final Map<String, ModelType> nameToModelType = Arrays.stream(values())
             .collect(Collectors.toMap(ModelType::getName, Function.identity()));
 
+    /**
+     * -- GETTER --
+     *  Returns the name of the model type as used by the OpenAI API.
+     *
+     * @return the name of the model type
+     */
     private final String name;
+    /**
+     * -- GETTER --
+     *  Returns the encoding type that is used by this model type.
+     *
+     * @return the encoding type
+     */
     private final EncodingType encodingType;
+    /**
+     * -- GETTER --
+     *  Returns the maximum context length that is supported by this model type. Note that
+     *  the maximum context length consists of the amount of prompt tokens and the amount of
+     *  completion tokens (where applicable).
+     *
+     * @return the maximum context length for this model type
+     */
     private final int maxContextLength;
 
     ModelType(
@@ -78,35 +96,6 @@ public enum ModelType {
         this.name = name;
         this.encodingType = encodingType;
         this.maxContextLength = maxContextLength;
-    }
-
-    /**
-     * Returns the name of the model type as used by the OpenAI API.
-     *
-     * @return the name of the model type
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the encoding type that is used by this model type.
-     *
-     * @return the encoding type
-     */
-    public EncodingType getEncodingType() {
-        return encodingType;
-    }
-
-    /**
-     * Returns the maximum context length that is supported by this model type. Note that
-     * the maximum context length consists of the amount of prompt tokens and the amount of
-     * completion tokens (where applicable).
-     *
-     * @return the maximum context length for this model type
-     */
-    public int getMaxContextLength() {
-        return maxContextLength;
     }
 
     /**
