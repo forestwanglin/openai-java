@@ -146,7 +146,7 @@ public class OpenAiServiceTest {
                 .responseFormat(RequestResponseFormat.builder().type(RequestResponseFormat.TypeValue.TEXT).build())
                 .user("FU92834923849328943824")
                 .build();
-        log.info("p tokens {}", TikTokenUtils.tokens(model, chatMessages));
+        log.info("p tokens {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: {}", toJSONString(chatCompletion));
     }
@@ -224,9 +224,8 @@ public class OpenAiServiceTest {
                 .stream(false)
                 .build();
         log.info("prompts: tools: {}", TikTokenUtils.tokens(model, null, tools));
-        log.info("prompts: message: {}, tools: {}, total: {}", TikTokenUtils.tokens(model, messages),
-                TikTokenUtils.tokens(model, null, tools)
-                , TikTokenUtils.tokens(model, messages) + TikTokenUtils.tokens(model, null, tools));
+        log.info("prompts: message: {}, tools: {}", TikTokenUtils.estimateTokens(chatCompletionRequest),
+                TikTokenUtils.tokens(model, null, tools));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("request: " + toJSONString(chatCompletionRequest));
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -356,7 +355,7 @@ public class OpenAiServiceTest {
             sb.append("AGI ");
         }
 
-       log.info("f:"+ TikTokenUtils.tokens(EncodingType.CL100K_BASE, sb.toString().trim()));
+        log.info("f:" + TikTokenUtils.tokens(EncodingType.CL100K_BASE, sb.toString().trim()));
 
         List<String> inputs = new ArrayList<>();
         inputs.add(sb.toString().trim());

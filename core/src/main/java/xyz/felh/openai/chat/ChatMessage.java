@@ -21,7 +21,12 @@ import java.util.List;
 public class ChatMessage implements IOpenAiBean {
 
     public ChatMessage(@NonNull ChatMessageRole role, Object content) {
+        this(role, null, content);
+    }
+
+    public ChatMessage(@NonNull ChatMessageRole role, String name, Object content) {
         this.role = role;
+        this.name = name;
         this.content = content;
     }
 
@@ -163,19 +168,19 @@ public class ChatMessage implements IOpenAiBean {
         @JsonProperty("image_url")
         private ImageUrl imageUrl;
 
-        private static ContentItem buildText(String text) {
+        public static ContentItem buildText(String text) {
             return ContentItem.builder().type(ContentType.TEXT).text(text).build();
         }
 
         // 包括 data:image/jpeg;base64,
-        private static ContentItem buildImageWithBase64(String base64, ImageUrlDetail detail) {
+        public static ContentItem buildImageWithBase64(String base64, ImageUrlDetail detail) {
             return ContentItem.builder()
                     .type(ContentType.IMAGE_URL)
                     .imageUrl(ImageUrl.builder().url(String.format("f\"%s\"", base64)).detail(detail).build())
                     .build();
         }
 
-        private static ContentItem buildImageWithUrl(String imageUrl, ImageUrlDetail detail) {
+        public static ContentItem buildImageWithUrl(String imageUrl, ImageUrlDetail detail) {
             return ContentItem.builder()
                     .type(ContentType.IMAGE_URL)
                     .imageUrl(ImageUrl.builder().url(imageUrl).detail(detail).build())
