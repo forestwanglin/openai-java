@@ -180,21 +180,9 @@ public class TikTokenUtils {
         List<Tool> tools = request.getTools();
         Object toolChoice = request.getToolChoice();
         String chatModel = request.getModel();
-        int tokens = 0;
-        boolean paddedSystem = false;
 
-        for (ChatMessage message : messages) {
-            ChatMessage msg = SerializationUtils.clone(message);
-            if (msg.getRole() == ChatMessageRole.SYSTEM && Preconditions.isNotBlank(tools) && !paddedSystem) {
-                if (Preconditions.isNotBlank(msg.getContent()) && msg.getContent() instanceof String) {
-                    msg.setContent(msg.getContent() + "\n");
-                }
-                paddedSystem = true;
-            }
-            tokens += estimateTokensInMessage(chatModel, msg);
-        }
-        // Each completion (vs message) seems to carry a 3-token overhead
-        tokens += 3;
+        int tokens = 0;
+        tokens += estimateTokensInMessages(chatModel, messages, tools);
 
         // If there are functions, add the function definitions as they count towards token usage
         if (Preconditions.isNotBlank(tools)) {
@@ -231,6 +219,27 @@ public class TikTokenUtils {
         return tokens;
     }
 
+    public static int estimateTokensInMessages(String modelName, List<ChatMessage> messages) {
+        return estimateTokensInMessages(modelName, messages, null);
+    }
+
+    public static int estimateTokensInMessages(String modelName, List<ChatMessage> messages, List<Tool> tools) {
+        int tokens = 0;
+        boolean paddedSystem = false;
+        for (ChatMessage message : messages) {
+            ChatMessage msg = SerializationUtils.clone(message);
+            if (msg.getRole() == ChatMessageRole.SYSTEM && Preconditions.isNotBlank(tools) && !paddedSystem) {
+                if (Preconditions.isNotBlank(msg.getContent()) && msg.getContent() instanceof String) {
+                    msg.setContent(msg.getContent() + "\n");
+                }
+                paddedSystem = true;
+            }
+            tokens += estimateTokensInMessage(modelName, msg);
+        }
+        // Each completion (vs message) seems to carry a 3-token overhead
+        tokens += 3;
+        return tokens;
+    }
 
     /**
      * 通过模型名称计算messages获取编码数组
