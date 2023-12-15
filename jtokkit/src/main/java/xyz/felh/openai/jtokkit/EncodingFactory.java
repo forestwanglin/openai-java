@@ -21,6 +21,9 @@ final class EncodingFactory {
     private static final String FIM_MIDDLE = "<|fim_middle|>";
     private static final String FIM_SUFFIX = "<|fim_suffix|>";
     private static final String ENDOFPROMPT = "<|endofprompt|>";
+    private static final String IM_START = "<|im_start|>";
+    private static final String IM_END = "<|im_end|>";
+    private static final String IM_SEP = "<|im_sep|>";
 
     private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
 
@@ -50,6 +53,9 @@ final class EncodingFactory {
         map.put(FIM_MIDDLE, 100259);
         map.put(FIM_SUFFIX, 100260);
         map.put(ENDOFPROMPT, 100276);
+        map.put(IM_START, 100264);
+        map.put(IM_SEP, 100266);
+        map.put(IM_END, 100265);
         SPECIAL_TOKENS_CL100K_BASE = Collections.unmodifiableMap(map);
     }
 

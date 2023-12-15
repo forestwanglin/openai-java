@@ -316,9 +316,8 @@ public class TikTokenUtils {
         }
         if (message.getRole() == ChatMessageRole.ASSISTANT && Preconditions.isNotBlank(message.getToolCalls())) {
             for (ToolCall toolCall : message.getToolCalls()) {
-                tokens += 11;
+                tokens += 6;
                 tokens += tokens(encoding, toolCall.getType().value());
-//                tokens += tokens(encoding, toolCall.getFunction().getName());
                 if (toolCall.getType() == Type.FUNCTION) {
                     if (Preconditions.isNotBlank(toolCall.getFunction().getName())) {
                         tokens += tokens(encoding, toolCall.getFunction().getName());
@@ -328,12 +327,21 @@ public class TikTokenUtils {
                     }
                 }
             }
-            tokens -= 3;
+            if (message.getToolCalls().size() > 1) {
+                // s1, add delta when multi tools is added
+                tokens += 15;
+                // s2
+                tokens -= (message.getToolCalls().size() - 1) * 5 - 1;
+            } else {
+                // s1
+                // s2
+                tokens -= 2;
+            }
         }
         tokens += 3; // Add three per message
 
         if (message.getRole() == ChatMessageRole.TOOL) {
-            tokens -= 2; // subtract 2 if role is "tool"
+            tokens += 2; // add 2 if role is "tool"
         }
 
         return tokens;

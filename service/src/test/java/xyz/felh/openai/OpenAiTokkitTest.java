@@ -59,9 +59,9 @@ public class OpenAiTokkitTest {
         @JsonPropertyDescription("The city and state, e.g. San Francisco, CA")
         @JsonProperty(value = "location", required = true)
         private String location;
-        @JsonPropertyDescription("The unit of temperature")
-        @JsonProperty(value = "unit")
-        private OpenAiServiceTest.Unit unit;
+//        @JsonPropertyDescription("The unit of temperature")
+//        @JsonProperty(value = "unit")
+//        private OpenAiServiceTest.Unit unit;
 //        @JsonProperty(value = "low", required = true)
 //        private L low;
     }
@@ -97,7 +97,7 @@ public class OpenAiTokkitTest {
 
 //        chatMessages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."));
         chatMessages.add(new ChatMessage(ChatMessageRole.USER, "FU0000002342304230234003",
-                List.of(ChatMessage.ContentItem.buildText("Hi, what weather is in Shanghai, Suzhou and Nanjing?"))));
+                List.of(ChatMessage.ContentItem.buildText("Hi, what weather is in 广州和深圳?"))));
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
                 .with(new JacksonModule(JacksonOption.RESPECT_JSONPROPERTY_REQUIRED));
@@ -112,13 +112,13 @@ public class OpenAiTokkitTest {
                                 .description("Get the current weather in a given location")
                                 .parameters(JSONObject.parseObject(generator.generateSchema(GetWeatherParam.class).toString()))
                                 .build()).build()
-//                , Tool.builder()
-//                        .type(Type.FUNCTION)
-//                        .function(Function.builder()
-//                                .name("get_location")
-//                                .description("Get the location from longitude and latitude")
-//                                .parameters(JSONObject.parseObject(generator.generateSchema(GetLocationParam.class).toString()))
-//                                .build()).build()
+                , Tool.builder()
+                        .type(Type.FUNCTION)
+                        .function(Function.builder()
+                                .name("get_location")
+                                .description("Get the location from longitude and latitude")
+                                .parameters(JSONObject.parseObject(generator.generateSchema(GetLocationParam.class).toString()))
+                                .build()).build()
         );
 
         log.info("tools tokens: {}", TikTokenUtils.estimateTokensInTools(modelName, tools));
@@ -140,15 +140,15 @@ public class OpenAiTokkitTest {
             chatMessages.add(chatMessage);
             // You can change to call your own function to get weather in parallel
             for (ToolCall toolCall : toolCalls) {
-                log.info("fc: {}", toolCall.getFunction());
+//                log.info("fc: {}", toolCall.getFunction());
                 ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, "Sunny");
                 cm.setToolCallId(toolCall.getId());
                 chatMessages.add(cm);
             }
             chatCompletionRequest.setToolChoice(null);
             chatCompletionRequest.setTools(null);
-            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
             log.info("prompts: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
+            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
             log.info("request: " + toJSONString(chatCompletionRequest));
             log.info("chatCompletion: " + toJSONString(chatCompletion));
         }
@@ -167,9 +167,9 @@ public class OpenAiTokkitTest {
 
     @Test
     public void mock() throws JsonProcessingException {
-        String json = """
-                {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_WW3uyZgruLEGV5FfFqEHJdWP","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\":\\"Shanghai\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_WW3uyZgruLEGV5FfFqEHJdWP"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
-                """;
+//        String json = """
+//                {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_WW3uyZgruLEGV5FfFqEHJdWP","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\":\\"Shanghai\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_WW3uyZgruLEGV5FfFqEHJdWP"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
+//                """;
 //        String json = """
 //                {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai and Beijing?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_6E7nDJMUTsKq9V83bOsgTEt3","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_0FeVYss3MPCT5FJ8fYhWQsBd","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Beijing\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_6E7nDJMUTsKq9V83bOsgTEt3"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_0FeVYss3MPCT5FJ8fYhWQsBd"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
 //                 """;
@@ -177,9 +177,12 @@ public class OpenAiTokkitTest {
 //                {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai, Suzhou and Nanjing?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_Zq8cBotKsktF3QC1dM6LF0sT","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_yBj8onLAbfVYuZkZBTEeu3Lr","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Suzhou\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_WzdayZPO2GNYUOJmSXLHWo8N","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Nanjing\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_Zq8cBotKsktF3QC1dM6LF0sT"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_yBj8onLAbfVYuZkZBTEeu3Lr"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_WzdayZPO2GNYUOJmSXLHWo8N"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
 //
 //                """;
+        String json = """
+                 {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai and 苏州?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_8RjeAxqP0MSHzzvREXlj2WiX","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_OBV3MpNAdHKWbeEpzUgFG9jm","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Suzhou\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_8RjeAxqP0MSHzzvREXlj2WiX"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_OBV3MpNAdHKWbeEpzUgFG9jm"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null} 
+                """;
         ObjectMapper objectMapper = new ObjectMapper();
         CreateChatCompletionRequest request = objectMapper.readValue(json, CreateChatCompletionRequest.class);
-        log.info("request {}", request);
+        log.info("request: {}", toJSONString(request));
         for (ChatMessage message : request.getMessages()) {
             if (!(message.getContent() instanceof String)) {
                 List<ChatMessage.ContentItem> ci = objectMapper.readValue(JSONObject.toJSONString(message.getContent()), new TypeReference<>() {
