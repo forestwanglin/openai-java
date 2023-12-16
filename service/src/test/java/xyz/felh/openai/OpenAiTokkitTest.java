@@ -92,7 +92,7 @@ public class OpenAiTokkitTest {
 
     @Test
     public void chatCompletion() {
-        String modelName = ModelType.GPT_3_5_TURBO_1106.getName();
+        String modelName = ModelType.GPT_3_5_TURBO.getName();
         List<ChatMessage> chatMessages = new ArrayList<>();
 
 //        chatMessages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."));
@@ -132,26 +132,26 @@ public class OpenAiTokkitTest {
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
 
-        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
-        if (Preconditions.isNotBlank(toolCalls)) {
-            // add response message to new request
-            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
-            chatMessage.setContent("");
-            chatMessages.add(chatMessage);
-            // You can change to call your own function to get weather in parallel
-            for (ToolCall toolCall : toolCalls) {
-//                log.info("fc: {}", toolCall.getFunction());
-                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, "Sunny");
-                cm.setToolCallId(toolCall.getId());
-                chatMessages.add(cm);
-            }
-            chatCompletionRequest.setToolChoice(null);
-            chatCompletionRequest.setTools(null);
-            log.info("prompts: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
-            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-            log.info("request: " + toJSONString(chatCompletionRequest));
-            log.info("chatCompletion: " + toJSONString(chatCompletion));
-        }
+//        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
+//        if (Preconditions.isNotBlank(toolCalls)) {
+//            // add response message to new request
+//            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
+//            chatMessage.setContent("");
+//            chatMessages.add(chatMessage);
+//            // You can change to call your own function to get weather in parallel
+//            for (ToolCall toolCall : toolCalls) {
+////                log.info("fc: {}", toolCall.getFunction());
+//                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, "Sunny");
+//                cm.setToolCallId(toolCall.getId());
+//                chatMessages.add(cm);
+//            }
+//            chatCompletionRequest.setToolChoice(null);
+//            chatCompletionRequest.setTools(null);
+//            log.info("prompts: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
+//            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+//            log.info("request: " + toJSONString(chatCompletionRequest));
+//            log.info("chatCompletion: " + toJSONString(chatCompletion));
+//        }
 
 //        List<ChatMessage> messages1 = new ArrayList<>();
 //        messages1.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Shanghai?", "u12323"));
