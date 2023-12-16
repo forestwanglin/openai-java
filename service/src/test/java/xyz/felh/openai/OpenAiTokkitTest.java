@@ -177,8 +177,58 @@ public class OpenAiTokkitTest {
 //                {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai, Suzhou and Nanjing?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_Zq8cBotKsktF3QC1dM6LF0sT","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_yBj8onLAbfVYuZkZBTEeu3Lr","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Suzhou\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_WzdayZPO2GNYUOJmSXLHWo8N","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Nanjing\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_Zq8cBotKsktF3QC1dM6LF0sT"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_yBj8onLAbfVYuZkZBTEeu3Lr"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_WzdayZPO2GNYUOJmSXLHWo8N"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
 //
 //                """;
+//        String json = """
+//                 {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai and 苏州?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_8RjeAxqP0MSHzzvREXlj2WiX","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_OBV3MpNAdHKWbeEpzUgFG9jm","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Suzhou\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_8RjeAxqP0MSHzzvREXlj2WiX"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_OBV3MpNAdHKWbeEpzUgFG9jm"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
+//                """;
         String json = """
-                 {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai and 苏州?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_8RjeAxqP0MSHzzvREXlj2WiX","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_OBV3MpNAdHKWbeEpzUgFG9jm","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Suzhou\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_8RjeAxqP0MSHzzvREXlj2WiX"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_OBV3MpNAdHKWbeEpzUgFG9jm"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null} 
+                 {
+                  "max_tokens": 4096,
+                  "messages": [
+                    {
+                      "content": "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "你好啊",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "gpt-3.5-turbo-1106",
+                  "seed": 2645,
+                  "stream": true,
+                  "temperature": 0.7,
+                  "tools": [
+                    {
+                      "function": {
+                        "description": "Get the current weather in a given location",
+                        "name": "get_weather",
+                        "parameters": {
+                          "$schema": "http://json-schema.org/draft-07/schema#",
+                          "type": "object",
+                          "properties": {
+                            "live": {
+                              "type": "boolean",
+                              "description": "Whether live or forecast."
+                            },
+                            "location": {
+                              "type": "string",
+                              "description": "The city and state with Chinese, e.g. San Francisco, CA."
+                            },
+                            "unit": {
+                              "type": "string",
+                              "enum": [
+                                "celsius",
+                                "fahrenheit"
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      "type": "function"
+                    }
+                  ],
+                  "user": "FU9834501019003831"
+                }
                 """;
         ObjectMapper objectMapper = new ObjectMapper();
         CreateChatCompletionRequest request = objectMapper.readValue(json, CreateChatCompletionRequest.class);
