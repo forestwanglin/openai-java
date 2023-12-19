@@ -211,39 +211,48 @@ public interface OpenAiApi {
     // fine-tuning job
 
     /**
+     * Create fine-tuning job
+     * <p>
      * Creates a job that fine-tunes a specified model from a given dataset.
+     * <p>
      * Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
      *
      * @param request create fine tuning job request
-     * @return fine tuning
+     * @return A {@link FineTuningJob} object.
      */
     @POST("/v1/fine_tuning/jobs")
     Single<FineTuningJob> createFineTuningJob(@Body CreateFineTuningJobRequest request);
 
     /**
+     * Cancel fine-tuning
+     * <p>
      * Immediately cancel a fine-tune job.
      *
-     * @param fineTuningJobId fine_tuning_job_id
-     * @return The cancelled fine-tuning object.
+     * @param fineTuningJobId The ID of the fine-tuning job to cancel.
+     * @return The cancelled {@link FineTuningJob} object.
      */
     @POST("/v1/fine_tuning/jobs/{fine_tuning_job_id}/cancel")
     Single<FineTuningJob> cancelFineTuningJob(@Path("fine_tuning_job_id") String fineTuningJobId);
 
 
     /**
+     * Retrieve fine-tuning job
+     * <p>
      * Get info about a fine-tuning job.
      *
-     * @param fineTuningJobId fine_tuning_job_id
-     * @return fine tuning
+     * @param fineTuningJobId The ID of the fine-tuning job.
+     * @return The {@link FineTuningJob} object with the given ID.
      */
     @GET("/v1/fine_tuning/jobs/{fine_tuning_job_id}")
     Single<FineTuningJob> retrieveFineTuningJob(@Path("fine_tuning_job_id") String fineTuningJobId);
 
 
     /**
+     * List fine-tuning events
+     * <p>
      * Get status updates for a fine-tuning job.
      *
-     * @param fineTuningJobId fine_tuning_job_id
+     * @param fineTuningJobId The ID of the fine-tuning job to get events for.
      * @param after           Optional Identifier for the last event from the previous pagination request.
      * @param limit           Optional Defaults to 20 Number of events to retrieve.
      * @return A list of fine-tuning event objects.
@@ -257,7 +266,7 @@ public interface OpenAiApi {
     /********************* Assistants BETA *************/
 
     /**
-     * {@literal POST https://api.openai.com/v1/assistants}
+     * {@linkplain POST https://api.openai.com/v1/assistants}
      * <p>
      * Create an assistant with a model and instructions.
      *
@@ -268,7 +277,7 @@ public interface OpenAiApi {
     Single<Assistant> createAssistant(@Body CreateAssistantRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/assistants/{assistant_id}}
+     * {@linkplain GET https://api.openai.com/v1/assistants/{assistant_id}}
      * <p>
      * The assistant object matching the specified ID.
      *
@@ -279,7 +288,7 @@ public interface OpenAiApi {
     Single<Assistant> retrieveAssistant(@Path("assistant_id") String assistantId);
 
     /**
-     * {@literal POST https://api.openai.com/v1/assistants/{assistant_id}}
+     * {@linkplain POST https://api.openai.com/v1/assistants/{assistant_id}}
      * <p>
      * Modifies an assistant.
      *
@@ -291,7 +300,7 @@ public interface OpenAiApi {
     Single<Assistant> modifyAssistant(@Path("assistant_id") String assistantId, @Body ModifyAssistantRequest request);
 
     /**
-     * {@literal DELETE https://api.openai.com/v1/assistants/{assistant_id}}
+     * {@linkplain DELETE https://api.openai.com/v1/assistants/{assistant_id}}
      * <p>
      * Delete an assistant.
      *
@@ -302,7 +311,7 @@ public interface OpenAiApi {
     Single<DeleteResponse> deleteAssistant(@Path("assistant_id") String assistantId);
 
     /**
-     * {@literal  GET https://api.openai.com/v1/assistants}
+     * {@linkplain  GET https://api.openai.com/v1/assistants}
      * <p>
      * Returns a list of assistants.
      *
@@ -320,7 +329,7 @@ public interface OpenAiApi {
             @Query("before") String before);
 
     /**
-     * {@literal POST https://api.openai.com/v1/assistants/{assistant_id}/files}
+     * {@linkplain POST https://api.openai.com/v1/assistants/{assistant_id}/files}
      * <p>
      * Create assistant file
      *
@@ -333,7 +342,7 @@ public interface OpenAiApi {
                                               @Body CreateAssistantFileRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
+     * {@linkplain GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
      * <p>
      * Retrieve assistant file
      *
@@ -346,7 +355,7 @@ public interface OpenAiApi {
                                                 @Path("file_id") String fileId);
 
     /**
-     * {@literal DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
+     * {@linkplain DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
      * <p>
      * Delete an assistant file.
      *
@@ -359,7 +368,7 @@ public interface OpenAiApi {
                                                @Path("file_id") String fileId);
 
     /**
-     * {@literal  GET https://api.openai.com/v1/assistants/{assistant_id}/files}
+     * {@linkplain  GET https://api.openai.com/v1/assistants/{assistant_id}/files}
      * <p>
      * Returns a list of assistant files.
      *
@@ -381,7 +390,7 @@ public interface OpenAiApi {
     /********************* Threads BETA *************/
 
     /**
-     * {@literal POST https://api.openai.com/v1/threads}
+     * {@linkplain POST https://api.openai.com/v1/threads}
      * <p>
      * Create thread
      *
@@ -392,7 +401,7 @@ public interface OpenAiApi {
     Single<Thread> createThread(@Body CreateThreadRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}}
      * <p>
      * Retrieve thread
      *
@@ -403,7 +412,7 @@ public interface OpenAiApi {
     Single<Thread> retrieveThread(@Path("thread_id") String threadId);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}}
      * <p>
      * Modify thread
      *
@@ -416,7 +425,7 @@ public interface OpenAiApi {
                                 @Body ModifyThreadRequest request);
 
     /**
-     * {@literal DELETE https://api.openai.com/v1/threads/{thread_id}}
+     * {@linkplain DELETE https://api.openai.com/v1/threads/{thread_id}}
      * <p>
      * Delete thread
      *
@@ -429,7 +438,7 @@ public interface OpenAiApi {
     /********************* Messages BETA *************/
 
     /**
-     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/messages}
+     * {@linkplain POST https://api.openai.com/v1/threads/{thread_id}/messages}
      * <p>
      * Create message
      *
@@ -442,7 +451,7 @@ public interface OpenAiApi {
                                         @Body CreateMessageRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}}
      * <p>
      * Retrieve message
      *
@@ -455,7 +464,7 @@ public interface OpenAiApi {
                                           @Path("message_id") String messageId);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}}
      * <p>
      * Modify message
      *
@@ -470,7 +479,7 @@ public interface OpenAiApi {
                                         @Body ModifyMessageRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages}
      * <p>
      * List messages
      *
@@ -490,7 +499,7 @@ public interface OpenAiApi {
             @Query("before") String before);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}}
      * <p>
      * Retrieves a message file.
      *
@@ -505,7 +514,7 @@ public interface OpenAiApi {
                                                   @Path("file_id") String fileId);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files}
      * <p>
      * Returns a list of message files.
      *
@@ -529,7 +538,7 @@ public interface OpenAiApi {
     /********************* Runs BETA *************/
 
     /**
-     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs}
+     * {@linkplain POST https://api.openai.com/v1/threads/{thread_id}/runs}
      * <p>
      * Create a run.
      *
@@ -542,7 +551,7 @@ public interface OpenAiApi {
                                 @Body CreateRunRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
      * <p>
      * Retrieves a run.
      *
@@ -555,7 +564,7 @@ public interface OpenAiApi {
                                   @Path("run_id") String runId);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
      * <p>
      * Modify message
      *
@@ -570,7 +579,7 @@ public interface OpenAiApi {
                                 @Body ModifyRunRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/runs}
      * <p>
      * List messages
      *
@@ -591,7 +600,7 @@ public interface OpenAiApi {
 
 
     /**
-     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs}
+     * {@linkplain POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs}
      *
      * @param threadId The ID of the {@link Thread} to which this run belongs.
      * @param runId    The ID of the run that requires the tool output submission.
@@ -604,7 +613,7 @@ public interface OpenAiApi {
                                   @Body SubmitToolOutputsRequest request);
 
     /**
-     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/cancel}
+     * {@linkplain POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/cancel}
      * <p>
      * Cancels a run that is in_progress.
      *
@@ -617,7 +626,7 @@ public interface OpenAiApi {
                                 @Path("run_id") String runId);
 
     /**
-     * {@literal POST https://api.openai.com/v1/threads/runs}
+     * {@linkplain POST https://api.openai.com/v1/threads/runs}
      * <p>
      * Create a thread and run it in one request.
      *
@@ -627,7 +636,7 @@ public interface OpenAiApi {
     Single<Run> createThreadAndRun(@Body CreateThreadAndRunRequest request);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}}
      * <p>
      * Retrieves a run step.
      *
@@ -642,12 +651,12 @@ public interface OpenAiApi {
                                           @Path("step_id") String stepId);
 
     /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps}
+     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps}
      * <p>
      * List run steps
      *
      * @param threadId The ID of the {@link Thread} the messages belong to.
-     * @param runId    The ID of the run the run steps belong to.
+     * @param runId    The ID of the run steps belong to.
      * @param limit    A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
      * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
      * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
