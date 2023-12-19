@@ -27,12 +27,6 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [Messages - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/messages)
 - [Runs - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/runs)
 
-## Supported Methods
-
-- use TikTokenUtils.tokens([String modelName, List<ChatMessage> messages]) to count message tokens
-- use TikTokenUtils.tokens([String modelName, Object functionCall, List<Function> functions]) to count function call
-  tokens
-
 ## Important update
 
 - [2023-06-18] Support function call by API, and update the method to count tokens for functions after 0613 update by
