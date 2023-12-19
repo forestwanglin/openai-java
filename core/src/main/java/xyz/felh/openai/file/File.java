@@ -20,14 +20,14 @@ public class File extends OpenAiApiObjectWithId {
     public static String OBJECT = "file";
 
     /**
-     * File size in bytes.
+     * The size of the file, in bytes.
      */
     @JSONField(name = "bytes")
     @JsonProperty("bytes")
     private Long bytes;
 
     /**
-     * The creation time in epoch seconds.
+     * The Unix timestamp (in seconds) for when the file was created.
      */
     @JSONField(name = "created_at")
     @JsonProperty("created_at")

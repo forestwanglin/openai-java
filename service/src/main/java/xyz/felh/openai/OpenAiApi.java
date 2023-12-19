@@ -150,22 +150,26 @@ public interface OpenAiApi {
 
     /**
      * List files
-     * Returns a list of files that belong to the user's organization.
+     * <p>
+     * RReturns a list of files that belong to the user's organization.
      *
-     * @return File list
+     * @return A list of {@link File} objects.
      */
     @GET("/v1/files")
     Single<OpenAiApiListResponse<File>> listFiles();
 
     /**
      * Upload file
-     * Upload a file that contains document(s) to be used across various endpoints/features. Currently,
-     * the size of all the files uploaded by one organization can be up to 1 GB.
-     * Please contact us if you need to increase the storage limit.
+     * <p>
+     * Upload a file that can be used across various endpoints. The size of all the files uploaded by one organization can be up to 100 GB.
+     * <p>
+     * The size of individual files can be a maximum of 512 MB or 2 million tokens for Assistants. See the <a href="https://platform.openai.com/docs/assistants/tools">Assistants Tools guide</a> to learn more about the types of files supported. The Fine-tuning API only supports .jsonl files.
+     * <p>
+     * Please <a href="https://help.openai.com/en/">contact us</a> if you need to increase these storage limits.
      *
-     * @param file    file
-     * @param purpose request body
-     * @return File information
+     * @param file    The File object (not file name) to be uploaded.
+     * @param purpose The intended purpose of the uploaded file. Use "fine-tune" for <a href="https://platform.openai.com/docs/api-reference/fine-tuning">Fine-tuning</a> and "assistants" for <a href="https://platform.openai.com/docs/api-reference/assistants">Assistants</a> and <a href="https://platform.openai.com/docs/api-reference/messages">Messages</a>. This allows us to validate the format of the uploaded file is correct for fine-tuning.
+     * @return The uploaded {@link File} object.
      */
     @Multipart
     @POST("/v1/files")
@@ -173,28 +177,33 @@ public interface OpenAiApi {
 
     /**
      * Delete file
+     * <p>
      * Delete a file.
      *
      * @param fileId fileId
-     * @return Delete file and status
+     * @return Deletion status
      */
     @DELETE("/v1/files/{file_id}")
     Single<DeleteResponse> deleteFile(@Path("file_id") String fileId);
 
     /**
      * Retrieve file
+     * <p>
+     * Returns information about a specific file.
      *
      * @param fileId fileId
-     * @return information about a specific file.
+     * @return The {@link File} object matching the specified ID.
      */
     @GET("/v1/files/{file_id}")
     Single<File> retrieveFile(@Path("file_id") String fileId);
 
     /**
      * Retrieve file content
+     * <p>
+     * Returns the contents of the specified file.
      *
-     * @param fileId fileId
-     * @return the contents of the specified file
+     * @param fileId The ID of the file to use for this request.
+     * @return The file content.
      */
     @GET("/v1/files/{file_id}/content")
     Single<String> retrieveFileContent(@Path("file_id") String fileId);

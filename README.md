@@ -4,6 +4,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 
 [![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.7.0304&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
+[![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
 

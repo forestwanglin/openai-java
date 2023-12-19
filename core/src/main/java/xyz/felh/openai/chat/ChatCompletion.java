@@ -11,6 +11,11 @@ import xyz.felh.openai.Usage;
 
 import java.util.List;
 
+/**
+ * The chat completion object
+ * <p>
+ * Represents a chat completion response returned by model, based on the provided input.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ChatCompletion extends OpenAiApiObjectWithId {
