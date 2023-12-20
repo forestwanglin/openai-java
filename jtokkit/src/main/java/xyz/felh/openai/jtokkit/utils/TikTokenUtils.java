@@ -137,7 +137,22 @@ public class TikTokenUtils {
      * @return Encoding
      */
     public static Encoding getEncoding(String modelName) {
-        return modelMap.get(modelName);
+        Encoding encoding = modelMap.get(modelName);
+        if (Preconditions.isBlank(encoding)) {
+            if (modelName.toLowerCase().startsWith("ft:")) {
+                String baseModel = modelName.split(":")[1];
+                encoding = modelMap.get(baseModel);
+                if (Preconditions.isBlank(encoding)) {
+                    if (baseModel.toLowerCase().startsWith("gpt-3.5")) {
+                        encoding = modelMap.get(ModelType.GPT_3_5_TURBO.getName());
+                    }
+                    if (baseModel.toLowerCase().startsWith("gpt-4")) {
+                        encoding = modelMap.get(ModelType.GPT_4.getName());
+                    }
+                }
+            }
+        }
+        return encoding;
     }
 
     /**
