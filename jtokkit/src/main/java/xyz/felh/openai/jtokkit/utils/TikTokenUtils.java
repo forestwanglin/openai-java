@@ -276,51 +276,53 @@ public class TikTokenUtils {
             tokens += tokens(encoding, message.getContent().toString());
         } else {
             List<ChatMessage.ContentItem> items = ListUtils.castList(message.getContent(), ChatMessage.ContentItem.class);
-            for (ChatMessage.ContentItem item : items) {
-                if (item.getType() == ChatMessage.ContentType.TEXT) {
-                    // 不需要计算type
-                    tokens += tokens(encoding, item.getText());
-                } else if (item.getType() == ChatMessage.ContentType.IMAGE_URL) {
-                    ChatMessage.ImageUrl imageUrl = item.getImageUrl();
-                    // https://openai.com/pricing
-                    if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.LOW) {
-                        tokens += 85;
-                    } else if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.HIGH) {
-                        tokens += 85;
-                        int width = 0;
-                        int height = 0;
-                        if (imageUrl.getUrl().startsWith("f")) {
-                            // base64
-                            Base64.Decoder decoder = Base64.getDecoder();
-                            try {
-                                String b64 = imageUrl.getUrl();
-                                b64 = b64.substring(b64.indexOf(";base64,") + 8);
-                                b64 = b64.substring(0, b64.length() - 1);
-                                byte[] bytes = decoder.decode(b64);
-                                ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-                                BufferedImage bi = ImageIO.read(inputStream);
-                                if (Preconditions.isNotBlank(inputStream)) {
-                                    inputStream.close();
+            if(Preconditions.isNotBlank(items)) {
+                for (ChatMessage.ContentItem item : items) {
+                    if (item.getType() == ChatMessage.ContentType.TEXT) {
+                        // 不需要计算type
+                        tokens += tokens(encoding, item.getText());
+                    } else if (item.getType() == ChatMessage.ContentType.IMAGE_URL) {
+                        ChatMessage.ImageUrl imageUrl = item.getImageUrl();
+                        // https://openai.com/pricing
+                        if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.LOW) {
+                            tokens += 85;
+                        } else if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.HIGH) {
+                            tokens += 85;
+                            int width = 0;
+                            int height = 0;
+                            if (imageUrl.getUrl().startsWith("f")) {
+                                // base64
+                                Base64.Decoder decoder = Base64.getDecoder();
+                                try {
+                                    String b64 = imageUrl.getUrl();
+                                    b64 = b64.substring(b64.indexOf(";base64,") + 8);
+                                    b64 = b64.substring(0, b64.length() - 1);
+                                    byte[] bytes = decoder.decode(b64);
+                                    ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+                                    BufferedImage bi = ImageIO.read(inputStream);
+                                    if (Preconditions.isNotBlank(inputStream)) {
+                                        inputStream.close();
+                                    }
+                                    width = bi.getWidth();
+                                    height = bi.getHeight();
+                                } catch (Exception e) {
+                                    log.error("image to base64 error", e);
                                 }
-                                width = bi.getWidth();
-                                height = bi.getHeight();
-                            } catch (Exception e) {
-                                log.error("image to base64 error", e);
+                            } else {
+                                // image url
+                                try {
+                                    BufferedImage bi = ImageIO.read(new URL(imageUrl.getUrl()));
+                                    width = bi.getWidth();
+                                    height = bi.getHeight();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
-                        } else {
-                            // image url
-                            try {
-                                BufferedImage bi = ImageIO.read(new URL(imageUrl.getUrl()));
-                                width = bi.getWidth();
-                                height = bi.getHeight();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                            // 1 per 512x512
+                            int tiles = (int) Math.ceil(width / 512.0) * (int) Math.ceil(height / 512.0);
+                            log.info("tiles {}", tiles);
+                            tokens += 170 * tiles;
                         }
-                        // 1 per 512x512
-                        int tiles = (int) Math.ceil(width / 512.0) * (int) Math.ceil(height / 512.0);
-                        log.info("tiles {}", tiles);
-                        tokens += 170 * tiles;
                     }
                 }
             }
