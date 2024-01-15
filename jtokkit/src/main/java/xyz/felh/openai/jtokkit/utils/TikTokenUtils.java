@@ -199,12 +199,12 @@ public class TikTokenUtils {
         int tokens = 0;
         tokens += estimateTokensInMessages(chatModel, messages, tools);
 
-        // If there are functions, add the function definitions as they count towards token usage
+        // If there are tools, add the function definitions as they count towards token usage
         if (Preconditions.isNotBlank(tools)) {
             tokens += estimateTokensInTools(chatModel, tools);
         }
 
-        // If there's a system message _and_ functions are present, subtract four tokens
+        // If there's a system message and tools are present, subtract four tokens
         if (Preconditions.isNotBlank(tools) && messages.stream().anyMatch(it -> it.getRole() == ChatMessageRole.SYSTEM)) {
             tokens -= 4;
         }
@@ -216,8 +216,7 @@ public class TikTokenUtils {
             if ("none".equals(toolChoice.toString())) {
                 tokens += 1;
             } else {
-                if (toolChoice instanceof ToolChoice) {
-                    ToolChoice tc = (ToolChoice) toolChoice;
+                if (toolChoice instanceof ToolChoice tc) {
                     if (Preconditions.isNotBlank(tc.getFunction().getName())) {
                         tokens += tokens(chatModel, tc.getFunction().getName()) + 4;
                     }
@@ -230,7 +229,7 @@ public class TikTokenUtils {
     public static int estimateTokensInTools(String modelName, List<Tool> tools) {
         Encoding encoding = getEncoding(modelName);
         int tokens = tokens(encoding, FunctionFormat.formatFunctionDefinitions(tools));
-        tokens += 9; // Additional tokens for function definition
+        tokens += 9; // Additional tokens for function definition of tools
         return tokens;
     }
 
@@ -258,8 +257,7 @@ public class TikTokenUtils {
 
     /**
      * 通过模型名称计算messages获取编码数组
-     * 参考官方的处理逻辑：
-     * <a href=https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb>https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb</a>
+     * 参考官方的处理逻辑：<a href=https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb>https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb</a>
      *
      * @param modelName 模型名称
      * @param message   消息体
@@ -276,7 +274,7 @@ public class TikTokenUtils {
             tokens += tokens(encoding, message.getContent().toString());
         } else {
             List<ChatMessage.ContentItem> items = ListUtils.castList(message.getContent(), ChatMessage.ContentItem.class);
-            if(Preconditions.isNotBlank(items)) {
+            if (Preconditions.isNotBlank(items)) {
                 for (ChatMessage.ContentItem item : items) {
                     if (item.getType() == ChatMessage.ContentType.TEXT) {
                         // 不需要计算type
@@ -320,15 +318,14 @@ public class TikTokenUtils {
                             }
                             // 1 per 512x512
                             int tiles = (int) Math.ceil(width / 512.0) * (int) Math.ceil(height / 512.0);
-                            log.info("tiles {}", tiles);
                             tokens += 170 * tiles;
                         }
                     }
                 }
             }
         }
-        // name
-        if (Preconditions.isNotBlank(message.getName())) {
+        // name 如果是 tool的时候不计算 name
+        if (Preconditions.isNotBlank(message.getName()) && message.getRole() != ChatMessageRole.TOOL) {
             tokens += tokens(encoding, message.getName()) + 1; // +1 for the name
         }
         if (message.getRole() == ChatMessageRole.ASSISTANT && Preconditions.isNotBlank(message.getToolCalls())) {
@@ -355,10 +352,11 @@ public class TikTokenUtils {
                 tokens -= 2;
             }
         }
-        tokens += 3; // Add three per message
 
         if (message.getRole() == ChatMessageRole.TOOL) {
             tokens += 2; // add 2 if role is "tool"
+        } else {
+            tokens += 3; // Add three per message
         }
 
         return tokens;

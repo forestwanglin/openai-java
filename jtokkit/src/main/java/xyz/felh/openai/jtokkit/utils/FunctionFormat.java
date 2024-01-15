@@ -80,7 +80,8 @@ public class FunctionFormat {
             case "object" -> String.format("{\n%s\n}", formatObjectProperties(props, indent + 2));
             case "integer", "number" -> {
                 if (props.containsKey("enum")) {
-                    yield String.join(" | ", props.getList("enum", String.class));
+                    yield String.join(" | ", props.getList("enum", String.class).stream().map(it ->
+                            String.format("\"%s\"", it)).toList());
                 }
                 yield "number";
             }

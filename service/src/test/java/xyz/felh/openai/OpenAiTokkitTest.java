@@ -59,11 +59,9 @@ public class OpenAiTokkitTest {
         @JsonPropertyDescription("The city and state, e.g. San Francisco, CA")
         @JsonProperty(value = "location", required = true)
         private String location;
-//        @JsonPropertyDescription("The unit of temperature")
-//        @JsonProperty(value = "unit")
-//        private OpenAiServiceTest.Unit unit;
-//        @JsonProperty(value = "low", required = true)
-//        private L low;
+        @JsonPropertyDescription("The unit of temperature")
+        @JsonProperty(value = "unit")
+        private Unit unit;
     }
 
     @Data
@@ -90,6 +88,10 @@ public class OpenAiTokkitTest {
 //        private Integer z;
     }
 
+    public enum Unit {
+        celsius, fahrenheit;
+    }
+
     @Test
     public void chatCompletion() {
         String modelName = ModelType.GPT_3_5_TURBO.getName();
@@ -97,7 +99,7 @@ public class OpenAiTokkitTest {
 
 //        chatMessages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."));
         chatMessages.add(new ChatMessage(ChatMessageRole.USER, "FU0000002342304230234003",
-                List.of(ChatMessage.ContentItem.buildText("Hi, what weather is in 广州和深圳?"))));
+                List.of(ChatMessage.ContentItem.buildText("Hi, what weather is in Shanghai with unit celsius?"))));
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
                 .with(new JacksonModule(JacksonOption.RESPECT_JSONPROPERTY_REQUIRED));
@@ -112,13 +114,13 @@ public class OpenAiTokkitTest {
                                 .description("Get the current weather in a given location")
                                 .parameters(JSONObject.parseObject(generator.generateSchema(GetWeatherParam.class).toString()))
                                 .build()).build()
-                , Tool.builder()
-                        .type(Type.FUNCTION)
-                        .function(Function.builder()
-                                .name("get_location")
-                                .description("Get the location from longitude and latitude")
-                                .parameters(JSONObject.parseObject(generator.generateSchema(GetLocationParam.class).toString()))
-                                .build()).build()
+//                , Tool.builder()
+//                        .type(Type.FUNCTION)
+//                        .function(Function.builder()
+//                                .name("get_location")
+//                                .description("Get the location from longitude and latitude")
+//                                .parameters(JSONObject.parseObject(generator.generateSchema(GetLocationParam.class).toString()))
+//                                .build()).build()
         );
 
         log.info("tools tokens: {}", TikTokenUtils.estimateTokensInTools(modelName, tools));
@@ -129,9 +131,9 @@ public class OpenAiTokkitTest {
                 .tools(tools)
                 .build();
         log.info("total tokens: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
-        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-        log.info("chatCompletion: " + toJSONString(chatCompletion));
-
+//        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+//        log.info("chatCompletion: " + toJSONString(chatCompletion));
+//
 //        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
 //        if (Preconditions.isNotBlank(toolCalls)) {
 //            // add response message to new request
