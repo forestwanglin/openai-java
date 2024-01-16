@@ -322,6 +322,7 @@ You can find more examples in
 
 - [OpenAiServiceTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiServiceTest.java)
 - [OpenAiAssistantsBetaTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiAssistantsBetaTest.java)
+- [OpenAiTokkitTest.java](https://github.com/forestwanglin/openai-java/blob/main/service/src/test/java/xyz/felh/openai/OpenAiTokkitTest.java)
 
 ## License
 
