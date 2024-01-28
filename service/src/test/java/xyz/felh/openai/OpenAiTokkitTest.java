@@ -21,12 +21,10 @@ import xyz.felh.openai.chat.ChatMessageRole;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
-import xyz.felh.openai.chat.tool.ToolCall;
 import xyz.felh.openai.chat.tool.Type;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.jtokkit.api.ModelType;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
-import xyz.felh.openai.utils.Preconditions;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -182,54 +180,32 @@ public class OpenAiTokkitTest {
 //        String json = """
 //                 {"model":"gpt-3.5-turbo-1106","messages":[{"role":"user","content":[{"type":"text","text":"Hi, what weather is in Shanghai and 苏州?","image_url":null}],"name":"FU0000002342304230234003","tool_calls":null,"tool_call_id":null},{"role":"assistant","content":"","name":null,"tool_calls":[{"id":"call_8RjeAxqP0MSHzzvREXlj2WiX","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\"}"}},{"id":"call_OBV3MpNAdHKWbeEpzUgFG9jm","type":"function","function":{"name":"get_weather","arguments":"{\\"location\\": \\"Suzhou\\", \\"unit\\": \\"celsius\\"}"}}],"tool_call_id":null},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_8RjeAxqP0MSHzzvREXlj2WiX"},{"role":"tool","content":"Sunny","name":null,"tool_calls":null,"tool_call_id":"call_OBV3MpNAdHKWbeEpzUgFG9jm"}],"frequency_penalty":null,"logit_bias":null,"max_tokens":null,"n":null,"presence_penalty":null,"response_format":null,"seed":null,"stop":null,"stream":false,"temperature":null,"top_p":null,"tools":null,"tool_choice":null,"user":null}
 //                """;
+
         String json = """
-                 {
-                  "max_tokens": 4096,
-                  "messages": [
-                    {
-                      "content": "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code.",
-                      "role": "system"
-                    },
-                    {
-                      "content": "你好啊",
-                      "role": "user"
-                    }
-                  ],
-                  "model": "gpt-3.5-turbo-1106",
-                  "seed": 2645,
-                  "stream": true,
-                  "temperature": 0.7,
-                  "tools": [
-                    {
-                      "function": {
-                        "description": "Get the current weather in a given location",
-                        "name": "get_weather",
-                        "parameters": {
-                          "$schema": "http://json-schema.org/draft-07/schema#",
-                          "type": "object",
-                          "properties": {
-                            "live": {
-                              "type": "boolean",
-                              "description": "Whether live or forecast."
-                            },
-                            "location": {
-                              "type": "string",
-                              "description": "The city and state with Chinese, e.g. San Francisco, CA."
-                            },
-                            "unit": {
-                              "type": "string",
-                              "enum": [
-                                "celsius",
-                                "fahrenheit"
-                              ]
-                            }
-                          }
-                        }
-                      },
-                      "type": "function"
-                    }
-                  ],
-                  "user": "FU9834501019003831"
+                {
+                	"model": "gpt-4-1106-preview",
+                	"messages": [
+                		{
+                			"role": "assistant",
+                			"content": null,
+                			"tool_calls": [
+                				{
+                					"id": "call_Id8ycVMsW8gdsf7kSXfgAcf1",
+                					"type": "function",
+                					"function": {
+                						"name": "get_current_weather",
+                						"arguments": "{\\n  \\"location\\": \\"Boston, MA\\"\\n}"
+                					}
+                				}
+                			]
+                		},
+                		{
+                			"role": "tool",
+                			"tool_call_id": "call_Id8ycVMsW8gdsf7kSXfgAcf1",
+                			"name": "get_current_weather",
+                			"content": "29 degree celcius"
+                		}
+                	]
                 }
                 """;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -243,6 +219,8 @@ public class OpenAiTokkitTest {
             }
         }
         log.info("total tokens: {}", TikTokenUtils.estimateTokens(request));
+        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(request);
+        log.info("chatCompletion: " + toJSONString(chatCompletion));
     }
 
     private String toJSONString(Object obj) {

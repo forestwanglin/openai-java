@@ -32,6 +32,7 @@ import xyz.felh.openai.image.edit.CreateEditRequest;
 import xyz.felh.openai.image.variation.CreateVariationRequest;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.jtokkit.api.EncodingType;
+import xyz.felh.openai.jtokkit.api.ModelType;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
@@ -114,7 +115,7 @@ public class OpenAiServiceTest {
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
                         new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
-                .model("gpt-3.5-turbo-1106")
+                .model("gpt-3.5-turbo")
                 .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
@@ -351,7 +352,7 @@ public class OpenAiServiceTest {
     @Test
     public void createEmbedding() {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < 4096; i++) {
+        for (int i = 0; i < 409; i++) {
             sb.append("AGI ");
         }
 
@@ -362,7 +363,7 @@ public class OpenAiServiceTest {
         CreateEmbeddingRequest createEmbeddingRequest = CreateEmbeddingRequest.builder()
                 .input(inputs)
                 .encodingFormat(CreateEmbeddingRequest.EncodingFormat.FLOAT)
-                .model("text-embedding-ada-002")
+                .model(ModelType.TEXT_EMBEDDING_3_SMALL.getName())
                 .build();
         CreateEmbeddingResponse createEmbeddingResponse = getOpenAiService().createEmbeddings(createEmbeddingRequest);
         log.info("createEmbeddingResponse:  {}", toJSONString(createEmbeddingResponse));
