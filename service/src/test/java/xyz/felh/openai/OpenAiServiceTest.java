@@ -85,6 +85,7 @@ public class OpenAiServiceTest {
             @Override
             public void onEvent(String requestId, ChatCompletion chatCompletion) {
                 log.info("model gpt-3.5-turbo: {}", chatCompletion.getChoices().get(0).getDelta().getContent());
+                log.info("model gpt-3.5-turbo: {}", JSON.toJSONString(chatCompletion));
             }
 
             @Override
@@ -115,8 +116,9 @@ public class OpenAiServiceTest {
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
                         new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
-                .model("gpt-3.5-turbo")
+                .model("gpt-3.5-turbo-1106")
                 .build();
+        log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: " + toJSONString(chatCompletion));
     }

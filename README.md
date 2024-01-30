@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.7.20240128&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.7.20240129&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
@@ -56,7 +56,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.7.20240128</version>
+    <version>3.7.20240129</version>
 </dependency>
 ```
 
@@ -65,22 +65,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.7.20240128</version>
+    <version>3.7.20240129</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.7.20240128'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.7.20240128'
+implementation group: 'xyz.felh', name: 'service', version: '3.7.20240129'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.7.20240129'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.7.20240128"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.7.20240128"
+libraryDependencies += "xyz.felh" % "service" % "3.7.20240129"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.7.20240129"
 ```
 
 ## Example (Spring Boot 3)
@@ -92,7 +92,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.7.20240128"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.7.20240128</version>
+    <version>3.7.20240129</version>
 </dependency>
 ```
 

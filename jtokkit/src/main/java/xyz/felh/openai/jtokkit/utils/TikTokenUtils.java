@@ -2,6 +2,7 @@ package xyz.felh.openai.jtokkit.utils;
 
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import xyz.felh.openai.chat.ChatCompletion;
@@ -47,6 +48,7 @@ public class TikTokenUtils {
         modelMap.put(ChatCompletion.Model.GPT_4_32K.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
+        modelMap.put(ChatCompletion.Model.GPT_4_0125_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
     }
 
     /**
@@ -337,7 +339,11 @@ public class TikTokenUtils {
                         tokens += tokens(encoding, toolCall.getFunction().getName());
                     }
                     if (Preconditions.isNotBlank(toolCall.getFunction().getArguments())) {
-                        tokens += tokens(encoding, toolCall.getFunction().getArguments());
+                        // 这个地方要特殊处理，按照标准print args，然后再计算tokens
+                        String args = JSONObject.toJSONString(JSONObject.parseObject(toolCall.getFunction().getArguments()),
+                                JSONWriter.Feature.PrettyFormat);
+                        args = args.replaceAll("\\t", "");
+                        tokens += tokens(encoding, args);
                     }
                 }
             }
@@ -403,7 +409,8 @@ public class TikTokenUtils {
         if (ChatCompletion.Model.GPT_4.getName().equals(name)
                 || ChatCompletion.Model.GPT_4_32K.getName().equals(name)
                 || ChatCompletion.Model.GPT_4_1106_PREVIEW.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName().equals(name)) {
+                || ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName().equals(name)
+                || ChatCompletion.Model.GPT_4_0125_PREVIEW.getName().equals(name)) {
             return ModelType.GPT_4;
         }
 
@@ -418,6 +425,7 @@ public class TikTokenUtils {
 
 
     public static boolean isBlankChar(int c) {
+//        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == 65279 || c == 8234 || c == 0 || c == 12644 || c == 10240 || c == 6158;
         return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == 65279 || c == 8234 || c == 0 || c == 12644 || c == 10240 || c == 6158;
     }
 

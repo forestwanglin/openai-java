@@ -105,7 +105,12 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
          * Returns a maximum of 4,096 output tokens. This is a preview model version and not suited yet for production traffic.
          * 128,000 tokens
          */
-        GPT_4_VISION_PREVIEW("gpt-4-vision-preview");
+        GPT_4_VISION_PREVIEW("gpt-4-vision-preview"),
+        /**
+         * GPT-4 Turbo
+         * The latest GPT-4 model intended to reduce cases of “laziness” where the model doesn’t complete a task.
+         */
+        GPT_4_0125_PREVIEW("gpt-4-0125-preview");
 
         private final String name;
 
