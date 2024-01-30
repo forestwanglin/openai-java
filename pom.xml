@@ -52,6 +52,7 @@
         <fastjson2.version>2.0.45</fastjson2.version>
         <lombok.version>1.18.30</lombok.version>
         <slf4j.version>2.0.11</slf4j.version>
+        <junit.jupiter.version>5.10.1</junit.jupiter.version>
     </properties>
 
     <build>

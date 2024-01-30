@@ -23,6 +23,7 @@
         <retrofit2.version>2.9.0</retrofit2.version>
         <victools.jsonschema.version>4.33.1</victools.jsonschema.version>
         <okhttp3.version>4.12.0</okhttp3.version>
+        <rxjava3.version>3.1.8</rxjava3.version>
     </properties>
 
     <dependencies>
@@ -60,7 +61,7 @@
         <dependency>
             <groupId>io.reactivex.rxjava3</groupId>
             <artifactId>rxjava</artifactId>
-            <version>3.1.8</version>
+            <version>${rxjava3.version}</version>
         </dependency>
 
         <dependency>
@@ -116,7 +117,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.1</version>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
 
