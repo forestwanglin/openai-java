@@ -48,7 +48,10 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openai-java.version>3.7.20240129</openai-java.version>
+        <jackson.version>2.16.1</jackson.version>
+        <fastjson2.version>2.0.45</fastjson2.version>
+        <lombok.version>1.18.30</lombok.version>
+        <slf4j.version>2.0.11</slf4j.version>
     </properties>
 
     <build>

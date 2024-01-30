@@ -20,6 +20,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <retrofit2.version>2.9.0</retrofit2.version>
+        <victools.jsonschema.version>4.33.1</victools.jsonschema.version>
+        <okhttp3.version>4.12.0</okhttp3.version>
     </properties>
 
     <dependencies>
@@ -27,99 +30,93 @@
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>core</artifactId>
-            <version>${openai-java.version}</version>
+            <version>3.7.20240129</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>retrofit</artifactId>
-            <version>2.9.0</version>
+            <version>${retrofit2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>adapter-rxjava3</artifactId>
-            <version>2.9.0</version>
+            <version>${retrofit2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>converter-jackson</artifactId>
-            <version>2.9.0</version>
+            <version>${retrofit2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>converter-scalars</artifactId>
-            <version>2.9.0</version>
+            <version>${retrofit2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.reactivex.rxjava3</groupId>
             <artifactId>rxjava</artifactId>
-            <version>3.1.6</version>
+            <version>3.1.8</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.10.0</version>
+            <version>${okhttp3.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp-sse</artifactId>
-            <version>4.10.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>2.0.26</version>
+            <version>${okhttp3.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.victools</groupId>
             <artifactId>jsonschema-generator</artifactId>
-            <version>4.33.0</version>
+            <version>${victools.jsonschema.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.victools</groupId>
             <artifactId>jsonschema-module-jackson</artifactId>
-            <version>[4.33.0,5.0.0)</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.7</version>
+            <version>${victools.jsonschema.version}</version>
         </dependency>
 
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>jtokkit</artifactId>
-            <version>${openai-java.version}</version>
+            <version>3.7.20240129</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.7</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.2</version>
+            <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
 

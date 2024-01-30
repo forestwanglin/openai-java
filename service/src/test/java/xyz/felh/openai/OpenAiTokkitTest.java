@@ -220,8 +220,8 @@ public class OpenAiTokkitTest {
             }
         }
         log.info("total tokens: {}", TikTokenUtils.estimateTokens(request));
-//        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(request);
-//        log.info("chatCompletion: " + toJSONString(chatCompletion));
+        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(request);
+        log.info("chatCompletion: " + toJSONString(chatCompletion));
     }
 
     private String toJSONString(Object obj) {
