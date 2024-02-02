@@ -43,9 +43,9 @@ public class TikTokenUtils {
         for (ModelType modelType : ModelType.values()) {
             modelMap.put(modelType.getName(), registry.getEncodingForModel(modelType));
         }
-        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_1106.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
-        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
-        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0125.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_1106.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_0125));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_0125));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0125.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_0125));
 
         modelMap.put(ChatCompletion.Model.GPT_4_32K.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
@@ -148,7 +148,7 @@ public class TikTokenUtils {
                 encoding = modelMap.get(baseModel);
                 if (Preconditions.isBlank(encoding)) {
                     if (baseModel.toLowerCase().startsWith("gpt-3.5")) {
-                        encoding = modelMap.get(ModelType.GPT_3_5_TURBO.getName());
+                        encoding = modelMap.get(ModelType.GPT_3_5_TURBO_0125.getName());
                     }
                     if (baseModel.toLowerCase().startsWith("gpt-4")) {
                         encoding = modelMap.get(ModelType.GPT_4.getName());
@@ -394,38 +394,6 @@ public class TikTokenUtils {
         Encoding enc = getEncoding(modelName);
         return enc.decode(encoded);
     }
-
-
-    /**
-     * 获取modelType
-     *
-     * @param name
-     * @return
-     */
-    public static ModelType getModelTypeByName(String name) {
-        if (ChatCompletion.Model.GPT_3_5_TURBO.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_1106.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_0125.getName().equals(name)) {
-            return ModelType.GPT_3_5_TURBO;
-        }
-        if (ChatCompletion.Model.GPT_4.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_32K.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_1106_PREVIEW.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName().equals(name)
-                || ChatCompletion.Model.GPT_4_0125_PREVIEW.getName().equals(name)) {
-            return ModelType.GPT_4;
-        }
-
-        for (ModelType modelType : ModelType.values()) {
-            if (modelType.getName().equals(name)) {
-                return modelType;
-            }
-        }
-        log.warn("[{}]模型不存在或者暂不支持计算tokens", name);
-        return null;
-    }
-
 
     public static boolean isBlankChar(int c) {
         return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == 65279 || c == 8234 || c == 0 || c == 12644 || c == 10240 || c == 6158;

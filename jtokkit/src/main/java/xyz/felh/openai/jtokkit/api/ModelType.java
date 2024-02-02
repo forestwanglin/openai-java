@@ -14,16 +14,13 @@ public enum ModelType {
     // chat
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
-    // Will point to gpt-3.5-turbo-1106 starting Dec 11, 2023.
-    GPT_3_5_TURBO("gpt-3.5-turbo", EncodingType.CL100K_BASE, 4097),
 
-    // 20231106 update, instead of GPT_3_5_TURBO_16K
     GPT_3_5_TURBO_1106("gpt-3.5-turbo-1106", EncodingType.CL100K_BASE, 16385),
-    GPT_4_1106_PREVIEW("gpt-4-1106-preview", EncodingType.CL100K_BASE, 128000),
-    GPT_4_VISION_PREVIEW("gpt-4-vision-preview", EncodingType.CL100K_BASE, 128000),
-    // 20240125
     GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385), // replace GPT_3_5_TURBO_1106
-    GPT_4_0125_PREVIEW("gpt-4-0125-preview", EncodingType.CL100K_BASE, 128000), // replace GPT_4_1106_PREVIEW
+
+    GPT_4_1106_PREVIEW("gpt-4-1106-preview", EncodingType.CL100K_BASE, 128000),
+    GPT_4_0125_PREVIEW("gpt-4-0125-preview", EncodingType.CL100K_BASE, 128000),// replace GPT_4_1106_PREVIEW
+    GPT_4_VISION_PREVIEW("gpt-4-vision-preview", EncodingType.CL100K_BASE, 128000),
 
     // text
     TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
