@@ -116,7 +116,7 @@ public class OpenAiServiceTest {
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
                         new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
-                .model("gpt-3.5-turbo-1106")
+                .model("gpt-3.5-turbo-0125")
                 .build();
         log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);

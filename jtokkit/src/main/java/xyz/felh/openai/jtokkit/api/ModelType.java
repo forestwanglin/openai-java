@@ -22,6 +22,7 @@ public enum ModelType {
     GPT_4_1106_PREVIEW("gpt-4-1106-preview", EncodingType.CL100K_BASE, 128000),
     GPT_4_VISION_PREVIEW("gpt-4-vision-preview", EncodingType.CL100K_BASE, 128000),
     // 20240125
+    GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385), // replace GPT_3_5_TURBO_1106
     GPT_4_0125_PREVIEW("gpt-4-0125-preview", EncodingType.CL100K_BASE, 128000), // replace GPT_4_1106_PREVIEW
 
     // text

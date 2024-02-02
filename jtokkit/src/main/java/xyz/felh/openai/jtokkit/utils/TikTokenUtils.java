@@ -45,6 +45,8 @@ public class TikTokenUtils {
         }
         modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_1106.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
         modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+        modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0125.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO));
+
         modelMap.put(ChatCompletion.Model.GPT_4_32K.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
@@ -403,7 +405,8 @@ public class TikTokenUtils {
     public static ModelType getModelTypeByName(String name) {
         if (ChatCompletion.Model.GPT_3_5_TURBO.getName().equals(name)
                 || ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName().equals(name)
-                || ChatCompletion.Model.GPT_3_5_TURBO_1106.getName().equals(name)) {
+                || ChatCompletion.Model.GPT_3_5_TURBO_1106.getName().equals(name)
+                || ChatCompletion.Model.GPT_3_5_TURBO_0125.getName().equals(name)) {
             return ModelType.GPT_3_5_TURBO;
         }
         if (ChatCompletion.Model.GPT_4.getName().equals(name)
@@ -425,7 +428,6 @@ public class TikTokenUtils {
 
 
     public static boolean isBlankChar(int c) {
-//        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == 65279 || c == 8234 || c == 0 || c == 12644 || c == 10240 || c == 6158;
         return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == 65279 || c == 8234 || c == 0 || c == 12644 || c == 10240 || c == 6158;
     }
 

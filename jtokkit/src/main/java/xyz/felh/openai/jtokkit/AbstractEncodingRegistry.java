@@ -30,19 +30,24 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
             return Optional.of(getEncodingForModel(modelType.get()));
         }
 
+        if (modelName.startsWith(ModelType.GPT_4.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4));
+        }
+
         if (modelName.startsWith(ModelType.GPT_4_32K.getName())) {
             return Optional.of(getEncodingForModel(ModelType.GPT_4_32K));
         }
 
-        if (modelName.startsWith(ModelType.GPT_4.getName())) {
-            return Optional.of(getEncodingForModel(ModelType.GPT_4));
+        if (modelName.startsWith(ModelType.GPT_3_5_TURBO.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_3_5_TURBO));
         }
 
         if (modelName.startsWith(ModelType.GPT_3_5_TURBO_1106.getName())) {
             return Optional.of(getEncodingForModel(ModelType.GPT_3_5_TURBO_1106));
         }
-        if (modelName.startsWith(ModelType.GPT_3_5_TURBO.getName())) {
-            return Optional.of(getEncodingForModel(ModelType.GPT_3_5_TURBO));
+
+        if (modelName.startsWith(ModelType.GPT_3_5_TURBO_0125.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_3_5_TURBO_0125));
         }
 
         if (modelName.startsWith(ModelType.GPT_4_VISION_PREVIEW.getName())) {
@@ -51,6 +56,10 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
 
         if (modelName.startsWith(ModelType.GPT_4_1106_PREVIEW.getName())) {
             return Optional.of(getEncodingForModel(ModelType.GPT_4_1106_PREVIEW));
+        }
+
+        if (modelName.startsWith(ModelType.GPT_4_0125_PREVIEW.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4_0125_PREVIEW));
         }
 
         return Optional.empty();
