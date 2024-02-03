@@ -34,7 +34,6 @@ public class FunctionFormat {
             lines.add("");
         }
         lines.add("} // namespace functions");
-//        log.info("\n" + String.join("\n", lines));
         return String.join("\n", lines);
     }
 

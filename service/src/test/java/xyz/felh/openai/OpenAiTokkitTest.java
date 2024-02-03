@@ -185,28 +185,51 @@ public class OpenAiTokkitTest {
 // gpt-4-0125-preview
         String json = """
                 {
-                    "model": "gpt-3.5-turbo-1106",
-                    "messages": [
-                    {
-                        "role": "assistant",
-                        "content": "",
-                        "name": null,
-                        "tool_calls": [{
-                            "id": "call_h921N3VXwHw0RI7fgn6USsKS",
-                            "type": "function",
-                            "function": {
-                                "name": "get_weather",
-                                "arguments": "{\\"location\\":\\"Shanghai\\",\\"unit\\":\\"celsius\\"}"
-                            }
-                        }],
-                        "tool_call_id": null
-                    }, {
-                        "role": "tool",
-                        "content": "Sunny",
-                        "name": null,
-                        "tool_calls": null,
-                        "tool_call_id": "call_h921N3VXwHw0RI7fgn6USsKS"
-                    }]
+                    "model": "gpt-3.5-turbo-0125",
+                 "messages": [
+                                   {
+                                       "role": "system",
+                                       "content": "你是一个数学达人"
+                                   },
+                                   {
+                                       "role": "user",
+                                       "content": "两道计算题 20+70; 30x100"
+                                   },
+                                   {
+                                       "role": "assistant",
+                                       "content": null,
+                                       "tool_calls": [
+                                           {
+                                               "id": "call_ouziXPZBrGmtdxh5BnBooKI3",
+                                               "type": "function",
+                                               "function": {
+                                                   "name": "plus",
+                                                   "arguments": "{\\"numbers\\": [20, 70]}"
+                                               }
+                                           },
+                                           {
+                                               "id": "call_jxP70EbkqL5L78EMVK76jFDh",
+                                               "type": "function",
+                                               "function": {
+                                                   "name": "product",
+                                                   "arguments": "{\\"numbers\\": [30, 100]}"
+                                               }
+                                           }
+                                       ]
+                                   },
+                                   {
+                                       "tool_call_id": "call_ouziXPZBrGmtdxh5BnBooKI3",
+                                       "role": "tool",
+                                       "name": "plus",
+                                       "content": "{\\"numbers\\": [20, 70], \\"result\\": \\"90\\"}"
+                                   },
+                                   {
+                                       "tool_call_id": "call_jxP70EbkqL5L78EMVK76jFDh",
+                                       "role": "tool",
+                                       "name": "product",
+                                       "content": "{\\"numbers\\": [30, 100], \\"result\\": \\"30000\\"}"
+                                   }
+                               ]
                 }
                 """;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -221,7 +244,7 @@ public class OpenAiTokkitTest {
         }
         log.info("total tokens: {}", TikTokenUtils.estimateTokens(request));
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(request);
-        log.info("chatCompletion: " + toJSONString(chatCompletion));
+        log.info("chatCompletion: {} {}", chatCompletion.getUsage().getPromptTokens(), toJSONString(chatCompletion));
     }
 
     private String toJSONString(Object obj) {
