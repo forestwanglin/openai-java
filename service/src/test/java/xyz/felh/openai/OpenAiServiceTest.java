@@ -20,6 +20,7 @@ import xyz.felh.openai.audio.*;
 import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
+import xyz.felh.openai.chat.tool.ToolCall;
 import xyz.felh.openai.chat.tool.Type;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
@@ -47,6 +48,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static xyz.felh.openai.OpenAiService.*;
 
@@ -174,6 +176,20 @@ public class OpenAiServiceTest {
         celsius, fahrenheit
     }
 
+    @Data
+    public static class PlusParam {
+        @JsonPropertyDescription("两个加数的数组, e.g. [1,2]")
+        @JsonProperty(value = "numbers")
+        private List<Number> numbers;
+    }
+
+    @Data
+    public static class ProductParam {
+        @JsonPropertyDescription("两个乘数的数组, e.g. [1,2]")
+        @JsonProperty(value = "numbers")
+        private List<Number> numbers;
+    }
+
     @Test
     public void createFunctionChatCompletion() {
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
@@ -195,13 +211,27 @@ public class OpenAiServiceTest {
 
 
         List<Tool> tools = Arrays.asList(
+//                Tool.builder()
+//                        .type(Type.FUNCTION)
+//                        .function(Function.builder()
+//                                .name("plus")
+//                                .description("plus two numbers")
+//                                .parameters(JSONObject.parseObject(generator.generateSchema(PlusParam.class).toString()))
+//                                .build()).build(),
                 Tool.builder()
                         .type(Type.FUNCTION)
                         .function(Function.builder()
-                                .name("get_current_weather")
-                                .description("Get the current weather in a given location")
-                                .parameters(jsonObject)
+                                .name("product")
+                                .description("product two numbers")
+                                .parameters(JSONObject.parseObject(generator.generateSchema(ProductParam.class).toString()))
                                 .build()).build()
+//                Tool.builder()
+//                        .type(Type.FUNCTION)
+//                        .function(Function.builder()
+//                                .name("get_current_weather")
+//                                .description("Get the current weather in a given location")
+//                                .parameters(jsonObject)
+//                                .build()).build()
 //                , Tool.builder()
 //                        .type("function")
 //                        .function(Function.builder()
@@ -211,13 +241,14 @@ public class OpenAiServiceTest {
 //                                .build()).build()
         );
 
-        JSONObject fc = new JSONObject();
-        fc.put("name", "get_location");
+//        JSONObject fc = new JSONObject();
+//        fc.put("name", "get_location");
 
-        String model = "gpt-3.5-turbo-1106";
+        String model = "gpt-3.5-turbo-0125";
         List<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like tomorrow in Beijing and Shanghai?"));
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "你是一个数学达人"));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "计算题 30x100; 10x300; 5x600;"));
+//        messages.add(new ChatMessage(ChatMessageRole.USER, "计算题 20+70"));
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
                 .model(model)
@@ -233,27 +264,31 @@ public class OpenAiServiceTest {
         log.info("request: " + toJSONString(chatCompletionRequest));
         log.info("chatCompletion: " + toJSONString(chatCompletion));
 
-//        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
-//        if (Preconditions.isNotBlank(toolCalls)) {
-//            // add response message to new request
-//            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
-//            chatMessage.setContent("");
-//            messages.add(chatMessage);
-//            // You can change to call your own function to get weather in parallel
-//            for (ToolCall toolCall : toolCalls) {
-//                log.info("fc: {}", toolCall.getFunction());
-//                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, new Random().nextInt() % 2 == 0 ? "Raining" : "Sunny");
-//                cm.setToolCallId(toolCall.getId());
-//                messages.add(cm);
-//            }
-//            log.info("prompts: {}", TikTokenUtils.tokens(model, messages));
-//            chatCompletionRequest.setToolChoice(null);
-//            chatCompletionRequest.setTools(null);
-//            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-//            log.info("request: " + toJSONString(chatCompletionRequest));
-//            log.info("chatCompletion: " + toJSONString(chatCompletion));
-//        }
-//
+        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
+        if (Preconditions.isNotBlank(toolCalls)) {
+            // add response message to new request
+            ChatMessage chatMessage = chatCompletion.getChoices().get(0).getMessage();
+            chatMessage.setContent("");
+            messages.add(chatMessage);
+            // You can change to call your own function to get weather in parallel
+            int i = 0;
+            for (ToolCall toolCall : toolCalls) {
+                i++;
+                log.info("fc: {}", toolCall.getFunction());
+                JSONObject args = JSONObject.parseObject(toolCall.getFunction().getArguments());
+                args.put("result", "3000");
+                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL,   "3000");
+                cm.setToolCallId(toolCall.getId());
+                messages.add(cm);
+            }
+            log.info("prompts: {}", TikTokenUtils.estimateTokensInMessages(model, messages));
+            chatCompletionRequest.setToolChoice(null);
+            chatCompletionRequest.setTools(null);
+            chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            log.info("request: " + toJSONString(chatCompletionRequest));
+            log.info("chatCompletion: " + toJSONString(chatCompletion));
+        }
+
 //        List<ChatMessage> messages1 = new ArrayList<>();
 //        messages1.add(new ChatMessage(ChatMessageRole.USER, "What's the weather like in Shanghai?", "u12323"));
 //        messages1.add(new ChatMessage(ChatMessageRole.ASSISTANT, "", null, FunctionCall.builder()

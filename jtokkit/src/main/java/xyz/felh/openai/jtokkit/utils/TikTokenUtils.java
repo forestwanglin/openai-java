@@ -2,7 +2,6 @@ package xyz.felh.openai.jtokkit.utils;
 
 
 import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import xyz.felh.openai.chat.ChatCompletion;
@@ -27,6 +26,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToIntFunction;
 
 @Slf4j
 public class TikTokenUtils {
@@ -243,6 +245,12 @@ public class TikTokenUtils {
 
     public static int estimateTokensInMessages(String modelName, List<ChatMessage> messages, List<Tool> tools) {
         int tokens = 0;
+        int toolMessageSize = (int) messages.stream().filter(it -> it.getRole() == ChatMessageRole.TOOL).count();
+        // size = 1, equal
+        // size = 2 - 5; 3 - 7, 4 - 9
+        if (toolMessageSize > 1) {
+            tokens += toolMessageSize * 2 + 1;
+        }
         boolean paddedSystem = false;
         for (ChatMessage message : messages) {
             ChatMessage msg = SerializationUtils.clone(message);
@@ -252,7 +260,7 @@ public class TikTokenUtils {
                 }
                 paddedSystem = true;
             }
-            tokens += estimateTokensInMessage(modelName, msg);
+            tokens += estimateTokensInMessage(modelName, msg, toolMessageSize);
         }
         // Each completion (vs message) seems to carry a 3-token overhead
         tokens += 3;
@@ -267,67 +275,76 @@ public class TikTokenUtils {
      * @param message   消息体
      * @return tokens数量
      */
-    public static int estimateTokensInMessage(String modelName, ChatMessage message) {
+    public static int estimateTokensInMessage(String modelName, ChatMessage message, int toolMessageSize) {
         Encoding encoding = getEncoding(modelName);
         int tokens = 0;
         // role
         tokens += tokens(encoding, message.getRole().value());
 
         // content
-        if (message.getContent() instanceof String) {
-            tokens += tokens(encoding, message.getContent().toString());
+        if (message.getRole() == ChatMessageRole.TOOL) {
+            if (toolMessageSize == 1) {
+                tokens += tokens(encoding, message.getContent().toString());
+            } else {
+                tokens += tokens(encoding, ToolContentFormat.format(message.getContent()));
+            }
         } else {
-            List<ChatMessage.ContentItem> items = ListUtils.castList(message.getContent(), ChatMessage.ContentItem.class);
-            if (Preconditions.isNotBlank(items)) {
-                for (ChatMessage.ContentItem item : items) {
-                    if (item.getType() == ChatMessage.ContentType.TEXT) {
-                        // 不需要计算type
-                        tokens += tokens(encoding, item.getText());
-                    } else if (item.getType() == ChatMessage.ContentType.IMAGE_URL) {
-                        ChatMessage.ImageUrl imageUrl = item.getImageUrl();
-                        // https://openai.com/pricing
-                        if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.LOW) {
-                            tokens += 85;
-                        } else if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.HIGH) {
-                            tokens += 85;
-                            int width = 0;
-                            int height = 0;
-                            if (imageUrl.getUrl().startsWith("f")) {
-                                // base64
-                                Base64.Decoder decoder = Base64.getDecoder();
-                                try {
-                                    String b64 = imageUrl.getUrl();
-                                    b64 = b64.substring(b64.indexOf(";base64,") + 8);
-                                    b64 = b64.substring(0, b64.length() - 1);
-                                    byte[] bytes = decoder.decode(b64);
-                                    ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-                                    BufferedImage bi = ImageIO.read(inputStream);
-                                    if (Preconditions.isNotBlank(inputStream)) {
-                                        inputStream.close();
+            if (message.getContent() instanceof String) {
+                tokens += tokens(encoding, message.getContent().toString());
+            } else {
+                List<ChatMessage.ContentItem> items = ListUtils.castList(message.getContent(), ChatMessage.ContentItem.class);
+                if (Preconditions.isNotBlank(items)) {
+                    for (ChatMessage.ContentItem item : items) {
+                        if (item.getType() == ChatMessage.ContentType.TEXT) {
+                            // 不需要计算type
+                            tokens += tokens(encoding, item.getText());
+                        } else if (item.getType() == ChatMessage.ContentType.IMAGE_URL) {
+                            ChatMessage.ImageUrl imageUrl = item.getImageUrl();
+                            // https://openai.com/pricing
+                            if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.LOW) {
+                                tokens += 85;
+                            } else if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.HIGH) {
+                                tokens += 85;
+                                int width = 0;
+                                int height = 0;
+                                if (imageUrl.getUrl().startsWith("f")) {
+                                    // base64
+                                    Base64.Decoder decoder = Base64.getDecoder();
+                                    try {
+                                        String b64 = imageUrl.getUrl();
+                                        b64 = b64.substring(b64.indexOf(";base64,") + 8);
+                                        b64 = b64.substring(0, b64.length() - 1);
+                                        byte[] bytes = decoder.decode(b64);
+                                        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+                                        BufferedImage bi = ImageIO.read(inputStream);
+                                        if (Preconditions.isNotBlank(inputStream)) {
+                                            inputStream.close();
+                                        }
+                                        width = bi.getWidth();
+                                        height = bi.getHeight();
+                                    } catch (Exception e) {
+                                        log.error("image to base64 error", e);
                                     }
-                                    width = bi.getWidth();
-                                    height = bi.getHeight();
-                                } catch (Exception e) {
-                                    log.error("image to base64 error", e);
+                                } else {
+                                    // image url
+                                    try {
+                                        BufferedImage bi = ImageIO.read(new URL(imageUrl.getUrl()));
+                                        width = bi.getWidth();
+                                        height = bi.getHeight();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
-                            } else {
-                                // image url
-                                try {
-                                    BufferedImage bi = ImageIO.read(new URL(imageUrl.getUrl()));
-                                    width = bi.getWidth();
-                                    height = bi.getHeight();
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                // 1 per 512x512
+                                int tiles = (int) Math.ceil(width / 512.0) * (int) Math.ceil(height / 512.0);
+                                tokens += 170 * tiles;
                             }
-                            // 1 per 512x512
-                            int tiles = (int) Math.ceil(width / 512.0) * (int) Math.ceil(height / 512.0);
-                            tokens += 170 * tiles;
                         }
                     }
                 }
             }
         }
+
         // name 如果是 tool的时候不计算 name
         if (Preconditions.isNotBlank(message.getName()) && message.getRole() != ChatMessageRole.TOOL) {
             tokens += tokens(encoding, message.getName()) + 1; // +1 for the name
@@ -341,11 +358,7 @@ public class TikTokenUtils {
                         tokens += tokens(encoding, toolCall.getFunction().getName());
                     }
                     if (Preconditions.isNotBlank(toolCall.getFunction().getArguments())) {
-                        // 这个地方要特殊处理，按照标准print args，然后再计算tokens
-                        String args = JSONObject.toJSONString(JSONObject.parseObject(toolCall.getFunction().getArguments()),
-                                JSONWriter.Feature.PrettyFormat);
-                        args = args.replaceAll("\\t", "");
-                        tokens += tokens(encoding, args);
+                        tokens += tokens(encoding, ArgumentFormat.formatArguments(toolCall.getFunction().getArguments()));
                     }
                 }
             }
