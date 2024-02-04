@@ -186,50 +186,39 @@ public class OpenAiTokkitTest {
         String json = """
                 {
                     "model": "gpt-3.5-turbo-0125",
-                 "messages": [
-                                   {
-                                       "role": "system",
-                                       "content": "你是一个数学达人"
-                                   },
-                                   {
-                                       "role": "user",
-                                       "content": "两道计算题 20+70; 30x100"
-                                   },
-                                   {
-                                       "role": "assistant",
-                                       "content": null,
-                                       "tool_calls": [
-                                           {
-                                               "id": "call_ouziXPZBrGmtdxh5BnBooKI3",
-                                               "type": "function",
-                                               "function": {
-                                                   "name": "plus",
-                                                   "arguments": "{\\"numbers\\": [20, 70]}"
-                                               }
-                                           },
-                                           {
-                                               "id": "call_jxP70EbkqL5L78EMVK76jFDh",
-                                               "type": "function",
-                                               "function": {
-                                                   "name": "product",
-                                                   "arguments": "{\\"numbers\\": [30, 100]}"
-                                               }
-                                           }
-                                       ]
-                                   },
-                                   {
-                                       "tool_call_id": "call_ouziXPZBrGmtdxh5BnBooKI3",
-                                       "role": "tool",
-                                       "name": "plus",
-                                       "content": "{\\"numbers\\": [20, 70], \\"result\\": \\"90\\"}"
-                                   },
-                                   {
-                                       "tool_call_id": "call_jxP70EbkqL5L78EMVK76jFDh",
-                                       "role": "tool",
-                                       "name": "product",
-                                       "content": "{\\"numbers\\": [30, 100], \\"result\\": \\"30000\\"}"
-                                   }
-                               ]
+                    "messages": [{
+                        "role": "system",
+                        "content": "你是一个AI助手"
+                    }, {
+                        "role": "user",
+                        "content": "明天上海、北京、苏州天气如何？"
+                    }, {
+                        "role": "assistant",
+                        "content": "",
+                        "tool_calls": [{
+                            "id": "call_Ekcl5oetE5LWnCsPlreBGfMR",
+                            "type": "function",
+                            "function": {
+                                "name": "get_n_day_weather_and_forecast",
+                                "arguments": "{\\"location\\": \\"Shanghai\\", \\"unit\\": \\"celsius\\", \\"age\\": 1}"
+                            }
+                        }, {
+                            "id": "call_e4M8VsYu9RcBvXpU50U3le2R",
+                            "type": "function",
+                            "function": {
+                                "name": "get_n_day_weather_and_forecast",
+                                "arguments": "{\\"location\\": \\"Beijing\\", \\"unit\\": \\"celsius\\", \\"age\\": 1}"
+                            }
+                        }]
+                    }, {
+                        "role": "tool",
+                        "content":"{\\"location\\":\\"Beijing\\",\\"unit\\":\\"celsius\\",\\"age\\":1,\\"result\\":\\"晴\\"}",
+                        "tool_call_id": "call_Ekcl5oetE5LWnCsPlreBGfMR"
+                    }, {
+                        "role": "tool",
+                        "content": "{\\"location\\":\\"Beijing\\",\\"unit\\":\\"celsius\\",\\"age\\":1,\\"result\\":\\"晴\\"}",
+                        "tool_call_id": "call_e4M8VsYu9RcBvXpU50U3le2R"
+                    }]
                 }
                 """;
         ObjectMapper objectMapper = new ObjectMapper();

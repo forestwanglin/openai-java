@@ -26,9 +26,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToIntFunction;
 
 @Slf4j
 public class TikTokenUtils {
@@ -246,10 +243,14 @@ public class TikTokenUtils {
     public static int estimateTokensInMessages(String modelName, List<ChatMessage> messages, List<Tool> tools) {
         int tokens = 0;
         int toolMessageSize = (int) messages.stream().filter(it -> it.getRole() == ChatMessageRole.TOOL).count();
-        // size = 1, equal
-        // size = 2 - 5; 3 - 7, 4 - 9
         if (toolMessageSize > 1) {
             tokens += toolMessageSize * 2 + 1;
+
+            int jsonContentToolSize = (int) messages.stream().filter(it -> it.getRole() == ChatMessageRole.TOOL
+                    && ToolContentFormat.isJSONString(it.getContent().toString())).count();
+            if (jsonContentToolSize > 0) {
+                tokens += 1 - jsonContentToolSize;
+            }
         }
         boolean paddedSystem = false;
         for (ChatMessage message : messages) {
@@ -287,6 +288,10 @@ public class TikTokenUtils {
                 tokens += tokens(encoding, message.getContent().toString());
             } else {
                 tokens += tokens(encoding, ToolContentFormat.format(message.getContent()));
+                JSONObject contentJSON = ToolContentFormat.tryFormat(message.getContent().toString());
+                if (Preconditions.isNotBlank(contentJSON)) {
+                    tokens -= contentJSON.keySet().size();
+                }
             }
         } else {
             if (message.getContent() instanceof String) {
@@ -351,11 +356,12 @@ public class TikTokenUtils {
         }
         if (message.getRole() == ChatMessageRole.ASSISTANT && Preconditions.isNotBlank(message.getToolCalls())) {
             for (ToolCall toolCall : message.getToolCalls()) {
-                tokens += 6;
+                tokens += 3;
                 tokens += tokens(encoding, toolCall.getType().value());
                 if (toolCall.getType() == Type.FUNCTION) {
-                    if (Preconditions.isNotBlank(toolCall.getFunction().getName())) {
-                        tokens += tokens(encoding, toolCall.getFunction().getName());
+                    if (Preconditions.isNotBlank(toolCall.getFunction().getName())) { // name is required
+                        int nameToken = tokens(encoding, toolCall.getFunction().getName());
+                        tokens += nameToken * 2;
                     }
                     if (Preconditions.isNotBlank(toolCall.getFunction().getArguments())) {
                         tokens += tokens(encoding, ArgumentFormat.formatArguments(toolCall.getFunction().getArguments()));
@@ -366,7 +372,7 @@ public class TikTokenUtils {
                 // s1, add delta when multi tools is added
                 tokens += 15;
                 // s2
-                tokens -= (message.getToolCalls().size() - 1) * 5 - 1;
+                tokens -= message.getToolCalls().size() * 5 - 6;
             } else {
                 // s1
                 // s2
@@ -396,43 +402,8 @@ public class TikTokenUtils {
         return sum;
     }
 
-    /**
-     * 通过模型名称和encoded编码数组，反推字符串文本
-     *
-     * @param modelName
-     * @param encoded
-     * @return
-     */
-    public static String decode(String modelName, List<Integer> encoded) {
-        Encoding enc = getEncoding(modelName);
-        return enc.decode(encoded);
-    }
-
-    public static boolean isBlankChar(int c) {
-        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == 65279 || c == 8234 || c == 0 || c == 12644 || c == 10240 || c == 6158;
-    }
-
-    public static boolean isBlankChar(char c) {
-        return isBlankChar((int) c);
-    }
-
-    public static boolean isNotBlank(CharSequence str) {
-        return !isBlank(str);
-    }
-
     public static boolean isBlank(CharSequence str) {
-        int length;
-        if (str != null && (length = str.length()) != 0) {
-            for (int i = 0; i < length; ++i) {
-                if (!isBlankChar(str.charAt(i))) {
-                    return false;
-                }
-            }
-
-            return true;
-        } else {
-            return true;
-        }
+        return str == null || "".contentEquals(str);
     }
 
 }

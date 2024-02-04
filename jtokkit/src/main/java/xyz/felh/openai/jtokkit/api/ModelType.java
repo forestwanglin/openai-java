@@ -15,12 +15,12 @@ public enum ModelType {
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
 
-    GPT_3_5_TURBO_1106("gpt-3.5-turbo-1106", EncodingType.CL100K_BASE, 16385),
-    GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385), // replace GPT_3_5_TURBO_1106
-
     GPT_4_1106_PREVIEW("gpt-4-1106-preview", EncodingType.CL100K_BASE, 128000),
     GPT_4_0125_PREVIEW("gpt-4-0125-preview", EncodingType.CL100K_BASE, 128000),// replace GPT_4_1106_PREVIEW
     GPT_4_VISION_PREVIEW("gpt-4-vision-preview", EncodingType.CL100K_BASE, 128000),
+
+    GPT_3_5_TURBO_1106("gpt-3.5-turbo-1106", EncodingType.CL100K_BASE, 16385),
+    GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385), // replace GPT_3_5_TURBO_1106
 
     // text
     TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
@@ -48,9 +48,8 @@ public enum ModelType {
 
     // embeddings
     TEXT_EMBEDDING_ADA_002("text-embedding-ada-002", EncodingType.CL100K_BASE, 8191),  // $0.00010 / 1K tokens
-    // 20240125
-    TEXT_EMBEDDING_3_SMALL("text-embedding-3-small", EncodingType.CL100K_BASE, 8191), // 1536 DIMENSION  $0.00002 / 1K tokens
-    TEXT_EMBEDDING_3_LARGE("text-embedding-3-large", EncodingType.CL100K_BASE, 8191), // 3072 DIMENSION  $0.00013 / 1K tokens
+    TEXT_EMBEDDING_3_SMALL("text-embedding-3-small", EncodingType.CL100K_BASE, 8191), // 1536 DIMENSION 20240125 $0.00002 / 1K tokens
+    TEXT_EMBEDDING_3_LARGE("text-embedding-3-large", EncodingType.CL100K_BASE, 8191), // 3072 DIMENSION 20240125 $0.00013 / 1K tokens
 
     // old embeddings
     TEXT_SIMILARITY_DAVINCI_001("text-similarity-davinci-001", EncodingType.R50K_BASE, 2046),

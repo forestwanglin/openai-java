@@ -218,20 +218,20 @@ public class OpenAiServiceTest {
 //                                .description("plus two numbers")
 //                                .parameters(JSONObject.parseObject(generator.generateSchema(PlusParam.class).toString()))
 //                                .build()).build(),
-                Tool.builder()
-                        .type(Type.FUNCTION)
-                        .function(Function.builder()
-                                .name("product")
-                                .description("product two numbers")
-                                .parameters(JSONObject.parseObject(generator.generateSchema(ProductParam.class).toString()))
-                                .build()).build()
 //                Tool.builder()
 //                        .type(Type.FUNCTION)
 //                        .function(Function.builder()
-//                                .name("get_current_weather")
-//                                .description("Get the current weather in a given location")
-//                                .parameters(jsonObject)
+//                                .name("product")
+//                                .description("product two numbers")
+//                                .parameters(JSONObject.parseObject(generator.generateSchema(ProductParam.class).toString()))
 //                                .build()).build()
+                Tool.builder()
+                        .type(Type.FUNCTION)
+                        .function(Function.builder()
+                                .name("get_n_day_weather_and_forecast")
+                                .description("Get the current weather in a given location")
+                                .parameters(jsonObject)
+                                .build()).build()
 //                , Tool.builder()
 //                        .type("function")
 //                        .function(Function.builder()
@@ -246,9 +246,8 @@ public class OpenAiServiceTest {
 
         String model = "gpt-3.5-turbo-0125";
         List<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "你是一个数学达人"));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "计算题 30x100; 10x300; 5x600;"));
-//        messages.add(new ChatMessage(ChatMessageRole.USER, "计算题 20+70"));
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "你是一个AI助手"));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "明天上海和北京天气如何？"));
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
                 .model(model)
@@ -271,13 +270,11 @@ public class OpenAiServiceTest {
             chatMessage.setContent("");
             messages.add(chatMessage);
             // You can change to call your own function to get weather in parallel
-            int i = 0;
             for (ToolCall toolCall : toolCalls) {
-                i++;
                 log.info("fc: {}", toolCall.getFunction());
                 JSONObject args = JSONObject.parseObject(toolCall.getFunction().getArguments());
-                args.put("result", "3000");
-                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL,   "3000");
+                args.put("result", "晴");
+                ChatMessage cm = new ChatMessage(ChatMessageRole.TOOL, args.toString());
                 cm.setToolCallId(toolCall.getId());
                 messages.add(cm);
             }
