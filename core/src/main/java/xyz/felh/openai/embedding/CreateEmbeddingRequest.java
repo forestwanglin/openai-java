@@ -53,6 +53,15 @@ public class CreateEmbeddingRequest implements IOpenAiApiRequest {
     private EncodingFormat encodingFormat;
 
     /**
+     * integer Optional
+     * <p>
+     * The number of dimensions the resulting output embeddings should have. Only supported in `text-embedding-3` and later models.
+     */
+    @JSONField(name = "dimensions")
+    @JsonProperty("dimensions")
+    private Integer dimensions;
+
+    /**
      * Optional
      * <p>
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. Learn more.
