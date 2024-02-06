@@ -1,5 +1,6 @@
 package xyz.felh.openai;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -28,6 +29,7 @@ import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
 import xyz.felh.openai.audio.CreateSpeechRequest;
+import xyz.felh.openai.bean.StreamToolCallsRequest;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
@@ -52,13 +54,16 @@ import xyz.felh.openai.thread.message.ModifyMessageRequest;
 import xyz.felh.openai.thread.message.file.MessageFile;
 import xyz.felh.openai.thread.run.*;
 import xyz.felh.openai.thread.run.step.RunStep;
+import xyz.felh.openai.utils.Preconditions;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 
 import static xyz.felh.openai.constant.OpenAiConstants.BASE_URL;
 
@@ -186,7 +191,7 @@ public class OpenAiService {
     }
 
     /**
-     * create chat completion by stream
+     * create chat completion by stream, user-side handled if there is tool_calls
      *
      * @param requestId request ID, every observer is unique
      * @param request   detail of request
@@ -195,6 +200,21 @@ public class OpenAiService {
     public void createSteamChatCompletion(String requestId,
                                           CreateChatCompletionRequest request,
                                           @NonNull StreamChatCompletionListener listener) {
+        createSteamChatCompletion(requestId, request, listener, null);
+    }
+
+    /**
+     * create chat completion by stream, sdk-side handled if there is tool_calls
+     *
+     * @param requestId        request ID, every observer is unique
+     * @param request          detail of request
+     * @param listener         StreamChatCompletionListener
+     * @param toolCallsHandler handle tool calls and then build the next request
+     */
+    public void createSteamChatCompletion(String requestId,
+                                          CreateChatCompletionRequest request,
+                                          @NonNull StreamChatCompletionListener listener,
+                                          BiFunction<String, ChatCompletion, StreamToolCallsRequest> toolCallsHandler) {
         request.setStream(true);
         Request okHttpRequest;
         try {
@@ -207,6 +227,15 @@ public class OpenAiService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        final StreamToolCallsReceiver streamToolCallsReceiver;
+        final CountDownLatch countDownLatch;
+        if (Preconditions.isBlank(toolCallsHandler)) {
+            streamToolCallsReceiver = null;
+            countDownLatch = null;
+        } else {
+            countDownLatch = new CountDownLatch(1);
+            streamToolCallsReceiver = new StreamToolCallsReceiver(this, toolCallsHandler, listener, countDownLatch);
+        }
         EventSource.Factory factory = EventSources.createFactory(client);
         EventSourceListener eventSourceListener = new EventSourceListener() {
             @Override
@@ -217,11 +246,25 @@ public class OpenAiService {
             @Override
             public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
                 if (data.equals("[DONE]")) {
-                    listener.onEventDone(requestId);
+                    if (Preconditions.isBlank(toolCallsHandler)) {
+                        listener.onEventDone(requestId);
+                    } else {
+                        assert streamToolCallsReceiver != null;
+                        if (!streamToolCallsReceiver.receiveDone(requestId)) {
+                            listener.onEventDone(requestId);
+                        }
+                    }
                 } else {
                     try {
                         ChatCompletion chatCompletion = defaultObjectMapper().readValue(data, ChatCompletion.class);
-                        listener.onEvent(requestId, chatCompletion);
+                        if (Preconditions.isBlank(toolCallsHandler)) {
+                            listener.onEvent(requestId, chatCompletion);
+                        } else {
+                            assert streamToolCallsReceiver != null;
+                            if (!streamToolCallsReceiver.receive(chatCompletion)) {
+                                listener.onEvent(requestId, chatCompletion);
+                            }
+                        }
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -230,7 +273,27 @@ public class OpenAiService {
 
             @Override
             public void onClosed(@NonNull EventSource eventSource) {
-                listener.onClosed(requestId);
+                if (Preconditions.isBlank(toolCallsHandler)) {
+                    listener.onClosed(requestId);
+                } else {
+                    assert streamToolCallsReceiver != null;
+                    if (streamToolCallsReceiver.getActive()) {
+                        try {
+                            countDownLatch.await();
+                            if (streamToolCallsReceiver.isFailure()) {
+                                listener.onFailure(streamToolCallsReceiver.getRequestId(),
+                                        streamToolCallsReceiver.getT(),
+                                        streamToolCallsReceiver.getResponse());
+                            } else {
+                                listener.onClosed(requestId);
+                            }
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        listener.onClosed(requestId);
+                    }
+                }
             }
 
             @Override
@@ -261,7 +324,7 @@ public class OpenAiService {
         byte[] maskBytes = null;
         if (request.getMask() != null && request.getMask().length > 0) {
             maskBytes = request.getMask();
-        } else if (request.getMaskPath() != null && request.getMaskPath().length() > 0) {
+        } else if (request.getMaskPath() != null && !request.getMaskPath().isEmpty()) {
             File mask = new File(request.getMaskPath());
             try {
                 maskBytes = Files.readAllBytes(mask.toPath());

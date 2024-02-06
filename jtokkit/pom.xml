@@ -6,7 +6,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>3.8.20240204</version>
+        <version>3.8.20240206</version>
     </parent>
 
     <artifactId>jtokkit</artifactId>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>core</artifactId>
-            <version>3.8.20240204</version>
+            <version>3.8.20240206</version>
         </dependency>
 
         <dependency>

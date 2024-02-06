@@ -1,18 +1,16 @@
 package xyz.felh.openai;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.sse.EventSource;
 import xyz.felh.openai.chat.ChatCompletion;
 
+@Data
 @Slf4j
 public abstract class StreamChatCompletionListener {
 
     private EventSource eventSource;
-
-    public void setEventSource(EventSource eventSource) {
-        this.eventSource = eventSource;
-    }
 
     /**
      * Invoked when an event source has been accepted by the remote peer and may begin transmitting

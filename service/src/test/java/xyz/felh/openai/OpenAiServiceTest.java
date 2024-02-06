@@ -1,7 +1,6 @@
 package xyz.felh.openai;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -17,6 +16,7 @@ import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
 import xyz.felh.openai.audio.*;
+import xyz.felh.openai.bean.StreamToolCallsRequest;
 import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
@@ -48,7 +48,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static xyz.felh.openai.OpenAiService.*;
 
@@ -300,44 +299,77 @@ public class OpenAiServiceTest {
 
     @Test
     public void createFunctionCallStreamChatCompletion() {
+        final List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in 北京和上海?"));
+
+        SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
+                .with(new JacksonModule());
+        SchemaGeneratorConfig config = configBuilder.build();
+        SchemaGenerator generator = new SchemaGenerator(config);
+        JsonNode jsonSchema = generator.generateSchema(GetWeatherParam.class);
+        JSONObject jsonObject = JSONObject.parseObject(jsonSchema.toString());
+
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(messages)
+                .model("gpt-3.5-turbo-0125")
+                .tools(List.of(Tool.builder()
+                        .type(Type.FUNCTION)
+                        .function(Function.builder()
+                                .name("get_weather")
+                                .description("Get the current weather in a given location")
+                                .parameters(jsonObject)
+                                .build()).build()))
+                .toolChoice("auto")
+                .build();
         StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+            @Override
+            public void onOpen(String requestId, Response response) {
+                log.info("on onOpen {}", requestId);
+            }
+
             @Override
             public void onEvent(String requestId, ChatCompletion chatCompletion) {
                 log.info("chatCompletion: {}", JSON.toJSONString(chatCompletion));
-                log.info("content: {}", chatCompletion.getChoices().get(0).getDelta().getContent());
+            }
+
+            @Override
+            public void onEventDone(String requestId) {
+                log.info("on onEventDone {}", requestId);
+            }
+
+            @Override
+            public void onClosed(String requestId) {
+                log.info("on onClosed {}", requestId);
             }
 
             @Override
             public void onFailure(String requestId, Throwable t, Response response) {
-                log.info("on failure {}", JSON.toJSONString(response));
-                t.printStackTrace();
+                log.info("on failure {} {}", requestId, JSON.toJSONString(response));
             }
         };
-        List<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Beijing?"));
-
-//        SchemaBuilder objectSchemaBuilder = objectSchema()
-//                .property("location", stringSchema()
-//                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"));
-//        JSONObject jsonObject = JSON.parseObject(objectSchemaBuilder.toJson().toString());
-//        removeId(jsonObject);
-//        List<Function> functions = Arrays.asList(
-//                Function.builder()
-//                        .name("get_current_weather")
-//                        .description("Get the current weather in a given location")
-//                        .parameters(jsonObject)
-//                        .build()
-//
-//        );
-
-        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
-                .messages(messages)
-                .model("gpt-3.5-turbo")
-//                .functions(functions)
-//                .functionCall("auto")
-                .build();
-        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener);
+        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener,
+                (requestId, chatCompletion) -> {
+                    log.info("request Id {}", requestId);
+                    log.info("chatCompletion {}", chatCompletion);
+                    if (Preconditions.isNotBlank(chatCompletion)
+                            && Preconditions.isNotBlank(chatCompletion.getChoices())
+                            && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getDelta())
+                            && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getDelta().getToolCalls())) {
+                        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getDelta().getToolCalls();
+                        messages.add(chatCompletion.getChoices().get(0).getDelta());
+                        for (ToolCall toolCall : toolCalls) {
+                            ChatMessage chatMessage = new ChatMessage(ChatMessageRole.TOOL, "晴");
+                            chatMessage.setToolCallId(toolCall.getId());
+                            messages.add(chatMessage);
+                        }
+                    }
+                    return StreamToolCallsRequest.builder().request(CreateChatCompletionRequest.builder()
+                                    .messages(messages)
+                                    .model("gpt-3.5-turbo-0125")
+                                    .build())
+                            .requestId("3444444").build();
+                });
 
         try {
             Thread.sleep(10000L);
