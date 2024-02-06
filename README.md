@@ -46,6 +46,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-11-28] Remove api for [Completions](https://platform.openai.com/docs/api-reference/completions)
 - [2023-12-04] Remove ModeType.GPT_3_5_TURBO_16K stead of GPT_3_5_TURBO_1106 which is the same length but cheaper.
 - [2024-02-02] Add model `gpt-3.5-turbo-0125`, ```gpt-4-0125-preview`, `text-embedding-3-small`, `text-embedding-3-large`.
+- [2024-02-06] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
 
 ## How to use
 
@@ -314,6 +315,82 @@ public class OpenAiService {
             .build();
         ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
         log.info("chatCompletion: {}", toJSONString(chatCompletion));
+    }
+}
+```
+
+#### 3.5 Create Chat Completion with Tool Calls in background. 
+
+```java
+public class OpenAiService {
+    
+    public void createFunctionCallStreamChatCompletion() {
+        final List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Shanghai?"));
+
+        SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
+                .with(new JacksonModule());
+        SchemaGeneratorConfig config = configBuilder.build();
+        SchemaGenerator generator = new SchemaGenerator(config);
+        JsonNode jsonSchema = generator.generateSchema(GetWeatherParam.class);
+        JSONObject jsonObject = JSONObject.parseObject(jsonSchema.toString());
+
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(messages)
+                .model("gpt-3.5-turbo-0125")
+                .tools(List.of(Tool.builder()
+                        .type(Type.FUNCTION)
+                        .function(Function.builder()
+                                .name("get_weather")
+                                .description("Get the current weather in a given location")
+                                .parameters(jsonObject)
+                                .build()).build()))
+                .toolChoice("auto")
+                .build();
+        StreamChatCompletionListener listener = new StreamChatCompletionListener() {
+            @Override
+            public void onOpen(String requestId, Response response) {log.info("on onOpen {}", requestId);
+            }
+
+            @Override
+            public void onEvent(String requestId, ChatCompletion chatCompletion) {log.info("chatCompletion: {}", JSON.toJSONString(chatCompletion));
+            }
+
+            @Override
+            public void onEventDone(String requestId) {log.info("on onEventDone {}", requestId);
+            }
+
+            @Override
+            public void onClosed(String requestId) {log.info("on onClosed {}", requestId);
+            }
+
+            @Override
+            public void onFailure(String requestId, Throwable t, Response response) {log.info("on failure {} {}", requestId, JSON.toJSONString(response));
+            }
+        };
+        getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener,
+                (requestId, chatCompletion) -> {
+            log.info("request Id {}", requestId);
+            log.info("chatCompletion {}", chatCompletion);
+            if (Preconditions.isNotBlank(chatCompletion)
+                    && Preconditions.isNotBlank(chatCompletion.getChoices())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getDelta())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getDelta().getToolCalls())) {
+                List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getDelta().getToolCalls();
+                messages.add(chatCompletion.getChoices().get(0).getDelta());
+                for (ToolCall toolCall : toolCalls) {
+                    ChatMessage chatMessage = new ChatMessage(ChatMessageRole.TOOL, "晴");
+                    chatMessage.setToolCallId(toolCall.getId());
+                    messages.add(chatMessage);
+                }
+            }
+            return StreamToolCallsRequest.builder().request(CreateChatCompletionRequest.builder()
+                            .messages(messages)
+                            .model("gpt-3.5-turbo-0125")
+                            .build())
+                    .requestId("3444444").build();
+        });
     }
 }
 ```

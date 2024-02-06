@@ -301,7 +301,7 @@ public class OpenAiServiceTest {
     public void createFunctionCallStreamChatCompletion() {
         final List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in 北京和上海?"));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Shanghai?"));
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
                 .with(new JacksonModule());
