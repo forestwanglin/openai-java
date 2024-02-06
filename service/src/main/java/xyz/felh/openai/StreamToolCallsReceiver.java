@@ -28,6 +28,8 @@ public class StreamToolCallsReceiver {
     private final OpenAiService openAiService;
     private StreamChatCompletionListener listener;
 
+    private long completionTokens = 0;
+
     // new request params
     private String requestId;
     private boolean failure = false;
@@ -72,6 +74,7 @@ public class StreamToolCallsReceiver {
         if (init(chatCompletion)) {
             if (active) {
                 chatCompletions.add(chatCompletion);
+                completionTokens++;
                 return true;
             }
         }
