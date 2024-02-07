@@ -123,11 +123,11 @@ public class StreamToolCallsReceiver {
     }
 
     private void createChatCompletion(CreateChatCompletionRequest request) {
-        StreamToolCallsReceiver _this = this;
         openAiService.createSteamChatCompletion(requestId, request, new StreamChatCompletionListener() {
             @Override
             public void onOpen(String requestId, Response response) {
                 log.debug("on open {}", requestId);
+                listener.onOpen(requestId, response);
             }
 
             @Override
@@ -139,21 +139,20 @@ public class StreamToolCallsReceiver {
             @Override
             public void onEventDone(String requestId) {
                 log.debug("event done {}", requestId);
+                listener.onEventDone(requestId);
             }
 
             @Override
             public void onClosed(String requestId) {
                 log.debug("event done {}", requestId);
-                _this.failure = false;
+                listener.onClosed(requestId);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFailure(String requestId, Throwable t, Response response) {
                 log.debug("event failure {} {} {}", requestId, t, response);
-                _this.t = t;
-                _this.response = response;
-                _this.failure = true;
+                listener.onFailure(requestId, t, response);
                 countDownLatch.countDown();
             }
         });

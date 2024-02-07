@@ -303,19 +303,11 @@ public class OpenAiService {
                     if (streamToolCallsReceiver.getActive()) {
                         try {
                             countDownLatch.await();
-                            if (streamToolCallsReceiver.isFailure()) {
-                                listener.onFailure(streamToolCallsReceiver.getRequestId(),
-                                        streamToolCallsReceiver.getT(),
-                                        streamToolCallsReceiver.getResponse());
-                            } else {
-                                listener.onClosed(streamToolCallsReceiver.getRequestId());
-                            }
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-                    } else {
-                        listener.onClosed(requestId);
                     }
+                    listener.onClosed(requestId);
                 }
             }
 
