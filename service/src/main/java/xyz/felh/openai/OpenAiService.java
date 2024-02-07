@@ -1,6 +1,5 @@
 package xyz.felh.openai;
 
-import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -64,6 +63,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static xyz.felh.openai.constant.OpenAiConstants.BASE_URL;
 
@@ -186,9 +186,32 @@ public class OpenAiService {
      * @return chat completion
      */
     public ChatCompletion createChatCompletion(CreateChatCompletionRequest request) {
-        request.setStream(false);
-        return execute(api.createChatCompletion(request));
+        return createChatCompletion(request, null);
     }
+
+    /**
+     * @param request          create chat completion request
+     * @param toolCallsHandler handle tool calls and then build the next request
+     * @return chat completion
+     */
+    public ChatCompletion createChatCompletion(CreateChatCompletionRequest request,
+                                               Function<ChatCompletion, CreateChatCompletionRequest> toolCallsHandler) {
+        request.setStream(false);
+        ChatCompletion chatCompletion = execute(api.createChatCompletion(request));
+        if (Preconditions.isBlank(toolCallsHandler)) {
+            return chatCompletion;
+        } else {
+            if (Preconditions.isNotBlank(chatCompletion.getChoices())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage().getToolCalls())) {
+                CreateChatCompletionRequest newRequest = toolCallsHandler.apply(chatCompletion);
+                return createChatCompletion(newRequest);
+            } else {
+                return chatCompletion;
+            }
+        }
+    }
+
 
     /**
      * create chat completion by stream, user-side handled if there is tool_calls

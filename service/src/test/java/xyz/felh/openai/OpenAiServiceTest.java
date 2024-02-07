@@ -298,7 +298,56 @@ public class OpenAiServiceTest {
 
 
     @Test
-    public void createFunctionCallStreamChatCompletion() {
+    public void createToolCallChatCompletion() {
+        SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
+                .with(new JacksonModule());
+        SchemaGeneratorConfig config = configBuilder.build();
+        SchemaGenerator generator = new SchemaGenerator(config);
+        JsonNode jsonSchema = generator.generateSchema(GetWeatherParam.class);
+        JSONObject jsonObject = JSONObject.parseObject(jsonSchema.toString());
+
+
+        final List<ChatMessage> messages = new ArrayList<>();
+        messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Shanghai?"));
+
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(messages)
+                .model("gpt-3.5-turbo-0125")
+                .tools(List.of(Tool.builder()
+                        .type(Type.FUNCTION)
+                        .function(Function.builder()
+                                .name("get_weather")
+                                .description("Get the current weather in a given location")
+                                .parameters(jsonObject)
+                                .build()).build()))
+                .toolChoice("auto")
+                .build();
+        log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
+        ChatCompletion result = getOpenAiService().createChatCompletion(chatCompletionRequest, (chatCompletion) -> {
+            log.info("chatCompletion {}", chatCompletion);
+            if (Preconditions.isNotBlank(chatCompletion)
+                    && Preconditions.isNotBlank(chatCompletion.getChoices())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage().getToolCalls())) {
+                List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
+                messages.add(chatCompletion.getChoices().get(0).getMessage());
+                for (ToolCall toolCall : toolCalls) {
+                    ChatMessage chatMessage = new ChatMessage(ChatMessageRole.TOOL, "晴");
+                    chatMessage.setToolCallId(toolCall.getId());
+                    messages.add(chatMessage);
+                }
+            }
+            return CreateChatCompletionRequest.builder()
+                    .messages(messages)
+                    .model("gpt-3.5-turbo-0125")
+                    .build();
+        });
+        log.info("chatCompletion: " + toJSONString(result));
+    }
+
+    @Test
+    public void createToolCallStreamChatCompletion() {
         final List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
         messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Shanghai?"));

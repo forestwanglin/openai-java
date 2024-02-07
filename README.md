@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.8.20240207&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.8.2024020701&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
@@ -46,7 +46,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-11-28] Remove api for [Completions](https://platform.openai.com/docs/api-reference/completions)
 - [2023-12-04] Remove ModeType.GPT_3_5_TURBO_16K stead of GPT_3_5_TURBO_1106 which is the same length but cheaper.
 - [2024-02-02] Add model `gpt-3.5-turbo-0125`, ```gpt-4-0125-preview`, `text-embedding-3-small`, `text-embedding-3-large`.
-- [2024-02-06] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
+- [2024-02-07] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
 
 ## How to use
 
@@ -57,7 +57,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.8.20240207</version>
+    <version>3.8.2024020701</version>
 </dependency>
 ```
 
@@ -66,22 +66,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.8.20240207</version>
+    <version>3.8.2024020701</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.8.20240207'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.8.20240207'
+implementation group: 'xyz.felh', name: 'service', version: '3.8.2024020701'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.8.2024020701'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.8.20240207"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.8.20240207"
+libraryDependencies += "xyz.felh" % "service" % "3.8.2024020701"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.8.2024020701"
 ```
 
 ## Example (Spring Boot 3)
@@ -93,7 +93,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.8.20240207"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.8.20240207</version>
+    <version>3.8.2024020701</version>
 </dependency>
 ```
 
