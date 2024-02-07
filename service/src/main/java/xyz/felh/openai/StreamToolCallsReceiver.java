@@ -133,7 +133,7 @@ public class StreamToolCallsReceiver {
             @Override
             public void onEvent(String requestId, ChatCompletion chatCompletion) {
                 log.debug("chatCompletion {}", JSON.toJSONString(chatCompletion));
-                listener.onEvent(originalRequestId, chatCompletion);
+                listener.onEvent(requestId, chatCompletion);
             }
 
             @Override
