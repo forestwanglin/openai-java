@@ -234,7 +234,7 @@ public class OpenAiService {
             countDownLatch = null;
         } else {
             countDownLatch = new CountDownLatch(1);
-            streamToolCallsReceiver = new StreamToolCallsReceiver(this, toolCallsHandler, listener, countDownLatch);
+            streamToolCallsReceiver = new StreamToolCallsReceiver(this, requestId, toolCallsHandler, listener, countDownLatch);
         }
         EventSource.Factory factory = EventSources.createFactory(client);
         EventSourceListener eventSourceListener = new EventSourceListener() {
@@ -281,7 +281,7 @@ public class OpenAiService {
                         try {
                             countDownLatch.await();
                             if (streamToolCallsReceiver.isFailure()) {
-                                listener.onFailure(streamToolCallsReceiver.getRequestId(),
+                                listener.onFailure(streamToolCallsReceiver.getOriginalRequestId(),
                                         streamToolCallsReceiver.getT(),
                                         streamToolCallsReceiver.getResponse());
                             } else {

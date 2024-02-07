@@ -30,6 +30,8 @@ public class StreamToolCallsReceiver {
 
     private long completionTokens = 0;
 
+    private String originalRequestId;
+
     // new request params
     private String requestId;
     private boolean failure = false;
@@ -37,10 +39,12 @@ public class StreamToolCallsReceiver {
     private Response response;
 
     public StreamToolCallsReceiver(OpenAiService openAiService,
+                                   String originalRequestId,
                                    BiFunction<String, ChatCompletion, StreamToolCallsRequest> toolCallsHandler,
                                    StreamChatCompletionListener listener,
                                    CountDownLatch countDownLatch) {
         this.chatCompletions = new ArrayList<>();
+        this.originalRequestId = originalRequestId;
         this.openAiService = openAiService;
         this.toolCallsHandler = toolCallsHandler;
         this.listener = listener;
@@ -129,7 +133,7 @@ public class StreamToolCallsReceiver {
             @Override
             public void onEvent(String requestId, ChatCompletion chatCompletion) {
                 log.debug("chatCompletion {}", JSON.toJSONString(chatCompletion));
-                listener.onEvent(requestId, chatCompletion);
+                listener.onEvent(originalRequestId, chatCompletion);
             }
 
             @Override
@@ -140,6 +144,7 @@ public class StreamToolCallsReceiver {
             @Override
             public void onClosed(String requestId) {
                 log.debug("event done {}", requestId);
+                _this.failure = false;
                 countDownLatch.countDown();
             }
 
