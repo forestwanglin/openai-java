@@ -6,7 +6,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>3.8.2024020702</version>
+        <version>3.8.2024030801</version>
     </parent>
 
     <artifactId>jtokkit</artifactId>
@@ -17,8 +17,8 @@
     <url>https://github.com/forestwanglin/openai-java/tree/main/jtokkit</url>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <commons-langs.version>3.14.0</commons-langs.version>
     </properties>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>core</artifactId>
-            <version>3.8.2024020702</version>
+            <version>3.8.2024030801</version>
         </dependency>
 
         <dependency>
@@ -40,20 +40,17 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
 

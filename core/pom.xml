@@ -6,7 +6,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>3.8.2024020702</version>
+        <version>3.8.2024030801</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -17,8 +17,8 @@
     <url>https://github.com/forestwanglin/openai-java/tree/main/core</url>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -27,19 +27,16 @@
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-            <version>${fastjson2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
     </dependencies>
