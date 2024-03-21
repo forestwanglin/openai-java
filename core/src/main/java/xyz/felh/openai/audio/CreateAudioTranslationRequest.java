@@ -24,9 +24,18 @@ public class CreateAudioTranslationRequest implements IOpenAiApiRequest {
     @JSONField(name = "file_path")
     @JsonProperty("file_path")
     private String filePath;
+
     @JSONField(name = "file")
     @JsonProperty("file")
     private byte[] file;
+
+    /**
+     * The name must contain extension in order to let API know how the file's type
+     */
+    @NonNull
+    @JSONField(name = "file_name")
+    @JsonProperty("file_name")
+    private String fileName;
 
     /**
      * Required

@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder(toBuilder = true)
@@ -22,5 +24,16 @@ public class CreateAudioTranscriptionRequest extends CreateAudioTranslationReque
     @JSONField(name = "language")
     @JsonProperty("language")
     private String language;
+
+    /**
+     * The timestamp granularities to populate for this transcription.
+     * <p>
+     * response_format must be set verbose_json to use timestamp granularities.
+     * Either or both of these options are supported: word, or segment. Note:
+     * There is no additional latency for segment timestamps, but generating word timestamps incurs additional latency.
+     */
+    @JSONField(name = "timestamp_granularities")
+    @JsonProperty("timestamp_granularities")
+    private List<String> timestampGranularities;
 
 }

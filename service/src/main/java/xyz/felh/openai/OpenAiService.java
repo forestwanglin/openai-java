@@ -422,9 +422,10 @@ public class OpenAiService {
     }
 
     /**
+     * Transcribes audio into the input language.
      * whisper-1
      * <p>
-     * TODO only support mp3 so far
+     * Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']
      *
      * @param request create audio transcription request
      * @return audio response
@@ -441,11 +442,11 @@ public class OpenAiService {
                 throw new RuntimeException(e);
             }
         }
-        RequestBody audioBody = RequestBody.create(fileBytes, MediaType.parse("mp3"));
         MultipartBody.Builder builder = new MultipartBody.Builder()
-                .setType(MediaType.get("multipart/form-data"))
-                .addFormDataPart("model", request.getModel())
-                .addFormDataPart("file", "mp3", audioBody);
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", request.getFileName(),
+                        RequestBody.create(fileBytes, MediaType.parse("application/octet-stream")))
+                .addFormDataPart("model", request.getModel());
         if (request.getPrompt() != null) {
             builder.addFormDataPart("prompt", request.getModel());
         }
@@ -464,7 +465,7 @@ public class OpenAiService {
     /**
      * whisper-1
      * <p>
-     * TODO only support mp3 so far
+     * Supported formats: ['flac', 'm4a', 'mp3', 'mp4', 'mpeg', 'mpga', 'oga', 'ogg', 'wav', 'webm']
      *
      * @param request create audio traslation request
      * @return audio
@@ -481,11 +482,11 @@ public class OpenAiService {
                 throw new RuntimeException(e);
             }
         }
-        RequestBody audioBody = RequestBody.create(fileBytes, MediaType.parse("mp3"));
         MultipartBody.Builder builder = new MultipartBody.Builder()
-                .setType(MediaType.get("multipart/form-data"))
-                .addFormDataPart("model", request.getModel())
-                .addFormDataPart("file", "mp3", audioBody);
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", request.getFileName(),
+                        RequestBody.create(fileBytes, MediaType.parse("application/octet-stream")))
+                .addFormDataPart("model", request.getModel());
         if (request.getPrompt() != null) {
             builder.addFormDataPart("prompt", request.getModel());
         }

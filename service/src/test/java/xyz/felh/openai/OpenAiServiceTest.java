@@ -509,6 +509,7 @@ public class OpenAiServiceTest {
     public void createAudioTranscription() {
         CreateAudioTranscriptionRequest createAudioTranscriptionRequest = CreateAudioTranscriptionRequest.builder()
                 .model("whisper-1")
+                .fileName("a.mp3")
                 .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
                 .build();
         AudioResponse audioResponse = getOpenAiService().createAudioTranscription(createAudioTranscriptionRequest);
@@ -519,6 +520,7 @@ public class OpenAiServiceTest {
     public void createAudioTranslation() {
         CreateAudioTranslationRequest createAudioTranslationRequest = CreateAudioTranslationRequest.builder()
                 .model("whisper-1")
+                .fileName("a.mp3")
                 .filePath("/Users/forest/OpenAI.Playground_SampleData_micro-machines.mp3")
                 .build();
         AudioResponse audioResponse2 = getOpenAiService().createAudioTranslation(createAudioTranslationRequest);
