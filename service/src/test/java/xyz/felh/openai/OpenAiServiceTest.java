@@ -85,7 +85,6 @@ public class OpenAiServiceTest {
         StreamChatCompletionListener listener = new StreamChatCompletionListener() {
             @Override
             public void onEvent(String requestId, ChatCompletion chatCompletion) {
-                log.info("model gpt-3.5-turbo: {}", chatCompletion.getChoices().get(0).getDelta().getContent());
                 log.info("model gpt-3.5-turbo: {}", JSON.toJSONString(chatCompletion));
             }
 
@@ -120,8 +119,12 @@ public class OpenAiServiceTest {
                 .model("gpt-3.5-turbo-0125")
                 .build();
         log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
-        ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
-        log.info("chatCompletion: " + toJSONString(chatCompletion));
+        try {
+            ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            log.info("chatCompletion: " + toJSONString(chatCompletion));
+        } catch (Exception ex) {
+            log.error("dd", ex);
+        }
     }
 
     @Test
@@ -350,7 +353,10 @@ public class OpenAiServiceTest {
     public void createToolCallStreamChatCompletion() {
         final List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER, "What is weather now in Shanghai?"));
+        messages.add(new ChatMessage(ChatMessageRole.USER,
+//                "What is weather now in Shanghai?"
+                "1+4 ="
+        ));
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
                 .with(new JacksonModule());
@@ -362,14 +368,14 @@ public class OpenAiServiceTest {
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
                 .model("gpt-3.5-turbo-0125")
-                .tools(List.of(Tool.builder()
-                        .type(Type.FUNCTION)
-                        .function(Function.builder()
-                                .name("get_weather")
-                                .description("Get the current weather in a given location")
-                                .parameters(jsonObject)
-                                .build()).build()))
-                .toolChoice("auto")
+//                .tools(List.of(Tool.builder()
+//                        .type(Type.FUNCTION)
+//                        .function(Function.builder()
+//                                .name("get_weather")
+//                                .description("Get the current weather in a given location")
+//                                .parameters(jsonObject)
+//                                .build()).build()))
+                .toolChoice("none")
                 .build();
         StreamChatCompletionListener listener = new StreamChatCompletionListener() {
             @Override
