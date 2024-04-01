@@ -10,7 +10,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 
 - Mobile/PC: https://web.felh.xyz
 
-  <img decoding="async" src="https://raw.githubusercontent.com/forestwanglin/openai-java/main/web.felh.xyz.png" width="30%">
+  <img decoding="async" src="https://raw.githubusercontent.com/forestwanglin/openai-java/main/web.felh.xyz.png" width="30%" />
 
 ## Supported APIs
 

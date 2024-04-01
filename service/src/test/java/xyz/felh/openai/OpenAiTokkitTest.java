@@ -236,6 +236,22 @@ public class OpenAiTokkitTest {
         log.info("chatCompletion: {} {}", chatCompletion.getUsage().getPromptTokens(), toJSONString(chatCompletion));
     }
 
+
+    @Test
+    public void issue11() {
+        String json = """
+                {
+                            "role": "tool",
+                            "content": "{\\"items\\":[{\\"title\\":\\"#MINSK NIGHTLIFE TOUR / BELARUS AFTER SANCTIONS JUNE ...\\", \\"link\\":\\"https://www.youtube.com/watch?v=d6te-xePaj0\\", \\"snippet\\":\\"Jun 26, 2022 ... Anfisa BELARUS•66K views · 16:51 · Go to channel · MANHATTAN NIGHTLIFE AREAS - PACKED BARS \\u0026 CLUBS Summer Update【ENTIRE TOUR】Best ...\\"}, {\\"title\\":\\"THE 10 BEST Nightlife Activities in Minsk (Updated 2024) - Tripadvisor\\", \\"link\\":\\"https://www.tripadvisor.com/Attractions-g294448-Activities-c20-Minsk.html\\", \\"snippet\\":\\"Results 1 - 30 of 77 ... These places are best for nightlife in Minsk: RetravelMe Belarus · Party Bus · HookahPlace Yakuba Kolasa · Nuahule Krasnaya · Dictator Bar.\\"}, {\\"title\\":\\"MINSK AT NIGHT WITH @IrishPartizan - YouTube\\", \\"link\\":\\"https://www.youtube.com/watch?v=1siveAZHym0\\", \\"snippet\\":\\"Aug 5, 2023 ... scene, this video is your ultimate guide to the hottest night spots in Minsk ... MINSK NIGHTLIFE AFTER SANCTIONS / BEST 5 NIGHT BARS IN MINSK.\\"}]}",
+                            "name": "http",
+                            "tool_call_id": "call_ZPSUPvPgBhNMSzI2mXDW36XZ"
+                        }
+                """;
+        ChatMessage chatMessage = JSONObject.parseObject(json, ChatMessage.class);
+        int tokenSize = TikTokenUtils.estimateTokensInMessage("gpt-4", chatMessage, 1);
+        log.info("tokenSize: {}", tokenSize);
+    }
+
     private String toJSONString(Object obj) {
         ObjectMapper ob = new ObjectMapper();
         try {
