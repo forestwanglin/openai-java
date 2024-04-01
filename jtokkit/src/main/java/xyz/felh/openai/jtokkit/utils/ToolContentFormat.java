@@ -50,29 +50,29 @@ public class ToolContentFormat {
     }
 
     private static String formatValue(Object value) {
-        if (value instanceof String) {
-            return String.format("\"%s\"", value);
-        }
-        if (value instanceof Number) {
-            return String.format("%s", value);
-        }
-        if (value instanceof JSONArray array) {
-            String result = "[";
-            if (!array.isEmpty()) {
-                result += array.stream().map(it -> {
-                    if (it instanceof String) {
-                        return String.format("\"%s\"", it);
-                    } else if (it instanceof Number) {
-                        return String.format("%s", it);
-                    } else {
-                        return "\"\"";
-                    }
-                }).collect(Collectors.joining(","));
+        switch (value) {
+            case String str -> {
+                return String.format("\"%s\"", str);
             }
-            result += "]";
-            return result;
+            case Number num -> {
+                return String.format("%s", num);
+            }
+            case JSONObject jsonObject -> {
+                return String.format("%s", formatArguments(jsonObject.toString()));
+            }
+            case JSONArray array -> {
+                String result = "[";
+                if (!array.isEmpty()) {
+                    result += array.stream().map(ToolContentFormat::formatValue)
+                            .collect(Collectors.joining(","));
+                }
+                result += "]";
+                return result;
+            }
+            case null, default -> {
+                return "\"\"";
+            }
         }
-        return "\"\"";
     }
 
 }

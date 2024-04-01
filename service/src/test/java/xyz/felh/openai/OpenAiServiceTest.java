@@ -331,10 +331,10 @@ public class OpenAiServiceTest {
             log.info("chatCompletion {}", chatCompletion);
             if (Preconditions.isNotBlank(chatCompletion)
                     && Preconditions.isNotBlank(chatCompletion.getChoices())
-                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage())
-                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage().getToolCalls())) {
-                List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getMessage().getToolCalls();
-                messages.add(chatCompletion.getChoices().get(0).getMessage());
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getMessage())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getMessage().getToolCalls())) {
+                List<ToolCall> toolCalls = chatCompletion.getChoices().getFirst().getMessage().getToolCalls();
+                messages.add(chatCompletion.getChoices().getFirst().getMessage());
                 for (ToolCall toolCall : toolCalls) {
                     ChatMessage chatMessage = new ChatMessage(ChatMessageRole.TOOL, "晴");
                     chatMessage.setToolCallId(toolCall.getId());
@@ -349,25 +349,30 @@ public class OpenAiServiceTest {
         log.info("chatCompletion: " + toJSONString(result));
     }
 
+    @Data
+    public static class GenImageParam {
+        @JsonPropertyDescription("The prompt to generate image")
+        @JsonProperty(value = "prompt")
+        private String prompt;
+    }
+
     @Test
     public void createToolCallStreamChatCompletion() {
+        String model = ModelType.GPT_4_0125_PREVIEW.getName();
         final List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
-        messages.add(new ChatMessage(ChatMessageRole.USER,
-//                "What is weather now in Shanghai?"
-                "1+4 ="
-        ));
+        messages.add(new ChatMessage(ChatMessageRole.USER, "数据资产交易所 系统架构图"));
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON)
                 .with(new JacksonModule());
         SchemaGeneratorConfig config = configBuilder.build();
         SchemaGenerator generator = new SchemaGenerator(config);
-        JsonNode jsonSchema = generator.generateSchema(GetWeatherParam.class);
+        JsonNode jsonSchema = generator.generateSchema(GenImageParam.class);
         JSONObject jsonObject = JSONObject.parseObject(jsonSchema.toString());
 
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(messages)
-                .model("gpt-3.5-turbo-0125")
+                .model(model)
 //                .tools(List.of(Tool.builder()
 //                        .type(Type.FUNCTION)
 //                        .function(Function.builder()
@@ -375,7 +380,14 @@ public class OpenAiServiceTest {
 //                                .description("Get the current weather in a given location")
 //                                .parameters(jsonObject)
 //                                .build()).build()))
-                .toolChoice("none")
+                .tools(List.of(Tool.builder()
+                        .type(Type.FUNCTION)
+                        .function(Function.builder()
+                                .name("gen_image")
+                                .description("generate image by prompt")
+                                .parameters(jsonObject)
+                                .build()).build()))
+                .toolChoice("auto")
                 .build();
         StreamChatCompletionListener listener = new StreamChatCompletionListener() {
             @Override
@@ -409,19 +421,19 @@ public class OpenAiServiceTest {
                     log.info("chatCompletion {}", chatCompletion);
                     if (Preconditions.isNotBlank(chatCompletion)
                             && Preconditions.isNotBlank(chatCompletion.getChoices())
-                            && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getDelta())
-                            && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getDelta().getToolCalls())) {
-                        List<ToolCall> toolCalls = chatCompletion.getChoices().get(0).getDelta().getToolCalls();
-                        messages.add(chatCompletion.getChoices().get(0).getDelta());
+                            && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getDelta())
+                            && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getDelta().getToolCalls())) {
+                        List<ToolCall> toolCalls = chatCompletion.getChoices().getFirst().getDelta().getToolCalls();
+                        messages.add(chatCompletion.getChoices().getFirst().getDelta());
                         for (ToolCall toolCall : toolCalls) {
-                            ChatMessage chatMessage = new ChatMessage(ChatMessageRole.TOOL, "晴");
+                            ChatMessage chatMessage = new ChatMessage(ChatMessageRole.TOOL, "image url: https://a.com/aa.png");
                             chatMessage.setToolCallId(toolCall.getId());
                             messages.add(chatMessage);
                         }
                     }
                     return StreamToolCallsRequest.builder().request(CreateChatCompletionRequest.builder()
                                     .messages(messages)
-                                    .model("gpt-3.5-turbo-0125")
+                                    .model(model)
                                     .build())
                             .requestId("3444444").build();
                 });
@@ -472,7 +484,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void createEmbedding() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 409; i++) {
             sb.append("AGI ");
         }

@@ -248,7 +248,7 @@ public class OpenAiTokkitTest {
                         }
                 """;
         ChatMessage chatMessage = JSONObject.parseObject(json, ChatMessage.class);
-        int tokenSize = TikTokenUtils.estimateTokensInMessage("gpt-4", chatMessage, 1);
+        int tokenSize = TikTokenUtils.estimateTokensInMessage("gpt-4", chatMessage, 2);
         log.info("tokenSize: {}", tokenSize);
     }
 
