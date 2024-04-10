@@ -4,11 +4,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.sse.EventSource;
-import xyz.felh.openai.chat.ChatCompletion;
 
 @Data
 @Slf4j
-public abstract class StreamChatCompletionListener {
+public abstract class StreamListener<T extends IOpenAiApiObject> {
 
     private EventSource eventSource;
 
@@ -26,10 +25,10 @@ public abstract class StreamChatCompletionListener {
     /**
      * event line
      *
-     * @param requestId      request ID
-     * @param chatCompletion return chat completion
+     * @param requestId request ID
+     * @param t         return IOpenAiApiObject
      */
-    public void onEvent(String requestId, ChatCompletion chatCompletion) {
+    public void onEvent(String requestId, T t) {
         log.info("onEvent: {}", requestId);
     }
 

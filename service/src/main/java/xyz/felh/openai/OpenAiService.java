@@ -1,5 +1,6 @@
 package xyz.felh.openai;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -49,10 +50,12 @@ import xyz.felh.openai.thread.ModifyThreadRequest;
 import xyz.felh.openai.thread.Thread;
 import xyz.felh.openai.thread.message.CreateMessageRequest;
 import xyz.felh.openai.thread.message.Message;
+import xyz.felh.openai.thread.message.MessageDelta;
 import xyz.felh.openai.thread.message.ModifyMessageRequest;
 import xyz.felh.openai.thread.message.file.MessageFile;
 import xyz.felh.openai.thread.run.*;
 import xyz.felh.openai.thread.run.step.RunStep;
+import xyz.felh.openai.thread.run.step.RunStepDelta;
 import xyz.felh.openai.utils.Preconditions;
 
 import java.io.File;
@@ -222,7 +225,7 @@ public class OpenAiService {
      */
     public void createSteamChatCompletion(String requestId,
                                           CreateChatCompletionRequest request,
-                                          @NonNull StreamChatCompletionListener listener) {
+                                          @NonNull StreamListener<ChatCompletion> listener) {
         createSteamChatCompletion(requestId, request, listener, null);
     }
 
@@ -236,7 +239,7 @@ public class OpenAiService {
      */
     public void createSteamChatCompletion(String requestId,
                                           CreateChatCompletionRequest request,
-                                          @NonNull StreamChatCompletionListener listener,
+                                          @NonNull StreamListener<ChatCompletion> listener,
                                           BiFunction<String, ChatCompletion, StreamToolCallsRequest> toolCallsHandler) {
         request.setStream(true);
         Request okHttpRequest;
@@ -891,6 +894,36 @@ public class OpenAiService {
     }
 
     /**
+     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs}
+     * <p>
+     * Create a run with stream = true.
+     *
+     * @param threadId The ID of the thread to run.
+     * @param request  Request body
+     * @param listener listener
+     * @return An {@link Run} object.
+     */
+    public void createThreadRun(String requestId,
+                                String threadId,
+                                CreateRunRequest request,
+                                @NonNull StreamListener<IOpenAiApiObject> listener) {
+        request.setStream(true);
+        Request okHttpRequest;
+        try {
+            okHttpRequest = new Request.Builder().url(
+                            String.format("%s/v1/threads/%s/runs", BASE_URL, threadId))
+                    .header("content-type", "text/event-stream")
+                    .header("Accept", "text/event-stream")
+                    .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request),
+                            MediaType.parse("application/json")))
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        createAssistantStreamEvent(requestId, okHttpRequest, listener);
+    }
+
+    /**
      * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}}
      * <p>
      * Retrieves a run.
@@ -955,6 +988,36 @@ public class OpenAiService {
     }
 
     /**
+     * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs}
+     *
+     * @param threadId The ID of the {@link Thread} to which this run belongs.
+     * @param runId    The ID of the run that requires the tool output submission.
+     * @param request  Request body
+     * @param listener stream event listener
+     * @return
+     */
+    public void submitToolOutputs(String requestId,
+                                  String threadId,
+                                  String runId,
+                                  SubmitToolOutputsRequest request,
+                                  @NonNull StreamListener<IOpenAiApiObject> listener) {
+        request.setStream(true);
+        Request okHttpRequest;
+        try {
+            okHttpRequest = new Request.Builder().url(
+                            String.format("%sv1/threads/%s/runs/%s/submit_tool_outputs", BASE_URL, threadId, runId))
+                    .header("content-type", "text/event-stream")
+                    .header("Accept", "text/event-stream")
+                    .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request),
+                            MediaType.parse("application/json")))
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        createAssistantStreamEvent(requestId, okHttpRequest, listener);
+    }
+
+    /**
      * {@literal POST https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/cancel}
      * <p>
      * Cancels a run that is in_progress.
@@ -980,6 +1043,33 @@ public class OpenAiService {
     }
 
     /**
+     * {@literal POST https://api.openai.com/v1/threads/runs}
+     * <p>
+     * Create a thread and run it in one request with stream = true.
+     *
+     * @param request Request body
+     * @return A {@link Run} object.
+     */
+    public void createThreadAndRun(String requestId,
+                                   CreateThreadAndRunRequest request,
+                                   @NonNull StreamListener<IOpenAiApiObject> listener) {
+        request.setStream(true);
+        Request okHttpRequest;
+        try {
+            okHttpRequest = new Request.Builder().url(
+                            String.format("%s/v1/threads/runs", BASE_URL))
+                    .header("content-type", "text/event-stream")
+                    .header("Accept", "text/event-stream")
+                    .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request),
+                            MediaType.parse("application/json")))
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        createAssistantStreamEvent(requestId, okHttpRequest, listener);
+    }
+
+    /**
      * {@literal GET https://api.openai.com/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}}
      * <p>
      * Retrieves a run step.
@@ -999,7 +1089,7 @@ public class OpenAiService {
      * List run steps
      *
      * @param threadId The ID of the {@link Thread} the messages belong to.
-     * @param runId    The ID of the run the run steps belong to.
+     * @param runId    The ID of the run steps belong to.
      * @param limit    A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
      * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
      * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
@@ -1017,6 +1107,68 @@ public class OpenAiService {
 
     public OpenAiApiListResponse<RunStep> listThreadRunSteps(String threadId, String runId) {
         return listThreadRunSteps(threadId, runId, null, null, null, null);
+    }
+
+    /**
+     * init assistant stream event SSE
+     *
+     * @param requestId     request id
+     * @param okHttpRequest request
+     * @param listener      listener
+     */
+    private void createAssistantStreamEvent(String requestId, Request okHttpRequest, StreamListener<IOpenAiApiObject> listener) {
+        EventSource.Factory factory = EventSources.createFactory(client);
+        EventSourceListener eventSourceListener = new EventSourceListener() {
+            @Override
+            public void onOpen(@NonNull EventSource eventSource, @NonNull Response response) {
+                listener.onOpen(requestId, response);
+            }
+
+            @Override
+            public void onEvent(@NonNull EventSource eventSource, @Nullable String id, @Nullable String type, @NonNull String data) {
+                /**
+                 * event: thread.created
+                 * data: {"id": "thread_123", "object": "thread", ...}
+                 */
+                switch (type) {
+                    case "thread.created" -> listener.onEvent(requestId, JSONObject.parseObject(data, Thread.class));
+                    case "thread.run.created", "thread.run.cancelled", "thread.run.completed",
+                         "thread.run.in_progress", "thread.run.requires_action", "thread.run.failed",
+                         "thread.run.queued", "thread.run.expired", "thread.run.cancelling" ->
+                            listener.onEvent(requestId, JSONObject.parseObject(data, Run.class));
+                    case "thread.run.step.created", "thread.run.step.in_progress", "thread.run.step.completed",
+                         "thread.run.step.cancelled", "thread.run.step.expired", "thread.run.step.failed" ->
+                            listener.onEvent(requestId, JSONObject.parseObject(data, RunStep.class));
+                    case "thread.run.step.delta" ->
+                            listener.onEvent(requestId, JSONObject.parseObject(data, RunStepDelta.class));
+                    case "thread.message.created", "thread.message.in_progress", "thread.message.completed",
+                         "thread.message.incomplete" ->
+                            listener.onEvent(requestId, JSONObject.parseObject(data, Message.class));
+                    case "thread.message.delta" ->
+                            listener.onEvent(requestId, JSONObject.parseObject(data, MessageDelta.class));
+                    case "error" ->
+                            listener.onEvent(requestId, JSONObject.parseObject(data, OpenAiError.ErrorDetail.class));
+                    case "done" -> {
+                        if (data.equals("[DONE]")) {
+                            listener.onEventDone(requestId);
+                        }
+                    }
+                    default -> log.warn("not match any type");
+                }
+            }
+
+            @Override
+            public void onClosed(@NonNull EventSource eventSource) {
+                listener.onClosed(requestId);
+            }
+
+            @Override
+            public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+                listener.onFailure(requestId, t, response);
+            }
+        };
+        EventSource eventSource = factory.newEventSource(okHttpRequest, eventSourceListener);
+        listener.setEventSource(eventSource);
     }
 
 }

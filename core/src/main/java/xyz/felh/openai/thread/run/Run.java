@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
+import xyz.felh.openai.Usage;
 import xyz.felh.openai.assistant.AssistantTool;
 
 import java.util.Arrays;
@@ -136,6 +137,20 @@ public class Run extends OpenAiApiObjectWithId {
     @JSONField(name = "metadata")
     @JsonProperty("metadata")
     private Map<String, String> metadata;
+
+    /**
+     * Usage statistics related to the run. This value will be null if the run is not in a terminal state (i.e. in_progress, queued, etc.).
+     */
+    @JSONField(name = "usage")
+    @JsonProperty("usage")
+    private Usage usage;
+
+    /**
+     * The sampling temperature used for this run. If not set, defaults to 1.
+     */
+    @JSONField(name = "temperature")
+    @JsonProperty("temperature")
+    private Double temperature;
 
     public enum Status {
         QUEUED("queued"),

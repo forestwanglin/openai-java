@@ -12,6 +12,13 @@ import java.util.Map;
 public class StepToolCall implements IOpenAiBean {
 
     /**
+     * The index of the tool call in the tool calls array.
+     */
+    @JSONField(name = "index")
+    @JsonProperty("index")
+    private Integer index;
+
+    /**
      * The ID of the tool call object.
      */
     @JSONField(name = "id")

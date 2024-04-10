@@ -3,14 +3,18 @@ package xyz.felh.openai;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
-import xyz.felh.openai.assistant.*;
+import xyz.felh.openai.assistant.Assistant;
+import xyz.felh.openai.assistant.AssistantTool;
+import xyz.felh.openai.assistant.CreateAssistantRequest;
+import xyz.felh.openai.assistant.ModifyAssistantRequest;
 import xyz.felh.openai.assistant.file.AssistantFile;
 import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
-import xyz.felh.openai.chat.ChatMessageRole;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.thread.CreateThreadRequest;
 import xyz.felh.openai.thread.Thread;
@@ -23,6 +27,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static xyz.felh.openai.OpenAiService.*;
 
@@ -129,7 +134,7 @@ public class OpenAiAssistantsBetaTest {
     public void createMessage() {
         Message message = getOpenAiService().createThreadMessage("thread_lx8VJee28W7vGxMo8gcSBtvJ",
                 CreateMessageRequest.builder()
-                        .role(ChatMessageRole.USER.value())
+                        .role(Message.Role.USER)
                         .content("请问北京到纽约有多远?")
                         .build());
         log.info("message: {} ", JSON.toJSONString(message));
@@ -150,6 +155,30 @@ public class OpenAiAssistantsBetaTest {
                         .build());
         log.info("run: {} ", JSON.toJSONString(run));
     }
+
+    @SneakyThrows
+    @Test
+    public void createStreamThreadRun() {
+        getOpenAiService().createThreadRun(
+                "test234",
+                "thread_60WzghwUWEY8yk8Uhqb7WKOr",
+                CreateRunRequest.builder()
+                        .assistantId("asst_LH23VSIMJAuVOAQ4vM4CuBhM")
+                        .stream(true)
+                        .build(), new StreamListener<>() {
+                    @Override
+                    public void onEvent(String requestId, IOpenAiApiObject iOpenAiApiObject) {
+                        log.info("onEvent: {} ", JSON.toJSONString(iOpenAiApiObject));
+                    }
+
+                    @Override
+                    public void onFailure(String requestId, Throwable t, Response response) {
+                        log.info("onFailure: {} ", JSON.toJSONString(t));
+                    }
+                });
+        TimeUnit.MINUTES.sleep(5L);
+    }
+
 
     @Test
     public void retrieveThreadRun() {

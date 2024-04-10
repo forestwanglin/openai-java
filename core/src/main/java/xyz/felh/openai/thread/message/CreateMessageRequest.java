@@ -21,11 +21,12 @@ public class CreateMessageRequest implements IOpenAiApiRequest {
     @NonNull
     @JSONField(name = "role")
     @JsonProperty("role")
-    private String role;
+    private Message.Role role;
 
     /**
      * The content of the message.
      */
+    @NonNull
     @JSONField(name = "content")
     @JsonProperty("content")
     private String content;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import xyz.felh.openai.IOpenAiApiRequest;
 import xyz.felh.openai.assistant.AssistantTool;
+import xyz.felh.openai.thread.message.Message;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,13 @@ public class CreateRunRequest implements IOpenAiApiRequest {
     private String instructions;
 
     /**
+     * Adds additional messages to the thread before creating the run.
+     */
+    @JSONField(name = "additional_messages")
+    @JsonProperty("additional_messages")
+    private List<Message> additionalMessages;
+
+    /**
      * Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis.
      */
     @JSONField(name = "tools")
@@ -50,5 +58,19 @@ public class CreateRunRequest implements IOpenAiApiRequest {
     @JSONField(name = "metadata")
     @JsonProperty("metadata")
     private Map<String, String> metadata;
+
+    /**
+     * What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+     */
+    @JSONField(name = "temperature")
+    @JsonProperty("temperature")
+    private Double temperature;
+
+    /**
+     * If true, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a data: [DONE] message.
+     */
+    @JSONField(name = "stream")
+    @JsonProperty("stream")
+    private Boolean stream;
 
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import xyz.felh.openai.OpenAiApiObjectWithId;
+import xyz.felh.openai.Usage;
 import xyz.felh.openai.chat.ChatMessage;
 import xyz.felh.openai.thread.run.LastError;
 
@@ -117,6 +118,13 @@ public class RunStep extends OpenAiApiObjectWithId {
     @JSONField(name = "metadata")
     @JsonProperty("metadata")
     private Map<String, String> metadata;
+
+    /**
+     * Usage statistics related to the run step. This value will be null while the run step's status is in_progress.
+     */
+    @JSONField(name = "usage")
+    @JsonProperty("usage")
+    private Usage usage;
 
     public enum Type {
         MESSAGE_CREATION("message_creation"),

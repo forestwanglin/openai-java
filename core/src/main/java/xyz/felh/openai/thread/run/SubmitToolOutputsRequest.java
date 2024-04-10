@@ -23,4 +23,11 @@ public class SubmitToolOutputsRequest implements IOpenAiApiRequest {
     @JsonProperty("tool_outputs")
     private List<ToolOutput> toolOutputs;
 
+    /**
+     * If true, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a data: [DONE] message.
+     */
+    @JSONField(name = "stream")
+    @JsonProperty("stream")
+    private Boolean stream;
+
 }

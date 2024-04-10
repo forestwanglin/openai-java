@@ -2,8 +2,10 @@ package xyz.felh.openai.thread.message;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import xyz.felh.openai.OpenAiApiObjectWithId;
 
 import java.util.List;
@@ -30,13 +32,32 @@ public class Message extends OpenAiApiObjectWithId {
     private String threadId;
 
     /**
+     * The status of the message, which can be either in_progress, incomplete, or completed.
+     */
+    @JSONField(name = "status")
+    @JsonProperty("status")
+    private Status status;
+
+    @JSONField(name = "incomplete_details")
+    @JsonProperty("incomplete_details")
+    private IncompleteDetails incompleteDetails;
+
+    @JSONField(name = "completed_at")
+    @JsonProperty("completed_at")
+    private Integer completedAt;
+
+    @JSONField(name = "incomplete_at")
+    @JsonProperty("incomplete_at")
+    private Integer incompleteAt;
+
+    /**
      * The entity that produced the message. One of user or assistant.
      * <p>
-     * See {@link xyz.felh.openai.chat.ChatMessageRole}
+     * See {@link xyz.felh.openai.thread.message.Message Role}
      */
     @JSONField(name = "role")
     @JsonProperty("role")
-    private String role;
+    private Role role;
 
     /**
      * The content of the message in array of text and/or images.
@@ -76,5 +97,44 @@ public class Message extends OpenAiApiObjectWithId {
     @JSONField(name = "metadata")
     @JsonProperty("metadata")
     private Map<String, String> metadata;
+
+    @Getter
+    public enum Role {
+
+        USER("user"),
+        ASSISTANT("assistant");
+
+        Role(final String value) {
+            this.value = value;
+        }
+
+        private final String value;
+
+        @JsonValue
+        public String value() {
+            return value;
+        }
+
+    }
+
+    @Getter
+    public enum Status {
+
+        IN_PROGRESS("in_progress"),
+        INCOMPLETE("incomplete"),
+        COMPLETED("completed");
+
+        Status(final String value) {
+            this.value = value;
+        }
+
+        private final String value;
+
+        @JsonValue
+        public String value() {
+            return value;
+        }
+
+    }
 
 }

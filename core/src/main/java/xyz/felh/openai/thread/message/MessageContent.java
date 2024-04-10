@@ -13,6 +13,14 @@ import java.util.List;
 public class MessageContent implements IOpenAiBean {
 
     /**
+     * The index of the content part in the message.
+     * It is shown in message delta.
+     */
+    @JSONField(name = "index")
+    @JsonProperty("index")
+    private Integer index;
+
+    /**
      * image_file or text
      * <p>
      * See {@link Type}

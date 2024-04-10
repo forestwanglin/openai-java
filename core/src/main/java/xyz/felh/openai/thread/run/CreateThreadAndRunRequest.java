@@ -59,4 +59,18 @@ public class CreateThreadAndRunRequest implements IOpenAiApiRequest {
     @JsonProperty("metadata")
     private Map<String, String> metadata;
 
+    /**
+     * What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+     */
+    @JSONField(name = "temperature")
+    @JsonProperty("temperature")
+    private Double temperature;
+
+    /**
+     * If true, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a data: [DONE] message.
+     */
+    @JSONField(name = "stream")
+    @JsonProperty("stream")
+    private Boolean stream;
+
 }
