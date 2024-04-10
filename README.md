@@ -46,6 +46,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-12-04] Remove ModeType.GPT_3_5_TURBO_16K stead of GPT_3_5_TURBO_1106 which is the same length but cheaper.
 - [2024-02-02] Add model `gpt-3.5-turbo-0125`, ```gpt-4-0125-preview`, `text-embedding-3-small`, `text-embedding-3-large`.
 - [2024-02-07] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
+- [2023-04-10] Support stream event for Assistant. 
 
 ## How to use
 
