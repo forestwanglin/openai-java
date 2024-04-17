@@ -94,7 +94,7 @@ public class OpenAiTokkitTest {
 
     @Test
     public void chatCompletion() {
-        String modelName = ModelType.GPT_4_0125_PREVIEW.getName();
+        String modelName = ModelType.GPT_4_TURBO_2024_04_09.getName();
         List<ChatMessage> chatMessages = new ArrayList<>();
 
 //        chatMessages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."));

@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.8.2024041001&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.8.2024041701&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
@@ -46,7 +46,8 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2023-12-04] Remove ModeType.GPT_3_5_TURBO_16K stead of GPT_3_5_TURBO_1106 which is the same length but cheaper.
 - [2024-02-02] Add model `gpt-3.5-turbo-0125`, ```gpt-4-0125-preview`, `text-embedding-3-small`, `text-embedding-3-large`.
 - [2024-02-07] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
-- [2023-04-10] Support stream event for Assistant. 
+- [2024-04-10] Support stream event for Assistant. 
+- [2024-04-17] Add model `gpt-4-turbo-2024-04-09`. Remove `gpt-3-turbo-1106`, `gpt-4-vision-preview`, `gpt-4-1106-preview`, gpt-4-0125-preview`.
 
 ## How to use
 
@@ -57,7 +58,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.8.2024041001</version>
+    <version>3.8.2024041701</version>
 </dependency>
 ```
 
@@ -66,22 +67,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.8.2024041001</version>
+    <version>3.8.2024041701</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.8.2024041001'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.8.2024041001'
+implementation group: 'xyz.felh', name: 'service', version: '3.8.2024041701'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.8.2024041701'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.8.2024041001"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.8.2024041001"
+libraryDependencies += "xyz.felh" % "service" % "3.8.2024041701"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.8.2024041701"
 ```
 
 ## Example (Spring Boot 3)
@@ -93,7 +94,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.8.2024041001"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.8.2024041001</version>
+    <version>3.8.2024041701</version>
 </dependency>
 ```
 

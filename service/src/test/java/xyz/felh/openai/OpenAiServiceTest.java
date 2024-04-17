@@ -133,7 +133,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void createChatCompletionWithVision() {
-        String model = "gpt-4-vision-preview";
+        String model = ModelType.GPT_4_TURBO_2024_04_09.getName();
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRole(ChatMessageRole.USER);
         chatMessage.addTextToContent("描述一下图片的内容");
@@ -354,7 +354,7 @@ public class OpenAiServiceTest {
 
     @Test
     public void createToolCallStreamChatCompletion() {
-        String model = ModelType.GPT_4_0125_PREVIEW.getName();
+        String model = ModelType.GPT_4_TURBO_2024_04_09.getName();
         final List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage(ChatMessageRole.SYSTEM, "You are an assistant."));
         messages.add(new ChatMessage(ChatMessageRole.USER, "数据资产交易所 系统架构图"));
