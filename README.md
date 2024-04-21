@@ -21,6 +21,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [File](https://platform.openai.com/docs/api-reference/files)
 - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
 - [Fine-tuning](https://platform.openai.com/docs/api-reference/fine-tuning)
+- [Batch](https://platform.openai.com/docs/api-reference/batch)
 - [Assistants - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/assistants)
 - [Threads - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/threads)
 - [Messages - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/messages)
@@ -47,6 +48,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2024-02-07] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
 - [2024-04-10] Support stream event for Assistant. 
 - [2024-04-17] Add model `gpt-4-turbo-2024-04-09`. Remove `gpt-3-turbo-1106`, `gpt-4-vision-preview`, `gpt-4-1106-preview`, `gpt-4-0125-preview`.
+- [2024-04-21] Add api for [Batch](https://platform.openai.com/docs/api-reference/batch)
 
 ## How to use
 

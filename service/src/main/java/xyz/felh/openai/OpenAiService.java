@@ -29,6 +29,8 @@ import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
 import xyz.felh.openai.audio.CreateSpeechRequest;
+import xyz.felh.openai.batch.Batch;
+import xyz.felh.openai.batch.CreateBatchRequest;
 import xyz.felh.openai.bean.StreamToolCallsRequest;
 import xyz.felh.openai.chat.ChatCompletion;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
@@ -587,6 +589,49 @@ public class OpenAiService {
                                                          Integer limit) {
         return execute(api.listFineTuningEvents(fineTuningJobId, after, limit)).getData();
     }
+
+    /**
+     * Creates and executes a batch from an uploaded file of requests
+     *
+     * @param request create batch request
+     * @return a batch object
+     */
+    public Batch createBatch(CreateBatchRequest request) {
+        return execute(api.createBatch(request));
+    }
+
+    /**
+     * Retrieves a batch.
+     *
+     * @param batchId batch id
+     * @return a batch object
+     */
+    public Batch retrieveBatch(String batchId) {
+        return execute(api.retrieveBatch(batchId));
+    }
+
+    /**
+     * Cancels an in-progress batch.
+     *
+     * @param batchId batch id
+     * @return a batch object
+     */
+    public Batch cancelBatch(String batchId) {
+        return execute(api.cancelBatch(batchId));
+    }
+
+    /**
+     * List your organization's batches.
+     *
+     * @param after A cursor for use in pagination
+     * @param limit A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @return a list of batch
+     */
+    public List<Batch> listBatches(String after,
+                                   Integer limit) {
+        return execute(api.listBatches(after, limit)).getData();
+    }
+
 
     /***************** Assistant BETA ****************/
 
