@@ -34,7 +34,6 @@ public class Function {
      * <p>
      * To describe a function that accepts no parameters, provide the value {"type": "object", "properties": {}}.
      */
-    @NonNull
     @JSONField(name = "parameters")
     @JsonProperty("parameters")
     private Object parameters;

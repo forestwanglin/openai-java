@@ -8,8 +8,21 @@ import retrofit2.http.*;
 import xyz.felh.openai.assistant.Assistant;
 import xyz.felh.openai.assistant.CreateAssistantRequest;
 import xyz.felh.openai.assistant.ModifyAssistantRequest;
-import xyz.felh.openai.assistant.file.AssistantFile;
-import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
+import xyz.felh.openai.assistant.message.CreateMessageRequest;
+import xyz.felh.openai.assistant.message.Message;
+import xyz.felh.openai.assistant.message.ModifyMessageRequest;
+import xyz.felh.openai.assistant.run.*;
+import xyz.felh.openai.assistant.runstep.RunStep;
+import xyz.felh.openai.assistant.thread.CreateThreadRequest;
+import xyz.felh.openai.assistant.thread.ModifyThreadRequest;
+import xyz.felh.openai.assistant.thread.Thread;
+import xyz.felh.openai.assistant.vector.store.CreateVectorStoreRequest;
+import xyz.felh.openai.assistant.vector.store.ModifyVectorStoreRequest;
+import xyz.felh.openai.assistant.vector.store.VectorStore;
+import xyz.felh.openai.assistant.vector.store.file.CreateVectorStoreFileRequest;
+import xyz.felh.openai.assistant.vector.store.file.VectorStoreFile;
+import xyz.felh.openai.assistant.vector.store.file.batch.CreateVectorStoreFileBatchRequest;
+import xyz.felh.openai.assistant.vector.store.file.batch.VectorStoreFileBatch;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateSpeechRequest;
 import xyz.felh.openai.batch.Batch;
@@ -27,15 +40,6 @@ import xyz.felh.openai.image.ImageResponse;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import xyz.felh.openai.thread.CreateThreadRequest;
-import xyz.felh.openai.thread.ModifyThreadRequest;
-import xyz.felh.openai.thread.Thread;
-import xyz.felh.openai.thread.message.CreateMessageRequest;
-import xyz.felh.openai.thread.message.Message;
-import xyz.felh.openai.thread.message.ModifyMessageRequest;
-import xyz.felh.openai.thread.message.file.MessageFile;
-import xyz.felh.openai.thread.run.*;
-import xyz.felh.openai.thread.run.step.RunStep;
 
 /**
  * Retrofit2 API interface
@@ -340,7 +344,8 @@ public interface OpenAiApi {
      * @return The modified {@link Assistant} object.
      */
     @POST("/v1/assistants/{assistant_id}")
-    Single<Assistant> modifyAssistant(@Path("assistant_id") String assistantId, @Body ModifyAssistantRequest request);
+    Single<Assistant> modifyAssistant(@Path("assistant_id") String assistantId,
+                                      @Body ModifyAssistantRequest request);
 
     /**
      * {@linkplain DELETE https://api.openai.com/v1/assistants/{assistant_id}}
@@ -366,65 +371,6 @@ public interface OpenAiApi {
      */
     @GET("/v1/assistants")
     Single<OpenAiApiListResponse<Assistant>> listAssistants(
-            @Query("limit") Integer limit,
-            @Query("order") String order,
-            @Query("after") String after,
-            @Query("before") String before);
-
-    /**
-     * {@linkplain POST https://api.openai.com/v1/assistants/{assistant_id}/files}
-     * <p>
-     * Create assistant file
-     *
-     * @param assistantId The ID of the assistant for which to create a File.
-     * @param request     Request body
-     * @return An {@link AssistantFile} object.
-     */
-    @POST("/v1/assistants/{assistant_id}/files")
-    Single<AssistantFile> createAssistantFile(@Path("assistant_id") String assistantId,
-                                              @Body CreateAssistantFileRequest request);
-
-    /**
-     * {@linkplain GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
-     * <p>
-     * Retrieve assistant file
-     *
-     * @param assistantId The ID of the assistant who the file belongs to.
-     * @param fileId      The ID of the file we're getting.
-     * @return The {@link AssistantFile} object matching the specified ID.
-     */
-    @GET("/v1/assistants/{assistant_id}/files/{file_id}")
-    Single<AssistantFile> retrieveAssistantFile(@Path("assistant_id") String assistantId,
-                                                @Path("file_id") String fileId);
-
-    /**
-     * {@linkplain DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
-     * <p>
-     * Delete an assistant file.
-     *
-     * @param assistantId The ID of the assistant who the file belongs to.
-     * @param fileId      The ID of the file to delete.
-     * @return Deletion status
-     */
-    @DELETE("/v1/assistants/{assistant_id}/files/{file_id}")
-    Single<DeleteResponse> deleteAssistantFile(@Path("assistant_id") String assistantId,
-                                               @Path("file_id") String fileId);
-
-    /**
-     * {@linkplain  GET https://api.openai.com/v1/assistants/{assistant_id}/files}
-     * <p>
-     * Returns a list of assistant files.
-     *
-     * @param assistantId The ID of the assistant the file belongs to.
-     * @param order       Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
-     * @param after       A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
-     * @param before      A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-     * @param limit       A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
-     * @return A list of {@link AssistantFile} objects.
-     */
-    @GET("/v1/assistants/{assistant_id}/files")
-    Single<OpenAiApiListResponse<AssistantFile>> listAssistantFiles(
-            @Path("assistant_id") String assistantId,
             @Query("limit") Integer limit,
             @Query("order") String order,
             @Query("after") String after,
@@ -531,6 +477,7 @@ public interface OpenAiApi {
      * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
      * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
      * @param before   A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param runId    Filter messages by the run ID that generated them.
      * @return A list of {@link Message} objects.
      */
     @GET("/v1/threads/{thread_id}/messages")
@@ -539,44 +486,8 @@ public interface OpenAiApi {
             @Query("limit") Integer limit,
             @Query("order") String order,
             @Query("after") String after,
-            @Query("before") String before);
-
-    /**
-     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}}
-     * <p>
-     * Retrieves a message file.
-     *
-     * @param threadId  The ID of the thread to which the message and File belong.
-     * @param messageId The ID of the message the file belongs to.
-     * @param fileId    The ID of the file being retrieved.
-     * @return The {@link MessageFile} object.
-     */
-    @GET("/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}")
-    Single<MessageFile> retrieveThreadMessageFile(@Path("thread_id") String threadId,
-                                                  @Path("message_id") String messageId,
-                                                  @Path("file_id") String fileId);
-
-    /**
-     * {@linkplain GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files}
-     * <p>
-     * Returns a list of message files.
-     *
-     * @param threadId  The ID of the thread that the message and files belong to.
-     * @param messageId The ID of the message that the files belongs to.
-     * @param limit     A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
-     * @param order     Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
-     * @param after     A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
-     * @param before    A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-     * @return A list of {@link MessageFile} objects.
-     */
-    @GET("/v1/threads/{thread_id}/messages")
-    Single<OpenAiApiListResponse<MessageFile>> listThreadMessageFiles(
-            @Path("thread_id") String threadId,
-            @Path("message_id") String messageId,
-            @Query("limit") Integer limit,
-            @Query("order") String order,
-            @Query("after") String after,
-            @Query("before") String before);
+            @Query("before") String before,
+            @Query("run_id") String runId);
 
     /********************* Runs BETA *************/
 
@@ -676,6 +587,7 @@ public interface OpenAiApi {
      * @param request Request body
      * @return A {@link Run} object.
      */
+    @POST("/v1/threads/runs")
     Single<Run> createThreadAndRun(@Body CreateThreadAndRunRequest request);
 
     /**
@@ -714,5 +626,186 @@ public interface OpenAiApi {
             @Query("order") String order,
             @Query("after") String after,
             @Query("before") String before);
+
+    // Vector Stores
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores
+     * <p>
+     * Create a vector store.
+     *
+     * @param request Request body
+     * @return An {@link VectorStore} object.
+     */
+    @POST("/v1/vector_stores")
+    Single<VectorStore> createVectorStore(@Body CreateVectorStoreRequest request);
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}
+     * <p>
+     * Retrieves a vector store.
+     *
+     * @param vectorStoreId The ID of the vector store to retrieve.
+     * @return The {@link VectorStore} object matching the specified ID.
+     */
+    @GET("/v1/vector_stores/{vector_store_id}")
+    Single<VectorStore> retrieveVectorStore(@Path("vector_store_id") String vectorStoreId);
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}
+     * <p>
+     * Modifies a vector store.
+     *
+     * @param vectorStoreId The ID of the vector store to modify.
+     * @param request       Request body
+     * @return The modified {@link VectorStore} object.
+     */
+    @POST("/v1/vector_stores/{vector_store_id}")
+    Single<VectorStore> modifyVectorStore(@Path("vector_store_id") String vectorStoreId,
+                                          @Body ModifyVectorStoreRequest request);
+
+    /**
+     * {@linkplain DELETE https://api.openai.com/v1/vector_stores/{vector_store_id}
+     * <p>
+     * Delete a vector store.
+     *
+     * @param vectorStoreId The ID of the vector store to delete.
+     * @return Deletion status
+     */
+    @DELETE("/v1/vector_stores/{vector_store_id}")
+    Single<DeleteResponse> deleteVectorStore(@Path("vector_store_id") String vectorStoreId);
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores
+     * <p>
+     * List vector stores
+     *
+     * @param limit  A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order  Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after  A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link VectorStore} objects.
+     */
+    @GET("/v1/vector_stores")
+    Single<OpenAiApiListResponse<VectorStore>> listVectorStores(
+            @Query("limit") Integer limit,
+            @Query("order") String order,
+            @Query("after") String after,
+            @Query("before") String before);
+
+    // Vector Store Files
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores/{vector_store_id}/files
+     * <p>
+     * Create vector store file
+     *
+     * @param vectorStoreId The ID of the {@link VectorStore} for which to create a File.
+     * @param request       Request body
+     * @return An {@link VectorStoreFile} object.
+     */
+    @POST("/v1/vector_stores/{vector_store_id}/files")
+    Single<VectorStoreFile> createVectorStoreFile(@Path("vector_store_id") String vectorStoreId,
+                                                  @Body CreateVectorStoreFileRequest request);
+
+    /**
+     * {@linkplain DELETE https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id}
+     * <p>
+     * Delete vector store file
+     *
+     * @param vectorStoreId The ID of the vector store that the file belongs to.
+     * @param fileId        The ID of the file to delete.
+     * @return Deletion status
+     */
+    @DELETE("/v1/vector_stores/{vector_store_id}/files/{file_id}")
+    Single<DeleteResponse> deleteVectorStoreFile(@Path("vector_store_id") String vectorStoreId,
+                                                 @Path("file_id") String fileId);
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}/files
+     * <p>
+     * List vector store files
+     *
+     * @param vectorStoreId The ID of the vector store that the files belong to.
+     * @param filter        Filter by file status. One of in_progress, completed, failed, cancelled of {@link xyz.felh.openai.assistant.vector.store.file.VectorStoreFile.Status}.
+     * @param limit         A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order         Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after         A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before        A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link VectorStoreFile} objects.
+     */
+    @GET("/v1/vector_stores/{vector_store_id}/files")
+    Single<OpenAiApiListResponse<VectorStoreFile>> listVectorStoreFiles(
+            @Path("vector_store_id") String vectorStoreId,
+            @Query("limit") Integer limit,
+            @Query("order") String order,
+            @Query("after") String after,
+            @Query("before") String before,
+            @Query("filter") String filter);
+
+    // Vector Store File Batch
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches
+     * <p>
+     * Create a vector store file batch.
+     *
+     * @param vectorStoreId The ID of the vector store for which to create a File Batch.
+     * @param request       Request body
+     * @return An {@link VectorStoreFileBatch} object.
+     */
+    @POST("/v1/vector_stores/{vector_store_id}/file_batches")
+    Single<VectorStoreFileBatch> createVectorStoreFileBatch(@Path("vector_store_id") String vectorStoreId,
+                                                            @Body CreateVectorStoreFileBatchRequest request);
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}
+     * <p>
+     * Retrieves a vector store file batch.
+     *
+     * @param vectorStoreId The ID of the vector store that the file batch belongs to.
+     * @param batchId       The ID of the file batch being retrieved.
+     * @return The {@link VectorStoreFileBatch} object matching the specified ID.
+     */
+    @GET("/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}")
+    Single<VectorStoreFileBatch> retrieveVectorStoreFileBatch(@Path("vector_store_id") String vectorStoreId,
+                                                              @Path("batch_id") String batchId);
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel
+     * <p>
+     * Cancel vector store file batch
+     *
+     * @param vectorStoreId The ID of the vector store that the file batch belongs to.
+     * @param batchId       The ID of the file batch to cancel.
+     * @return The modified {@link VectorStoreFileBatch} object.
+     */
+    @POST("/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel")
+    Single<VectorStoreFileBatch> cancelVectorStoreFileBatch(@Path("vector_store_id") String vectorStoreId,
+                                                            @Path("batch_id") String batchId);
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files
+     * <p>
+     * List vector store files in a batchBeta
+     *
+     * @param vectorStoreId The ID of the vector store that the files belong to.
+     * @param limit         A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order         Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after         A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before        A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param batchId       The ID of the file batch that the files belong to.
+     * @param filter        Filter by file status. One of in_progress, completed, failed, cancelled.{@link xyz.felh.openai.assistant.vector.store.file.batch.VectorStoreFileBatch.Status}
+     * @return A list of {@link VectorStoreFileBatch} objects.
+     */
+    @GET("/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files")
+    Single<OpenAiApiListResponse<VectorStoreFileBatch>> listVectorStoreFileBatches(
+            @Path("vector_store_id") String vectorStoreId,
+            @Path("batch_id") String batchId,
+            @Query("limit") Integer limit,
+            @Query("order") String order,
+            @Query("after") String after,
+            @Query("before") String before,
+            @Query("filter") String filter);
 
 }

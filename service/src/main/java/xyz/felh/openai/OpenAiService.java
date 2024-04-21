@@ -19,12 +19,27 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import retrofit2.http.POST;
+import retrofit2.http.*;
 import xyz.felh.openai.assistant.Assistant;
 import xyz.felh.openai.assistant.CreateAssistantRequest;
 import xyz.felh.openai.assistant.ModifyAssistantRequest;
-import xyz.felh.openai.assistant.file.AssistantFile;
-import xyz.felh.openai.assistant.file.CreateAssistantFileRequest;
+import xyz.felh.openai.assistant.message.CreateMessageRequest;
+import xyz.felh.openai.assistant.message.Message;
+import xyz.felh.openai.assistant.stream.message.MessageDelta;
+import xyz.felh.openai.assistant.message.ModifyMessageRequest;
+import xyz.felh.openai.assistant.run.*;
+import xyz.felh.openai.assistant.runstep.RunStep;
+import xyz.felh.openai.assistant.stream.runstep.RunStepDelta;
+import xyz.felh.openai.assistant.thread.CreateThreadRequest;
+import xyz.felh.openai.assistant.thread.ModifyThreadRequest;
+import xyz.felh.openai.assistant.thread.Thread;
+import xyz.felh.openai.assistant.vector.store.CreateVectorStoreRequest;
+import xyz.felh.openai.assistant.vector.store.ModifyVectorStoreRequest;
+import xyz.felh.openai.assistant.vector.store.VectorStore;
+import xyz.felh.openai.assistant.vector.store.file.CreateVectorStoreFileRequest;
+import xyz.felh.openai.assistant.vector.store.file.VectorStoreFile;
+import xyz.felh.openai.assistant.vector.store.file.batch.CreateVectorStoreFileBatchRequest;
+import xyz.felh.openai.assistant.vector.store.file.batch.VectorStoreFileBatch;
 import xyz.felh.openai.audio.AudioResponse;
 import xyz.felh.openai.audio.CreateAudioTranscriptionRequest;
 import xyz.felh.openai.audio.CreateAudioTranslationRequest;
@@ -47,17 +62,6 @@ import xyz.felh.openai.interceptor.AuthenticationInterceptor;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import xyz.felh.openai.thread.CreateThreadRequest;
-import xyz.felh.openai.thread.ModifyThreadRequest;
-import xyz.felh.openai.thread.Thread;
-import xyz.felh.openai.thread.message.CreateMessageRequest;
-import xyz.felh.openai.thread.message.Message;
-import xyz.felh.openai.thread.message.MessageDelta;
-import xyz.felh.openai.thread.message.ModifyMessageRequest;
-import xyz.felh.openai.thread.message.file.MessageFile;
-import xyz.felh.openai.thread.run.*;
-import xyz.felh.openai.thread.run.step.RunStep;
-import xyz.felh.openai.thread.run.step.RunStepDelta;
 import xyz.felh.openai.utils.Preconditions;
 
 import java.io.File;
@@ -701,72 +705,6 @@ public class OpenAiService {
         return listAssistants(null, null, null, null);
     }
 
-
-    // Assistant Files
-
-    /**
-     * {@literal POST https://api.openai.com/v1/assistants/{assistant_id}/files}
-     * <p>
-     * Create assistant file
-     *
-     * @param assistantId The ID of the assistant for which to create a File.
-     * @param request     Request body
-     * @return An {@link AssistantFile} object.
-     */
-    public AssistantFile createAssistantFile(String assistantId, CreateAssistantFileRequest request) {
-        return execute(api.createAssistantFile(assistantId, request));
-    }
-
-    /**
-     * {@literal GET https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
-     * <p>
-     * Retrieve assistant file
-     *
-     * @param assistantId The ID of the assistant who the file belongs to.
-     * @param fileId      The ID of the file we're getting.
-     * @return The {@link AssistantFile} object matching the specified ID.
-     */
-    public AssistantFile retrieveAssistantFile(String assistantId, String fileId) {
-        return execute(api.retrieveAssistantFile(assistantId, fileId));
-    }
-
-    /**
-     * {@literal DELETE https://api.openai.com/v1/assistants/{assistant_id}/files/{file_id}}
-     * <p>
-     * Delete an assistant file.
-     *
-     * @param assistantId The ID of the assistant who the file belongs to.
-     * @param fileId      The ID of the file to delete.
-     * @return Deletion status
-     */
-    public DeleteResponse deleteAssistantFile(String assistantId, String fileId) {
-        return execute(api.deleteAssistantFile(assistantId, fileId));
-    }
-
-    /**
-     * {@literal  GET https://api.openai.com/v1/assistants/{assistant_id}/files}
-     * <p>
-     * Returns a list of assistant files.
-     *
-     * @param assistantId The ID of the assistant the file belongs to.
-     * @param order       Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
-     * @param after       A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
-     * @param before      A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-     * @param limit       A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
-     * @return A list of {@link AssistantFile} objects.
-     */
-    public OpenAiApiListResponse<AssistantFile> listAssistantFiles(String assistantId,
-                                                                   Integer limit,
-                                                                   String order,
-                                                                   String after,
-                                                                   String before) {
-        return execute(api.listAssistantFiles(assistantId, limit, order, after, before));
-    }
-
-    public OpenAiApiListResponse<AssistantFile> listAssistantFiles(String assistantId) {
-        return listAssistantFiles(assistantId, null, null, null, null);
-    }
-
     /**
      * {@literal POST https://api.openai.com/v1/threads}
      * <p>
@@ -869,59 +807,22 @@ public class OpenAiService {
      * @param order    Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
      * @param after    A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
      * @param before   A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param runId    Filter messages by the run ID that generated them.
      * @return A list of {@link Message} objects.
      */
     public OpenAiApiListResponse<Message> listThreadMessages(String threadId,
                                                              Integer limit,
                                                              String order,
                                                              String after,
-                                                             String before) {
-        return execute(api.listThreadMessages(threadId, limit, order, after, before));
+                                                             String before,
+                                                             String runId) {
+        return execute(api.listThreadMessages(threadId, limit, order, after, before, runId));
     }
 
-    public OpenAiApiListResponse<Message> listThreadMessages(String threadId) {
-        return listThreadMessages(threadId, null, null, null, null);
+    public OpenAiApiListResponse<Message> listThreadMessages(String threadId, String runId) {
+        return listThreadMessages(threadId, null, null, null, null, runId);
     }
 
-    /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files/{file_id}}
-     * <p>
-     * Retrieves a message file.
-     *
-     * @param threadId  The ID of the thread to which the message and File belong.
-     * @param messageId The ID of the message the file belongs to.
-     * @param fileId    The ID of the file being retrieved.
-     * @return The {@link MessageFile} object.
-     */
-    public MessageFile retrieveThreadMessageFile(String threadId, String messageId, String fileId) {
-        return execute(api.retrieveThreadMessageFile(threadId, messageId, fileId));
-    }
-
-    /**
-     * {@literal GET https://api.openai.com/v1/threads/{thread_id}/messages/{message_id}/files}
-     * <p>
-     * Returns a list of message files.
-     *
-     * @param threadId  The ID of the thread that the message and files belong to.
-     * @param messageId The ID of the message that the files belongs to.
-     * @param limit     A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
-     * @param order     Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
-     * @param after     A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
-     * @param before    A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-     * @return A list of {@link MessageFile} objects.
-     */
-    public OpenAiApiListResponse<MessageFile> listThreadMessageFiles(String threadId,
-                                                                     String messageId,
-                                                                     Integer limit,
-                                                                     String order,
-                                                                     String after,
-                                                                     String before) {
-        return execute(api.listThreadMessageFiles(threadId, messageId, limit, order, after, before));
-    }
-
-    public OpenAiApiListResponse<MessageFile> listThreadMessageFiles(String threadId, String messageId) {
-        return listThreadMessageFiles(threadId, messageId, null, null, null, null);
-    }
 
     /********************* Runs BETA *************/
 
@@ -1175,30 +1076,33 @@ public class OpenAiService {
                  * event: thread.created
                  * data: {"id": "thread_123", "object": "thread", ...}
                  */
-                switch (type) {
-                    case "thread.created" -> listener.onEvent(requestId, JSONObject.parseObject(data, Thread.class));
-                    case "thread.run.created", "thread.run.cancelled", "thread.run.completed",
-                         "thread.run.in_progress", "thread.run.requires_action", "thread.run.failed",
-                         "thread.run.queued", "thread.run.expired", "thread.run.cancelling" ->
-                            listener.onEvent(requestId, JSONObject.parseObject(data, Run.class));
-                    case "thread.run.step.created", "thread.run.step.in_progress", "thread.run.step.completed",
-                         "thread.run.step.cancelled", "thread.run.step.expired", "thread.run.step.failed" ->
-                            listener.onEvent(requestId, JSONObject.parseObject(data, RunStep.class));
-                    case "thread.run.step.delta" ->
-                            listener.onEvent(requestId, JSONObject.parseObject(data, RunStepDelta.class));
-                    case "thread.message.created", "thread.message.in_progress", "thread.message.completed",
-                         "thread.message.incomplete" ->
-                            listener.onEvent(requestId, JSONObject.parseObject(data, Message.class));
-                    case "thread.message.delta" ->
-                            listener.onEvent(requestId, JSONObject.parseObject(data, MessageDelta.class));
-                    case "error" ->
-                            listener.onEvent(requestId, JSONObject.parseObject(data, OpenAiError.ErrorDetail.class));
-                    case "done" -> {
-                        if (data.equals("[DONE]")) {
-                            listener.onEventDone(requestId);
+                if (Preconditions.isNotBlank(type)) {
+                    switch (type) {
+                        case "thread.created" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, Thread.class));
+                        case "thread.run.created", "thread.run.cancelled", "thread.run.completed",
+                             "thread.run.in_progress", "thread.run.requires_action", "thread.run.failed",
+                             "thread.run.queued", "thread.run.expired", "thread.run.cancelling" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, Run.class));
+                        case "thread.run.step.created", "thread.run.step.in_progress", "thread.run.step.completed",
+                             "thread.run.step.cancelled", "thread.run.step.expired", "thread.run.step.failed" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, RunStep.class));
+                        case "thread.run.step.delta" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, RunStepDelta.class));
+                        case "thread.message.created", "thread.message.in_progress", "thread.message.completed",
+                             "thread.message.incomplete" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, Message.class));
+                        case "thread.message.delta" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, MessageDelta.class));
+                        case "error" ->
+                                listener.onEvent(requestId, JSONObject.parseObject(data, OpenAiError.ErrorDetail.class));
+                        case "done" -> {
+                            if (data.equals("[DONE]")) {
+                                listener.onEventDone(requestId);
+                            }
                         }
+                        default -> log.warn("not match any type");
                     }
-                    default -> log.warn("not match any type");
                 }
             }
 
@@ -1214,6 +1118,216 @@ public class OpenAiService {
         };
         EventSource eventSource = factory.newEventSource(okHttpRequest, eventSourceListener);
         listener.setEventSource(eventSource);
+    }
+
+    /*******************************8 Vector Stores ****************/
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores
+     * <p>
+     * Create a vector store.
+     *
+     * @param request Request body
+     * @return An {@link VectorStore } object.
+     */
+    public VectorStore createVectorStore(CreateVectorStoreRequest request) {
+        return execute(api.createVectorStore(request));
+    }
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}
+     * <p>
+     * Retrieves a vector store.
+     *
+     * @param vectorStoreId The ID of the vector store to retrieve.
+     * @return The {@link VectorStore} object matching the specified ID.
+     */
+    public VectorStore retrieveVectorStore(String vectorStoreId) {
+        return execute(api.retrieveVectorStore(vectorStoreId));
+    }
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}
+     * <p>
+     * Modifies a vector store.
+     *
+     * @param vectorStoreId The ID of the vector store to modify.
+     * @param request       Request body
+     * @return The modified {@link VectorStore} object.
+     */
+    public VectorStore modifyVectorStore(String vectorStoreId,
+                                         ModifyVectorStoreRequest request) {
+        return execute(api.modifyVectorStore(vectorStoreId, request));
+    }
+
+    /**
+     * {@linkplain DELETE https://api.openai.com/v1/vector_stores/{vector_store_id}
+     * <p>
+     * Delete a vector store.
+     *
+     * @param vectorStoreId The ID of the vector store to delete.
+     * @return Deletion status
+     */
+    public DeleteResponse deleteVectorStore(String vectorStoreId) {
+        return execute(api.deleteVectorStore(vectorStoreId));
+    }
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores
+     * <p>
+     * List vector stores
+     *
+     * @param limit  A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order  Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after  A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link VectorStore} objects.
+     */
+    public OpenAiApiListResponse<VectorStore> listVectorStores(
+            Integer limit,
+            String order,
+            String after,
+            String before) {
+        return execute(api.listVectorStores(limit, order, after, before));
+    }
+
+    public OpenAiApiListResponse<VectorStore> listVectorStores() {
+        return this.listVectorStores(null, null, null, null);
+    }
+
+    /****************** Vector Store Files ******************/
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores/{vector_store_id}/files
+     * <p>
+     * Create vector store file
+     *
+     * @param vectorStoreId The ID of the {@link VectorStore} for which to create a File.
+     * @param request       Request body
+     * @return An {@link VectorStoreFile } object.
+     */
+    public VectorStoreFile createVectorStoreFile(String vectorStoreId,
+                                                 CreateVectorStoreFileRequest request) {
+        return execute(api.createVectorStoreFile(vectorStoreId, request));
+    }
+
+    /**
+     * {@linkplain DELETE https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id}
+     * <p>
+     * Delete vector store file
+     *
+     * @param vectorStoreId The ID of the vector store that the file belongs to.
+     * @param fileId        The ID of the file to delete.
+     * @return Deletion status
+     */
+    public DeleteResponse deleteVectorStoreFile(String vectorStoreId,
+                                                String fileId) {
+        return execute(api.deleteVectorStoreFile(vectorStoreId, fileId));
+    }
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}/files
+     * <p>
+     * List vector store files
+     *
+     * @param vectorStoreId The ID of the vector store that the files belong to.
+     * @param filter        Filter by file status. One of in_progress, completed, failed, cancelled of {@link xyz.felh.openai.assistant.vector.store.file.VectorStoreFile.Status}.
+     * @param limit         A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order         Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after         A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before        A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @return A list of {@link VectorStoreFile} objects.
+     */
+    public OpenAiApiListResponse<VectorStoreFile> listVectorStoreFiles(
+            String vectorStoreId,
+            Integer limit,
+            String order,
+            String after,
+            String before,
+            String filter) {
+        return execute(api.listVectorStoreFiles(vectorStoreId, limit, order, after, before, filter));
+    }
+
+    public OpenAiApiListResponse<VectorStoreFile> listVectorStoreFiles(
+            String vectorStoreId, String filter) {
+        return this.listVectorStoreFiles(vectorStoreId, null, null, null, null, filter);
+    }
+
+
+    /****************** Vector Store File Batch **********************/
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches
+     * <p>
+     * Create a vector store file batch.
+     *
+     * @param vectorStoreId The ID of the vector store for which to create a File Batch.
+     * @param request       Request body
+     * @return An {@link VectorStoreFileBatch } object.
+     */
+    public VectorStoreFileBatch createVectorStoreFileBatch(String vectorStoreId,
+                                                           CreateVectorStoreFileBatchRequest request) {
+        return execute(api.createVectorStoreFileBatch(vectorStoreId, request));
+    }
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}
+     * <p>
+     * Retrieves a vector store file batch.
+     *
+     * @param vectorStoreId The ID of the vector store that the file batch belongs to.
+     * @param batchId       The ID of the file batch being retrieved.
+     * @return The {@link VectorStoreFileBatch} object matching the specified ID.
+     */
+    public VectorStoreFileBatch retrieveVectorStoreFileBatch(String vectorStoreId,
+                                                             String batchId) {
+        return execute(api.retrieveVectorStoreFileBatch(vectorStoreId, batchId));
+    }
+
+    /**
+     * {@linkplain POST https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel
+     * <p>
+     * Cancel vector store file batch
+     *
+     * @param vectorStoreId The ID of the vector store that the file batch belongs to.
+     * @param batchId       The ID of the file batch to cancel.
+     * @return The modified {@link VectorStoreFileBatch} object.
+     */
+    public VectorStoreFileBatch cancelVectorStoreFileBatch(String vectorStoreId,
+                                                           String batchId) {
+        return execute(api.cancelVectorStoreFileBatch(vectorStoreId, batchId));
+    }
+
+    /**
+     * {@linkplain GET https://api.openai.com/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files
+     * <p>
+     * List vector store files in a batchBeta
+     *
+     * @param vectorStoreId The ID of the vector store that the files belong to.
+     * @param limit         A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+     * @param order         Sort order by the created_at timestamp of the objects. asc for ascending order and desc for descending order.
+     * @param after         A cursor for use in pagination. after is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     * @param before        A cursor for use in pagination. before is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+     * @param batchId       The ID of the file batch that the files belong to.
+     * @param filter        Filter by file status. One of in_progress, completed, failed, cancelled.{@link xyz.felh.openai.assistant.vector.store.file.batch.VectorStoreFileBatch.Status}
+     * @return A list of {@link VectorStoreFileBatch} objects.
+     */
+    public OpenAiApiListResponse<VectorStoreFileBatch> listVectorStoreFileBatches(
+            String vectorStoreId,
+            String batchId,
+            Integer limit,
+            String order,
+            String after,
+            String before,
+            String filter) {
+        return execute(api.listVectorStoreFileBatches(vectorStoreId, batchId, limit, order, after, before, filter));
+    }
+
+    public OpenAiApiListResponse<VectorStoreFileBatch> listVectorStoreFileBatches(
+            String vectorStoreId,
+            String batchId,
+            String filter) {
+        return this.listVectorStoreFileBatches(vectorStoreId, batchId, null, null, null, null, filter);
     }
 
 }

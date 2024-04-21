@@ -14,7 +14,7 @@ import xyz.felh.openai.chat.tool.Function;
 public class AssistantTool implements IOpenAiBean {
 
     /**
-     * The type of tool being defined: code_interpreter, retrieval, function
+     * The type of tool being defined: code_interpreter, file_search, function
      */
     @JSONField(name = "type")
     @JsonProperty("type")
@@ -33,7 +33,7 @@ public class AssistantTool implements IOpenAiBean {
     public enum Type {
 
         CODE_INTERPRETER("code_interpreter"),
-        RETRIEVAL("retrieval"),
+        FILE_SEARCH("file_search"),
         FUNCTION("function");
 
         Type(final String value) {

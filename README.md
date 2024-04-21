@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.9.2024042101&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.10.2024042101&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -13,19 +13,26 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 
 ## Supported APIs
 
-- [Models](https://platform.openai.com/docs/api-reference/models)
-- [Chat Completions(2023-04-18 support stream)](https://platform.openai.com/docs/api-reference/chat/create)
-- [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
-- [Images](https://platform.openai.com/docs/api-reference/images)
-- [Audio](https://platform.openai.com/docs/api-reference/audio)
-- [File](https://platform.openai.com/docs/api-reference/files)
-- [Moderations](https://platform.openai.com/docs/api-reference/moderations)
-- [Fine-tuning](https://platform.openai.com/docs/api-reference/fine-tuning)
-- [Batch](https://platform.openai.com/docs/api-reference/batch)
-- [Assistants - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/assistants)
-- [Threads - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/threads)
-- [Messages - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/messages)
-- [Runs - Beta(2023-11-06)](https://platform.openai.com/docs/api-reference/runs)
+- ENDPOINTS
+  - [Models](https://platform.openai.com/docs/api-reference/models)
+  - [Chat Completions](https://platform.openai.com/docs/api-reference/chat/create)
+  - [Embeddings](https://platform.openai.com/docs/api-reference/embeddings)
+  - [Images](https://platform.openai.com/docs/api-reference/images)
+  - [Audio](https://platform.openai.com/docs/api-reference/audio)
+  - [Files](https://platform.openai.com/docs/api-reference/files)
+  - [Moderations](https://platform.openai.com/docs/api-reference/moderations)
+  - [Fine-tuning](https://platform.openai.com/docs/api-reference/fine-tuning)
+  - [Batch](https://platform.openai.com/docs/api-reference/batch)
+- ASSISTANTS
+  - [Assistants](https://platform.openai.com/docs/api-reference/assistants)
+  - [Threads](https://platform.openai.com/docs/api-reference/threads)
+  - [Messages](https://platform.openai.com/docs/api-reference/messages)
+  - [Runs](https://platform.openai.com/docs/api-reference/runs)
+  - [Run Steps](https://platform.openai.com/docs/api-reference/run-steps)
+  - [Vector Stores](https://platform.openai.com/docs/api-reference/vector-stores)
+  - [Vector Store Files](https://platform.openai.com/docs/api-reference/vector-stores-files)
+  - [Vector Store File Batches](https://platform.openai.com/docs/api-reference/vector-stores-file-batches)
+  - [Streaming](https://platform.openai.com/docs/api-reference/assistants-streaming)
 
 ## Important update
 
@@ -48,7 +55,8 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2024-02-07] Support running `tool_calls` in background which means that client needn't handle the `tool_calls` at the first response.
 - [2024-04-10] Support stream event for Assistant. 
 - [2024-04-17] Add model `gpt-4-turbo-2024-04-09`. Remove `gpt-3-turbo-1106`, `gpt-4-vision-preview`, `gpt-4-1106-preview`, `gpt-4-0125-preview`.
-- [2024-04-21] Add api for [Batch](https://platform.openai.com/docs/api-reference/batch)
+- [2024-04-21] Add api for [Batch](https://platform.openai.com/docs/api-reference/batch) from version `3.9.2024042101`
+- [2024-04-21] Replace Assistants, Thread, Messages, Runs with new version on Apr 17th, 2024 in version `3.10.2024042101`
 
 ## How to use
 
@@ -59,7 +67,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.9.2024042101</version>
+    <version>3.10.2024042101</version>
 </dependency>
 ```
 
@@ -68,22 +76,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.9.2024042101</version>
+    <version>3.10.2024042101</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.9.2024042101'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.9.2024042101'
+implementation group: 'xyz.felh', name: 'service', version: '3.10.2024042101'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.10.2024042101'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.9.2024042101"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.9.2024042101"
+libraryDependencies += "xyz.felh" % "service" % "3.10.2024042101"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.10.2024042101"
 ```
 
 ## Example (Spring Boot 3)
@@ -95,7 +103,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.9.2024042101"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.9.2024042101</version>
+    <version>3.10.2024042101</version>
 </dependency>
 ```
 
