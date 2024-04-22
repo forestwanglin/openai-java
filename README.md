@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.10.2024042101&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v3.10.2024042201&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -56,7 +56,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2024-04-10] Support stream event for Assistant. 
 - [2024-04-17] Add model `gpt-4-turbo-2024-04-09`. Remove `gpt-3-turbo-1106`, `gpt-4-vision-preview`, `gpt-4-1106-preview`, `gpt-4-0125-preview`.
 - [2024-04-21] Add api for [Batch](https://platform.openai.com/docs/api-reference/batch) from version `3.9.2024042101`
-- [2024-04-21] Replace Assistants, Thread, Messages, Runs with new version on Apr 17th, 2024 in version `3.10.2024042101`
+- [2024-04-21] Replace Assistants, Thread, Messages, Runs with new version on Apr 17th, 2024 in version `3.10.2024042201`
 
 ## How to use
 
@@ -67,7 +67,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.10.2024042101</version>
+    <version>3.10.2024042201</version>
 </dependency>
 ```
 
@@ -76,22 +76,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>3.10.2024042101</version>
+    <version>3.10.2024042201</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '3.10.2024042101'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '3.10.2024042101'
+implementation group: 'xyz.felh', name: 'service', version: '3.10.2024042201'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '3.10.2024042201'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "3.10.2024042101"
-libraryDependencies += "xyz.felh" % "jtokkit" % "3.10.2024042101"
+libraryDependencies += "xyz.felh" % "service" % "3.10.2024042201"
+libraryDependencies += "xyz.felh" % "jtokkit" % "3.10.2024042201"
 ```
 
 ## Example (Spring Boot 3)
@@ -103,7 +103,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "3.10.2024042101"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>3.10.2024042101</version>
+    <version>3.10.2024042201</version>
 </dependency>
 ```
 
@@ -296,13 +296,13 @@ public class OpenAiService {
 }
 ```
 
-#### 3.4 Create Chat Completion with GPT_4_VISION_PREVIEW
+#### 3.4 Create Chat Completion with GPT_4_TURBO with Input Image
 
 ```java
 public class OpenAiService {
 
-    public void createChatCompletionWithVision() {
-        String model = "gpt-4-vision-preview";
+    public void createChatCompletionWithImage() {
+        String model = "gpt-4-turbo-2024-04-09";
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRole(ChatMessageRole.USER);
         chatMessage.addTextToContent("描述一下图片的内容");
