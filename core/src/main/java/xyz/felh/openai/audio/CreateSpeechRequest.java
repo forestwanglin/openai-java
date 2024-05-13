@@ -95,7 +95,8 @@ public class CreateSpeechRequest implements IOpenAiApiRequest {
         MP3("mp3"),
         OPUS("opus"),
         AAC("aac"),
-        FLAC("flac");
+        FLAC("flac"),
+        WAV("wav");
 
         private final String value;
 
