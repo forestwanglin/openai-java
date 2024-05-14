@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import xyz.felh.openai.IOpenAiApiRequest;
+import xyz.felh.openai.IOpenAiBean;
 import xyz.felh.openai.chat.tool.Tool;
 import xyz.felh.openai.chat.tool.ToolChoice;
 
@@ -56,6 +57,27 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     @JSONField(name = "logit_bias")
     @JsonProperty("logit_bias")
     private Map<String, Integer> logitBias;
+
+    /**
+     * boolean or null
+     * <p>
+     * Optional
+     * Defaults to false
+     * Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the content of message.
+     */
+    @JSONField(name = "logprobs")
+    @JsonProperty("logprobs")
+    private Boolean logprobs;
+
+    /**
+     * integer or null
+     * <p>
+     * Optional
+     * An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. logprobs must be set to true if this parameter is used.
+     */
+    @JSONField(name = "top_logprobs")
+    @JsonProperty("top_logprobs")
+    private Integer topLogprobs;
 
     /**
      * The maximum number of tokens to generate in the chat completion.
@@ -125,7 +147,7 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      */
     @JSONField(name = "stop")
     @JsonProperty("stop")
-    private String stop;
+    private Object stop;
 
     /**
      * If set, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: [DONE] message.
@@ -137,6 +159,13 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     @JSONField(name = "stream")
     @JsonProperty("stream")
     private Boolean stream;
+
+    /**
+     * Options for streaming response. Only set this when you set stream: true.
+     */
+    @JSONField(name = "stream_options")
+    @JsonProperty("stream_options")
+    private StreamOptions streamOptions;
 
     /**
      * What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -199,5 +228,20 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     @JSONField(name = "user")
     @JsonProperty("user")
     private String user;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StreamOptions implements IOpenAiBean {
+
+        /**
+         * If set, an additional chunk will be streamed before the data: [DONE] message. The usage field on this chunk shows the token usage statistics for the entire request, and the choices field will always be an empty array. All other chunks will also include a usage field, but with a null value.
+         */
+        @JSONField(name = "include_usage")
+        @JsonProperty("include_usage")
+        private Boolean includeUsage;
+
+    }
 
 }

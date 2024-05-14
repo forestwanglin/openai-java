@@ -44,7 +44,7 @@ public class ChatMessage implements IOpenAiBean {
      * <p>
      * 1. role=system, string or null, required<br/>
      * 2. role=user, string or array, required<br/>
-     * 3. role=assistant, string or null, required<br/>
+     * 3. role=assistant, string or null, Required unless tool_calls is specified.<br/>
      * 4. role=tool, string or null, required<br/>
      */
     @JSONField(name = "content")

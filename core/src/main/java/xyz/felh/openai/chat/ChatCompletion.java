@@ -117,7 +117,17 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
          * GPT-4 Turbo
          * The latest GPT-4 model intended to reduce cases of “laziness” where the model doesn’t complete a task.
          */
-        GPT_4_0125_PREVIEW("gpt-4-0125-preview");
+        GPT_4_0125_PREVIEW("gpt-4-0125-preview"),
+
+        /**
+         * The previous set of high-intelligence models
+         */
+        GPT_4_TURBO_20240409("gpt-4-turbo-2024-04-09"),
+
+        /**
+         * The fastest and most affordable flagship model
+         */
+        GPT_4_O_20240513("gpt-4o-2024-05-13");
 
         private final String name;
 

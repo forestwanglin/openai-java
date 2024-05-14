@@ -46,6 +46,10 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
             return Optional.of(getEncodingForModel(ModelType.GPT_4_TURBO_2024_04_09));
         }
 
+        if (modelName.equals(ModelType.GPT_4_O_2024_05_13.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4_O_2024_05_13));
+        }
+
         return Optional.empty();
     }
 
@@ -86,6 +90,9 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
                 break;
             case CL100K_BASE:
                 encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.cl100kBase());
+                break;
+            case O200K_BASE:
+                encodings.computeIfAbsent(encodingType.getName(), k -> EncodingFactory.o200kBase());
                 break;
             default:
                 throw new IllegalStateException("Unknown encoding type " + encodingType.getName());

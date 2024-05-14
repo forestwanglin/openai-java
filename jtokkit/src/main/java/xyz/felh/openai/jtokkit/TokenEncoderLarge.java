@@ -125,4 +125,5 @@ final class TokenEncoderLarge {
                     '}';
         }
     }
+
 }

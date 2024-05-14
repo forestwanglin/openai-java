@@ -19,6 +19,7 @@ class EncodingFactory {
     private static final Map<String, Integer> SPECIAL_TOKENS_CL100K_BASE;
     private static final Map<String, Integer> SPECIAL_TOKENS_X50K_BASE;
     private static final Map<String, Integer> SPECIAL_TOKENS_P50K_EDIT;
+    private static final Map<String, Integer> SPECIAL_TOKENS_O200K_BASE;
 
     private static final String ENDOFTEXT = "<|endoftext|>";
     private static final String FIM_PREFIX = "<|fim_prefix|>";
@@ -49,6 +50,13 @@ class EncodingFactory {
         map.put(FIM_SUFFIX, 100260);
         map.put(ENDOFPROMPT, 100276);
         SPECIAL_TOKENS_CL100K_BASE = Collections.unmodifiableMap(map);
+    }
+
+    static {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(ENDOFTEXT, 199999);
+        map.put(ENDOFPROMPT, 200018);
+        SPECIAL_TOKENS_O200K_BASE = Collections.unmodifiableMap(map);
     }
 
     private EncodingFactory() {
@@ -110,6 +118,24 @@ class EncodingFactory {
                 "'(?:[sdmt]|ll|ve|re)|[^\r\n\\p{L}\\p{N}]?+\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]++[\r\n]*|\\s*[\r\n]|\\s+(?!\\S)|\\s+",
                 "cl100k_base.tiktoken",
                 SPECIAL_TOKENS_CL100K_BASE,
+                true
+        );
+    }
+
+    public static Encoding o200kBase() {
+        return fromPredefinedParameters(
+                "o200k_base",
+                String.join("|", List.of(
+                        "[^\r\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]*[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?",
+                "[^\r\n\\p{L}\\p{N}]?[\\p{Lu}\\p{Lt}\\p{Lm}\\p{Lo}\\p{M}]+[\\p{Ll}\\p{Lm}\\p{Lo}\\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?",
+                "\\p{N}{1,3}",
+                " ?[^\\s\\p{L}\\p{N}]+[\r\n/]*",
+                "\\s*[\r\n]+",
+                "\\s+(?!\\S)",
+                "\\s+"
+                )),
+                "o200k_base.tiktoken",
+                SPECIAL_TOKENS_O200K_BASE,
                 true
         );
     }
@@ -178,4 +204,5 @@ class EncodingFactory {
             throw new IllegalStateException("Could not load " + fileName + " from resources", e);
         }
     }
+
 }

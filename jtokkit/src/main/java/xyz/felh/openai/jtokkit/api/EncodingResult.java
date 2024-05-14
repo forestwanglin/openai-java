@@ -6,6 +6,7 @@ import java.util.List;
  * The result of encoding operation.
  */
 public final class EncodingResult {
+
     private final List<Integer> tokens;
     private final boolean truncated;
     private int tokenCount;

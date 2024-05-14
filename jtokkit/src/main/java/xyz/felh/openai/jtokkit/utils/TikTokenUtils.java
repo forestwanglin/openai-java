@@ -50,6 +50,9 @@ public class TikTokenUtils {
         modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
         modelMap.put(ChatCompletion.Model.GPT_4_0125_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
+        modelMap.put(ChatCompletion.Model.GPT_4_TURBO_20240409.getName(), registry.getEncodingForModel(ModelType.GPT_4));
+
+        modelMap.put(ChatCompletion.Model.GPT_4_O_20240513.getName(), registry.getEncodingForModel(ModelType.GPT_4_O_2024_05_13));
     }
 
     /**

@@ -15,6 +15,8 @@ public enum ModelType {
     GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
 
+    GPT_4_O_2024_05_13("gpt-4o-2024-05-13", EncodingType.O200K_BASE, 128000),
+
     GPT_4_TURBO_2024_04_09("gpt-4-turbo-2024-04-09", EncodingType.CL100K_BASE, 128000),
     GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385),
 
@@ -64,23 +66,23 @@ public enum ModelType {
 
     /**
      * -- GETTER --
-     *  Returns the name of the model type as used by the OpenAI API.
+     * Returns the name of the model type as used by the OpenAI API.
      *
      * @return the name of the model type
      */
     private final String name;
     /**
      * -- GETTER --
-     *  Returns the encoding type that is used by this model type.
+     * Returns the encoding type that is used by this model type.
      *
      * @return the encoding type
      */
     private final EncodingType encodingType;
     /**
      * -- GETTER --
-     *  Returns the maximum context length that is supported by this model type. Note that
-     *  the maximum context length consists of the amount of prompt tokens and the amount of
-     *  completion tokens (where applicable).
+     * Returns the maximum context length that is supported by this model type. Note that
+     * the maximum context length consists of the amount of prompt tokens and the amount of
+     * completion tokens (where applicable).
      *
      * @return the maximum context length for this model type
      */

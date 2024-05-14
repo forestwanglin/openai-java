@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum EncodingType {
+
     R50K_BASE("r50k_base"),
     P50K_BASE("p50k_base"),
     P50K_EDIT("p50k_edit"),
-    CL100K_BASE("cl100k_base");
+    CL100K_BASE("cl100k_base"),
+    O200K_BASE("o200k_base");
 
     private static final Map<String, EncodingType> nameToEncodingType = Arrays.stream(values())
             .collect(Collectors.toMap(EncodingType::getName, Function.identity()));
@@ -24,11 +26,8 @@ public enum EncodingType {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public static Optional<EncodingType> fromName(final String name) {
         return Optional.ofNullable(nameToEncodingType.get(name));
     }
+
 }

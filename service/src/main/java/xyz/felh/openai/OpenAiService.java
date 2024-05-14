@@ -322,6 +322,7 @@ public class OpenAiService {
 
             @Override
             public void onFailure(@NonNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+                log.error("createSteamChatCompletion error {}", response, t);
                 listener.onFailure(requestId, t, response);
             }
         };

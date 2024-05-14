@@ -32,4 +32,5 @@ final class LazyEncodingRegistry extends AbstractEncodingRegistry {
         addEncoding(modelType.getEncodingType());
         return super.getEncodingForModel(modelType);
     }
+
 }

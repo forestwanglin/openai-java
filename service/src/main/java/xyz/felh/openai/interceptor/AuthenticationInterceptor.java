@@ -52,7 +52,7 @@ public class AuthenticationInterceptor implements Interceptor {
         // https://platform.openai.com/docs/assistants/overview
         if (chain.request().url().url().getPath().startsWith("/v1/assistants")
                 || chain.request().url().url().getPath().startsWith("/v1/threads")) {
-            requestBuilder.header("OpenAI-Beta", "assistants=v1");
+            requestBuilder.header("OpenAI-Beta", "assistants=v2");
         }
         return chain.proceed(requestBuilder.build());
     }
