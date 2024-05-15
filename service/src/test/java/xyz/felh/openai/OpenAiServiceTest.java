@@ -425,7 +425,7 @@ public class OpenAiServiceTest {
         getOpenAiService().createSteamChatCompletion("1234", chatCompletionRequest, listener,
                 (requestId, chatCompletion) -> {
                     log.info("request Id {}", requestId);
-                    log.info("chatCompletion {}", chatCompletion);
+                    log.info("tool call chatCompletion {}", chatCompletion);
                     if (Preconditions.isNotBlank(chatCompletion)
                             && Preconditions.isNotBlank(chatCompletion.getChoices())
                             && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getDelta())

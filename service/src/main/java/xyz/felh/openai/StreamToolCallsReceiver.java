@@ -56,6 +56,8 @@ public class StreamToolCallsReceiver {
                         active = true;
                         toolCallChatCompletion = JSON.parseObject(JSON.toJSONString(chatCompletion), ChatCompletion.class);
                         toolCallChatCompletion.getChoices().getFirst().getDelta().getToolCalls().removeFirst();
+                        // it means contains tool calls callback
+                        listener.onEvent(originalRequestId, chatCompletion);
                     }
                 }
             } else {
