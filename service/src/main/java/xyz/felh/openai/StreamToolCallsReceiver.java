@@ -5,13 +5,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import xyz.felh.openai.bean.StreamToolCallsRequest;
-import xyz.felh.openai.chat.ChatCompletion;
-import xyz.felh.openai.chat.ChatMessage;
-import xyz.felh.openai.chat.CreateChatCompletionRequest;
+import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.ToolCall;
 import xyz.felh.openai.utils.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.BiFunction;
@@ -20,15 +17,13 @@ import java.util.function.BiFunction;
 @Slf4j
 public class StreamToolCallsReceiver {
 
-    private List<ChatCompletion> chatCompletions;
+    private ChatCompletion toolCallChatCompletion;
     // null 未初始化
     private Boolean active;
     private BiFunction<String, ChatCompletion, StreamToolCallsRequest> toolCallsHandler;
     private CountDownLatch countDownLatch;
     private final OpenAiService openAiService;
     private StreamListener<ChatCompletion> listener;
-
-    private long completionTokens = 0;
 
     private String originalRequestId;
 
@@ -43,7 +38,7 @@ public class StreamToolCallsReceiver {
                                    BiFunction<String, ChatCompletion, StreamToolCallsRequest> toolCallsHandler,
                                    StreamListener<ChatCompletion> listener,
                                    CountDownLatch countDownLatch) {
-        this.chatCompletions = new ArrayList<>();
+        this.toolCallChatCompletion = null;
         this.originalRequestId = originalRequestId;
         this.openAiService = openAiService;
         this.toolCallsHandler = toolCallsHandler;
@@ -57,14 +52,14 @@ public class StreamToolCallsReceiver {
                 if (Preconditions.isNotBlank(chatCompletion.getChoices())
                         && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getDelta())) {
                     ChatMessage delta = chatCompletion.getChoices().getFirst().getDelta();
-                    if (Preconditions.isNotBlank(delta.getContent()) || "".equals(delta.getContent())) {
-                        active = false;
-                    } else {
+                    if (Preconditions.isNotBlank(delta.getToolCalls())) {
                         active = true;
+                        toolCallChatCompletion = JSON.parseObject(JSON.toJSONString(chatCompletion), ChatCompletion.class);
+                        toolCallChatCompletion.getChoices().getFirst().getDelta().getToolCalls().removeFirst();
                     }
                 }
             } else {
-                active = Preconditions.isNotBlank(chatCompletions);
+                active = toolCallChatCompletion != null;
             }
         }
         return active != null;
@@ -76,9 +71,34 @@ public class StreamToolCallsReceiver {
      */
     public boolean receive(ChatCompletion chatCompletion) {
         if (init(chatCompletion)) {
-            if (active) {
-                chatCompletions.add(chatCompletion);
-                completionTokens++;
+            if (active && Preconditions.isNotBlank(toolCallChatCompletion)) {
+                List<ToolCall> toolCalls = toolCallChatCompletion.getChoices().getFirst().getDelta().getToolCalls();
+                if (Preconditions.isNotBlank(chatCompletion.getChoices())) {
+                    ChatCompletionChoice chatCompletionChoice = chatCompletion.getChoices().getFirst();
+                    if (Preconditions.isNotBlank(chatCompletionChoice.getDelta())) {
+                        ChatMessage chatMessage = chatCompletionChoice.getDelta();
+                        if (Preconditions.isNotBlank(chatMessage.getToolCalls())) {
+                            ToolCall toolCall = chatMessage.getToolCalls().getFirst();
+                            if (Preconditions.isNotBlank(toolCall.getId())) {
+                                // new function
+                                toolCalls.add(toolCall);
+                            } else {
+                                // appending arguments
+                                String appendArgs = toolCall.getFunction().getArguments();
+                                if (Preconditions.isNotBlank(appendArgs)) {
+                                    ToolCall tc = toolCalls.getLast();
+                                    tc.getFunction().setArguments(tc.getFunction().getArguments() + appendArgs);
+                                }
+                            }
+                        }
+                    } else {
+                        // stop reason
+                        log.info("tool call stop: {}", JSON.toJSONString(chatCompletionChoice.getDelta()));
+                    }
+                } else {
+                    // usage
+                    toolCallChatCompletion.setUsage(chatCompletion.getUsage());
+                }
                 return true;
             }
         }
@@ -91,29 +111,8 @@ public class StreamToolCallsReceiver {
      */
     public boolean receiveDone(String requestId) {
         if (init(null)) {
-            if (active) {
-                ChatCompletion result = chatCompletions.getFirst();
-                List<ToolCall> toolCalls = new ArrayList<>();
-                for (ChatCompletion chatCompletion : chatCompletions) {
-                    if (Preconditions.isNotBlank(chatCompletion.getChoices())
-                            && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getDelta())
-                            && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getDelta().getToolCalls())) {
-                        ToolCall toolCall = chatCompletion.getChoices().getFirst().getDelta().getToolCalls().getFirst();
-                        if (Preconditions.isNotBlank(toolCall.getId())) {
-                            // new function start
-                            toolCalls.add(toolCall);
-                        } else {
-                            // appending part
-                            String appendArgs = toolCall.getFunction().getArguments();
-                            if (Preconditions.isNotBlank(appendArgs)) {
-                                ToolCall tc = toolCalls.getLast();
-                                tc.getFunction().setArguments(tc.getFunction().getArguments() + appendArgs);
-                            }
-                        }
-                    }
-                }
-                result.getChoices().getFirst().getDelta().setToolCalls(toolCalls);
-                StreamToolCallsRequest request = toolCallsHandler.apply(requestId, result);
+            if (active && Preconditions.isNotBlank(toolCallChatCompletion)) {
+                StreamToolCallsRequest request = toolCallsHandler.apply(requestId, toolCallChatCompletion);
                 this.requestId = request.getRequestId();
                 createChatCompletion(request.getRequest());
                 return true;
@@ -126,32 +125,33 @@ public class StreamToolCallsReceiver {
         openAiService.createSteamChatCompletion(requestId, request, new StreamListener<>() {
             @Override
             public void onOpen(String requestId, Response response) {
-                log.debug("on open {}", requestId);
+                log.debug("stream tool calls receiver on open {}", requestId);
                 listener.onOpen(requestId, response);
             }
 
             @Override
             public void onEvent(String requestId, ChatCompletion chatCompletion) {
-                log.debug("chatCompletion {}", JSON.toJSONString(chatCompletion));
+                log.debug("stream tool calls receiver requestId: {}, chatCompletion {}",
+                        requestId, JSON.toJSONString(chatCompletion));
                 listener.onEvent(requestId, chatCompletion);
             }
 
             @Override
             public void onEventDone(String requestId) {
-                log.debug("event done {}", requestId);
+                log.debug("stream tool calls receiver event done {}", requestId);
                 listener.onEventDone(requestId);
             }
 
             @Override
             public void onClosed(String requestId) {
-                log.debug("event done {}", requestId);
+                log.debug("stream tool calls receiver event closed {}", requestId);
                 listener.onClosed(requestId);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFailure(String requestId, Throwable t, Response response) {
-                log.debug("event failure {} {} {}", requestId, t, response);
+                log.debug("stream tool calls receiver event failure {} {} {}", requestId, t, response);
                 listener.onFailure(requestId, t, response);
                 countDownLatch.countDown();
             }
