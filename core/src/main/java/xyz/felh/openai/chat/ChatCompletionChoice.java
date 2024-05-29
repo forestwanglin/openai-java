@@ -40,4 +40,14 @@ public class ChatCompletionChoice implements IOpenAiApiObject {
     @JsonProperty("delta")
     private ChatMessage delta;
 
+    /**
+     * Log probability information for the choice.
+     * <p>
+     * See {@link Logprobs}
+     */
+    @JSONField(name = "logprobs")
+    @JsonProperty("logprobs")
+    private Logprobs logprobs;
+
+
 }

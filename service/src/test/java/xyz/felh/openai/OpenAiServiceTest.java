@@ -126,6 +126,8 @@ public class OpenAiServiceTest {
 //                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
                         new ChatMessage(ChatMessageRole.USER, "我觉得你很聪明，从一数到十，可以吗？")))
                 .model(ModelType.GPT_4_O_2024_05_13.getName())
+                .logprobs(true)
+                .topLogprobs(5)
                 .build();
         log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
         try {
