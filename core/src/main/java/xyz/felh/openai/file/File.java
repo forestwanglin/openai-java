@@ -58,7 +58,9 @@ public class File extends OpenAiApiObjectWithId {
         FINE_TUNE("fine-tune"),
         FINE_TUNE_RESULTS("fine-tune-results"),
         ASSISTANTS("assistants"),
-        ASSISTANTS_OUTPUT("assistants_output");
+        ASSISTANTS_OUTPUT("assistants_output"),
+        VISION("vision"),
+        BATCH("batch");
 
         private final String value;
 
