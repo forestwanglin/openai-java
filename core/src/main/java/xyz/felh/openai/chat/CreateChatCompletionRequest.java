@@ -219,6 +219,16 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     private Object toolChoice;
 
     /**
+     * Whether to enable parallel function calling during tool use.
+     * <p>
+     * Optional
+     * Defaults to true
+     */
+    @JSONField(name = "parallel_tool_calls")
+    @JsonProperty("parallel_tool_calls")
+    private Boolean parallelToolCalls;
+
+    /**
      * A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
      *
      * <a href="https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids">Learn more</a>
