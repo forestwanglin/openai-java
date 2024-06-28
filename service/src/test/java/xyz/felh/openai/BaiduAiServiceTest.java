@@ -9,10 +9,7 @@ import retrofit2.Retrofit;
 import xyz.felh.StreamListener;
 import xyz.felh.baidu.BaiduAiApi;
 import xyz.felh.baidu.BaiduAiService;
-import xyz.felh.baidu.chat.ChatCompletion;
-import xyz.felh.baidu.chat.ChatMessage;
-import xyz.felh.baidu.chat.ChatMessageRole;
-import xyz.felh.baidu.chat.CreateChatCompletionRequest;
+import xyz.felh.baidu.chat.*;
 import xyz.felh.baidu.interceptor.ExtractHeaderInterceptor;
 
 import java.time.Duration;
@@ -53,7 +50,7 @@ public class BaiduAiServiceTest {
 //        log.info(JSON.toJSONString(service.chat(ChatCompletion.Model.ERNIE_SPEED_128K, request)));
 
         request.setStream(true);
-        service.streamChat("asdf", ChatCompletion.Model.ERNIE_SPEED_128K, request, new StreamListener<ChatCompletion>() {
+        service.streamChat("asdf", ChatModel.ERNIE_SPEED_128K, request, new StreamListener<>() {
             @Override
             public void onEvent(String requestId, ChatCompletion t) {
                 log.info(JSON.toJSONString(t));

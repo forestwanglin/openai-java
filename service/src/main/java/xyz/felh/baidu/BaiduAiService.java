@@ -20,6 +20,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import xyz.felh.StreamListener;
 import xyz.felh.baidu.chat.ChatCompletion;
+import xyz.felh.baidu.chat.ChatModel;
 import xyz.felh.baidu.chat.CreateChatCompletionRequest;
 import xyz.felh.baidu.constant.BaiduAiConstants;
 import xyz.felh.baidu.interceptor.AuthenticationInterceptor;
@@ -121,19 +122,19 @@ public class BaiduAiService {
                 .build();
     }
 
-    public ChatCompletion chat(ChatCompletion.Model model, CreateChatCompletionRequest request) {
-        return execute(api.chat(model.getName(), request));
+    public ChatCompletion chat(ChatModel model, CreateChatCompletionRequest request) {
+        return execute(api.chat(model.getPathName(), request));
     }
 
     public void streamChat(String requestId,
-                           ChatCompletion.Model model,
+                           ChatModel model,
                            CreateChatCompletionRequest request,
                            @NonNull StreamListener<ChatCompletion> listener) {
         request.setStream(true);
         Request okHttpRequest;
         try {
             okHttpRequest = new Request.Builder()
-                    .url(BaiduAiConstants.BASE_URL + "/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/" + model.getName())
+                    .url(BaiduAiConstants.BASE_URL + "/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/" + model.getPathName())
                     .header("content-type", "text/event-stream")
                     .header("Accept", "text/event-stream")
                     .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request),

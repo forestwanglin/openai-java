@@ -2,10 +2,8 @@ package xyz.felh.baidu.chat;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import xyz.felh.baidu.Usage;
 import xyz.felh.openai.OpenAiApiObjectWithId;
 
@@ -98,24 +96,5 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
     @JSONField(name = "usage")
     @JsonProperty("usage")
     private Usage usage;
-
-    @Getter
-    @AllArgsConstructor
-    public enum Model {
-        // 价格参考 https://cloud.baidu.com/doc/WENXINWORKSHOP/s/hlrk4akp7?feedback=1
-        // 以下系列免费
-        // ERNIE Speed系列
-        // ERNIE Lite系列
-        // ERNIE Tiny系列
-
-        YI_34B_CHAT("yi_34b_chat"), // FREE
-        ERNIE_4_0_8K("completions_pro"),
-        ERNIE_SPEED_8K("ernie_speed"), // FREE
-        ERNIE_SPEED_128K("ernie-speed-128k"), // FREE
-        ;
-
-        private final String name;
-
-    }
 
 }
