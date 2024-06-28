@@ -12,7 +12,7 @@ import xyz.felh.baidu.chat.CreateChatCompletionRequest;
  */
 public interface BaiduAiApi {
 
-    @POST("/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/{model_id}")
-    Single<ChatCompletion> chat(@Path("model_id") String modelId, @Body CreateChatCompletionRequest request);
+    @POST("/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/{model_path}")
+    Single<ChatCompletion> createChat(@Path("model_path") String path, @Body CreateChatCompletionRequest request);
 
 }

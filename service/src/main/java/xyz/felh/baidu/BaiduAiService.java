@@ -20,11 +20,10 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import xyz.felh.StreamListener;
 import xyz.felh.baidu.chat.ChatCompletion;
-import xyz.felh.baidu.chat.ChatModel;
+import xyz.felh.baidu.chat.ModelType;
 import xyz.felh.baidu.chat.CreateChatCompletionRequest;
 import xyz.felh.baidu.constant.BaiduAiConstants;
 import xyz.felh.baidu.interceptor.AuthenticationInterceptor;
-import xyz.felh.utils.Preconditions;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -122,19 +121,19 @@ public class BaiduAiService {
                 .build();
     }
 
-    public ChatCompletion chat(ChatModel model, CreateChatCompletionRequest request) {
-        return execute(api.chat(model.getPathName(), request));
+    public ChatCompletion createChat(ModelType model, CreateChatCompletionRequest request) {
+        return execute(api.createChat(model.getPath(), request));
     }
 
-    public void streamChat(String requestId,
-                           ChatModel model,
-                           CreateChatCompletionRequest request,
-                           @NonNull StreamListener<ChatCompletion> listener) {
+    public void createStreamChat(String requestId,
+                                 ModelType model,
+                                 CreateChatCompletionRequest request,
+                                 @NonNull StreamListener<ChatCompletion> listener) {
         request.setStream(true);
         Request okHttpRequest;
         try {
             okHttpRequest = new Request.Builder()
-                    .url(BaiduAiConstants.BASE_URL + "/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/" + model.getPathName())
+                    .url(BaiduAiConstants.BASE_URL + "/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/" + model.getPath())
                     .header("content-type", "text/event-stream")
                     .header("Accept", "text/event-stream")
                     .post(RequestBody.create(defaultObjectMapper().writeValueAsString(request),

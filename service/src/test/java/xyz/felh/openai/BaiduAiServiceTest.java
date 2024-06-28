@@ -50,7 +50,7 @@ public class BaiduAiServiceTest {
 //        log.info(JSON.toJSONString(service.chat(ChatCompletion.Model.ERNIE_SPEED_128K, request)));
 
         request.setStream(true);
-        service.streamChat("asdf", ChatModel.ERNIE_SPEED_128K, request, new StreamListener<>() {
+        service.createStreamChat("asdf", ModelType.ERNIE_SPEED_128K, request, new StreamListener<>() {
             @Override
             public void onEvent(String requestId, ChatCompletion t) {
                 log.info(JSON.toJSONString(t));
