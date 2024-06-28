@@ -20,6 +20,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.*;
+import xyz.felh.StreamListener;
 import xyz.felh.openai.assistant.Assistant;
 import xyz.felh.openai.assistant.CreateAssistantRequest;
 import xyz.felh.openai.assistant.ModifyAssistantRequest;
@@ -62,7 +63,7 @@ import xyz.felh.openai.interceptor.AuthenticationInterceptor;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.Preconditions;
 
 import java.io.File;
 import java.io.IOException;

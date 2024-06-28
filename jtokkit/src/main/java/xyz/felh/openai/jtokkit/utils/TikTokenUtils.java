@@ -17,8 +17,8 @@ import xyz.felh.openai.jtokkit.api.Encoding;
 import xyz.felh.openai.jtokkit.api.EncodingRegistry;
 import xyz.felh.openai.jtokkit.api.EncodingType;
 import xyz.felh.openai.jtokkit.api.ModelType;
-import xyz.felh.openai.utils.ListUtils;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.ListUtils;
+import xyz.felh.utils.Preconditions;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

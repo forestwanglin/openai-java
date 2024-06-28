@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;

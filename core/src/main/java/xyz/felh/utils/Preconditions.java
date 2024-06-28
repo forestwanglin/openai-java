@@ -1,4 +1,4 @@
-package xyz.felh.openai.utils;
+package xyz.felh.utils;
 
 import java.util.List;
 import java.util.Map;

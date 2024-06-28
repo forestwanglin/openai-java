@@ -1,4 +1,4 @@
-package xyz.felh.openai.utils;
+package xyz.felh.utils;
 
 import java.util.ArrayList;
 import java.util.List;

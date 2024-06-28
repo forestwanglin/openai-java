@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
+import xyz.felh.StreamListener;
 import xyz.felh.openai.assistant.Assistant;
 import xyz.felh.openai.assistant.AssistantTool;
 import xyz.felh.openai.assistant.CreateAssistantRequest;

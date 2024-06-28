@@ -26,7 +26,7 @@ import xyz.felh.openai.chat.tool.Type;
 import xyz.felh.openai.interceptor.ExtractHeaderInterceptor;
 import xyz.felh.openai.jtokkit.api.ModelType;
 import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.Preconditions;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;

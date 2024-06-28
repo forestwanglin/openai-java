@@ -4,10 +4,11 @@ import com.alibaba.fastjson2.JSON;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
+import xyz.felh.StreamListener;
 import xyz.felh.openai.bean.StreamToolCallsRequest;
 import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.ToolCall;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.Preconditions;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;

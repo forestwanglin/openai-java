@@ -1,4 +1,4 @@
-package xyz.felh.openai;
+package xyz.felh;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,7 @@ import okhttp3.sse.EventSource;
 
 @Data
 @Slf4j
-public abstract class StreamListener<T extends IOpenAiApiObject> {
+public abstract class StreamListener<T extends IAPIObject> {
 
     private EventSource eventSource;
 

@@ -6,7 +6,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>3.11.2024060801</version>
+        <version>4.0.2024062801</version>
     </parent>
 
     <artifactId>service</artifactId>
@@ -26,6 +26,7 @@
         <victools.jsonschema.version>4.35.0</victools.jsonschema.version>
         <okhttp3.version>4.12.0</okhttp3.version>
         <rxjava3.version>3.1.8</rxjava3.version>
+        <bce.version>0.10.323</bce.version>
     </properties>
 
     <dependencies>
@@ -33,7 +34,7 @@
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>core</artifactId>
-            <version>3.11.2024060801</version>
+            <version>4.0.2024062801</version>
         </dependency>
 
         <dependency>
@@ -98,7 +99,7 @@
         <dependency>
             <groupId>xyz.felh</groupId>
             <artifactId>jtokkit</artifactId>
-            <version>3.11.2024060801</version>
+            <version>4.0.2024062801</version>
             <scope>test</scope>
         </dependency>
 

@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.junit.jupiter.api.Test;
 import retrofit2.Retrofit;
+import xyz.felh.StreamListener;
 import xyz.felh.openai.audio.*;
 import xyz.felh.openai.bean.StreamToolCallsRequest;
 import xyz.felh.openai.chat.ChatCompletion;
@@ -42,7 +43,7 @@ import xyz.felh.openai.jtokkit.utils.TikTokenUtils;
 import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.Preconditions;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

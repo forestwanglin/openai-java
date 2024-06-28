@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;
 import xyz.felh.openai.IOpenAiBean;
 import xyz.felh.openai.chat.tool.ToolCall;
-import xyz.felh.openai.utils.ListUtils;
-import xyz.felh.openai.utils.Preconditions;
+import xyz.felh.utils.ListUtils;
+import xyz.felh.utils.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
