@@ -83,7 +83,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
     <version>4.0.2024062801</version>
 </dependency>
 ```
-
+ 
 ### Gradle
 
 ```yaml
