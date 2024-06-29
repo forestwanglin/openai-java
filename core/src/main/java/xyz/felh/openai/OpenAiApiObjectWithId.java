@@ -24,4 +24,11 @@ public abstract class OpenAiApiObjectWithId implements IOpenAiApiObject {
     @JsonProperty("object")
     private String object;
 
+    /**
+     * 时间戳
+     */
+    @JSONField(name = "created")
+    @JsonProperty("created")
+    private Long created;
+
 }

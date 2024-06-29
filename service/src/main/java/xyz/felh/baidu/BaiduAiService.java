@@ -20,10 +20,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import xyz.felh.StreamListener;
 import xyz.felh.baidu.chat.ChatCompletion;
-import xyz.felh.baidu.chat.ModelType;
 import xyz.felh.baidu.chat.CreateChatCompletionRequest;
+import xyz.felh.baidu.chat.ModelType;
 import xyz.felh.baidu.constant.BaiduAiConstants;
 import xyz.felh.baidu.interceptor.AuthenticationInterceptor;
+import xyz.felh.baidu.tokenizer.CreateTokenizerRequest;
+import xyz.felh.baidu.tokenizer.Tokenizer;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -175,6 +177,10 @@ public class BaiduAiService {
         };
         EventSource eventSource = factory.newEventSource(okHttpRequest, eventSourceListener);
         listener.setEventSource(eventSource);
+    }
+
+    public Tokenizer tokenizer(CreateTokenizerRequest request) {
+        return execute(api.tokenizer(request));
     }
 
 }

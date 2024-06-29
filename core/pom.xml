@@ -6,7 +6,7 @@
     <parent>
         <groupId>xyz.felh</groupId>
         <artifactId>openai-java</artifactId>
-        <version>4.0.2024062803</version>
+        <version>4.0.2024062901</version>
     </parent>
 
     <artifactId>core</artifactId>

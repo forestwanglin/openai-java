@@ -1,6 +1,7 @@
 package xyz.felh.openai;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -11,6 +12,7 @@ import xyz.felh.baidu.BaiduAiApi;
 import xyz.felh.baidu.BaiduAiService;
 import xyz.felh.baidu.chat.*;
 import xyz.felh.baidu.interceptor.ExtractHeaderInterceptor;
+import xyz.felh.baidu.tokenizer.CreateTokenizerRequest;
 
 import java.time.Duration;
 import java.util.List;
@@ -49,15 +51,19 @@ public class BaiduAiServiceTest {
                 .build();
 //        log.info(JSON.toJSONString(service.chat(ChatCompletion.Model.ERNIE_SPEED_128K, request)));
 
-        request.setStream(true);
-        service.createStreamChat("asdf", ModelType.ERNIE_SPEED_128K, request, new StreamListener<>() {
-            @Override
-            public void onEvent(String requestId, ChatCompletion t) {
-                log.info(JSON.toJSONString(t));
-            }
-        });
-
-        TimeUnit.MINUTES.sleep(5);
+//        request.setStream(true);
+//        service.createStreamChat("asdf", ModelType.ERNIE_SPEED_128K, request, new StreamListener<>() {
+//            @Override
+//            public void onEvent(String requestId, ChatCompletion t) {
+//                log.info(JSON.toJSONString(t));
+//            }
+//        });
+//
+//        TimeUnit.MINUTES.sleep(5);
+        log.info(JSONObject.toJSONString(service.tokenizer(CreateTokenizerRequest.builder()
+                .prompt("asdfaksdlf哈哈哈哈")
+                .model("ernie-4.0-8k")
+                .build())));
     }
 
 }

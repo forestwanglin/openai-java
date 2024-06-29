@@ -15,13 +15,6 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
     public static String CHUNK_OBJECT = "chat.completion.chunk";
 
     /**
-     * 时间戳
-     */
-    @JSONField(name = "created")
-    @JsonProperty("created")
-    private Long created;
-
-    /**
      * 表示当前子句的序号。只有在流式接口模式下会返回该字段
      */
     @JSONField(name = "sentence_id")
