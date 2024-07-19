@@ -16,6 +16,7 @@ public enum ModelType {
     GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
 
     GPT_4_O_2024_05_13("gpt-4o-2024-05-13", EncodingType.O200K_BASE, 128000),
+    GPT_4_O_MINI_2024_07_18("gpt-4o-mini-2024-07-18", EncodingType.O200K_BASE, 128000),
 
     GPT_4_TURBO_2024_04_09("gpt-4-turbo-2024-04-09", EncodingType.CL100K_BASE, 128000),
     GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385),

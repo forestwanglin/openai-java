@@ -127,7 +127,12 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
         /**
          * The fastest and most affordable flagship model
          */
-        GPT_4_O_20240513("gpt-4o-2024-05-13");
+        GPT_4_O_20240513("gpt-4o-2024-05-13"),
+
+        /**
+         * The fastest and most affordable flagship model
+         */
+        GPT_4_O_MINI_20240718("gpt-4o-mini-2024-07-18");
 
         private final String name;
 
