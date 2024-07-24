@@ -139,6 +139,22 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     private Integer seed;
 
     /**
+     * string or null
+     * <p>
+     * Optional
+     * Defaults to null
+     * Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
+     * <p>
+     * If set to 'auto', the system will utilize scale tier credits until they are exhausted.
+     * If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarentee.
+     * When not set, the default behavior is 'auto'.
+     * When this parameter is set, the response body will include the service_tier utilized.
+     */
+    @JSONField(name = "service_tier")
+    @JsonProperty("service_tier")
+    private String serviceTier;
+
+    /**
      * Up to 4 sequences where the API will stop generating further tokens.
      * <p>
      * string / array / null

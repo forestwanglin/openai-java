@@ -47,6 +47,13 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
     private String model;
 
     /**
+     * The service tier used for processing the request. This field is only included if the service_tier parameter is specified in the request.
+     */
+    @JSONField(name = "service_tier")
+    @JsonProperty("service_tier")
+    private String serviceTier;
+
+    /**
      * This fingerprint represents the backend configuration that the model runs with.
      * <p>
      * Can be used in conjunction with the {@linkplain  CreateChatCompletionRequest#getSeed()} request parameter to understand when backend changes have been made that might impact determinism.
