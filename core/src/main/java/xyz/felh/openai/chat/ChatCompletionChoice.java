@@ -49,5 +49,4 @@ public class ChatCompletionChoice implements IOpenAiApiObject {
     @JsonProperty("logprobs")
     private Logprobs logprobs;
 
-
 }

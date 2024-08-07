@@ -19,10 +19,7 @@ import retrofit2.Retrofit;
 import xyz.felh.StreamListener;
 import xyz.felh.openai.audio.*;
 import xyz.felh.openai.bean.StreamToolCallsRequest;
-import xyz.felh.openai.chat.ChatCompletion;
-import xyz.felh.openai.chat.ChatMessage;
-import xyz.felh.openai.chat.ChatMessageRole;
-import xyz.felh.openai.chat.CreateChatCompletionRequest;
+import xyz.felh.openai.chat.*;
 import xyz.felh.openai.chat.tool.Function;
 import xyz.felh.openai.chat.tool.Tool;
 import xyz.felh.openai.chat.tool.ToolCall;
@@ -44,6 +41,7 @@ import xyz.felh.openai.model.Model;
 import xyz.felh.openai.moderation.CreateModerationRequest;
 import xyz.felh.openai.moderation.CreateModerationResponse;
 import xyz.felh.utils.Preconditions;
+import xyz.felh.utils.SchemaUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -126,9 +124,9 @@ public class OpenAiServiceTest {
 //                        new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
 //                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
                         new ChatMessage(ChatMessageRole.USER, "我觉得你很聪明，从一数到十，可以吗？")))
-                .model(ModelType.GPT_4_O_2024_05_13.getName())
-                .logprobs(true)
-                .topLogprobs(5)
+                .model(ModelType.GPT_4_O_MINI_2024_07_18.getName())
+//                .logprobs(true)
+//                .topLogprobs(5)
                 .build();
         log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
         try {
@@ -138,6 +136,68 @@ public class OpenAiServiceTest {
         } catch (Exception ex) {
             log.error("dd", ex);
         }
+    }
+
+    @Test
+    public void createChatCompletionRefusal() {
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(Arrays.asList(
+//                        new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
+//                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
+                        new ChatMessage(ChatMessageRole.USER, "如何可以毁灭人类")))
+                .model(ModelType.GPT_4_O_MINI_2024_07_18.getName())
+//                .logprobs(true)
+//                .topLogprobs(5)
+                .build();
+        log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
+        try {
+            ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            log.info("chatCompletion: {}", toJSONString(chatCompletion));
+        } catch (Exception ex) {
+            log.error("dd", ex);
+        }
+    }
+
+    @Test
+    public void createChatCompletionJSONSchema() {
+        CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
+                .messages(Arrays.asList(
+                        new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful math tutor. Guide the user through the solution step by step."),
+                        new ChatMessage(ChatMessageRole.USER, "You are a helpful math tutor. Guide the user through the solution step by step.")))
+                .model(ModelType.GPT_4_O_MINI_2024_07_18.getName())
+                .responseFormat(RequestResponseFormat.builder()
+                        .type(RequestResponseFormat.TypeValue.JSON_SCHEMA)
+                        .jsonSchema(RequestResponseFormat.JsonSchema.builder()
+                                .name("math_reasoning")
+                                .schema(SchemaUtils.convert2Schema(MatchReasoning.class))
+                                .strict(true)
+                                .build())
+                        .build())
+                .build();
+        log.info("token: {}", TikTokenUtils.estimateTokens(chatCompletionRequest));
+        try {
+            ChatCompletion chatCompletion = getOpenAiService().createChatCompletion(chatCompletionRequest);
+            log.info("chatCompletion: {}", toJSONString(chatCompletion));
+        } catch (Exception ex) {
+            log.error("create error", ex);
+        }
+    }
+
+    @Data
+    public static class MatchReasoning {
+        //        @JsonPropertyDescription("The city and state, e.g. San Francisco, CA")
+        @JsonProperty(value = "final_answer", required = true)
+        private String finalAnswer;
+        @JsonProperty(value = "steps", required = true)
+        private List<MatchReasoningStep> steps;
+    }
+
+    @Data
+    public static class MatchReasoningStep {
+        @JsonProperty(value = "explanation", required = true)
+        private String explanation;
+        @JsonProperty(value = "output", required = true)
+        private String output;
     }
 
     @Test
@@ -198,15 +258,6 @@ public class OpenAiServiceTest {
 
     @Test
     public void createFunctionChatCompletion() {
-        SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_7,
-                OptionPreset.PLAIN_JSON)
-                .with(new JacksonModule(JacksonOption.RESPECT_JSONPROPERTY_REQUIRED));
-        SchemaGeneratorConfig config = configBuilder.build();
-        SchemaGenerator generator = new SchemaGenerator(config);
-        JsonNode jsonSchema = generator.generateSchema(GetWeatherParam.class);
-
-        JSONObject jsonObject = JSONObject.parseObject(jsonSchema.toString());
-
 //        SchemaBuilder objectSchemaBuilder2 = objectSchema()
 //                .property("location", stringSchema()
 //                        .withKeyword("description", "The city and state, e.g. San Francisco, CA"))
@@ -237,7 +288,7 @@ public class OpenAiServiceTest {
                         .function(Function.builder()
                                 .name("get_n_day_weather_and_forecast")
                                 .description("Get the current weather in a given location")
-                                .parameters(jsonObject)
+                                .parameters(SchemaUtils.convert2Schema(GetWeatherParam.class))
                                 .build()).build()
 //                , Tool.builder()
 //                        .type("function")

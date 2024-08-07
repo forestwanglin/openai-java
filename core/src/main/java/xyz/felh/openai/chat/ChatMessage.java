@@ -44,12 +44,21 @@ public class ChatMessage implements IOpenAiBean {
      * <p>
      * 1. role=system, string or null, required<br/>
      * 2. role=user, string or array, required<br/>
-     * 3. role=assistant, string or null, Required unless tool_calls is specified.<br/>
+     * 3. role=assistant, string or array, Required unless tool_calls is specified.<br/>
      * 4. role=tool, string or null, required<br/>
      */
     @JSONField(name = "content")
     @JsonProperty("content")
     private Object content;
+
+    /**
+     * string or null
+     * <p>
+     * The refusal message by the assistant.
+     */
+    @JSONField(name = "refusal")
+    @JsonProperty("refusal")
+    private String refusal;
 
     /**
      * An optional name for the participant. Provides the model information to differentiate between participants of the same role.

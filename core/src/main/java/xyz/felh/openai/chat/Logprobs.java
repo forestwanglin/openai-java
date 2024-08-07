@@ -17,12 +17,19 @@ public class Logprobs implements IOpenAiApiObject {
 
     /**
      * A list of message content tokens with log probability information.
-     *
+     * <p>
      * See {@link Content}
      */
     @JSONField(name = "content")
     @JsonProperty("content")
     private List<Content> content;
+
+    /**
+     * A list of message refusal tokens with log probability information.
+     */
+    @JSONField(name = "refusal")
+    @JsonProperty("refusal")
+    private List<Content> refusal;
 
     @Data
     @Builder
@@ -35,7 +42,7 @@ public class Logprobs implements IOpenAiApiObject {
          */
         @JSONField(name = "token")
         @JsonProperty("token")
-        private String token ;
+        private String token;
 
         /**
          * The log probability of this token, if it is within the top 20 most likely tokens.
