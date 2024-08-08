@@ -15,6 +15,8 @@ import lombok.Data;
  * @class SchemaUtils
  * @email forestwanglin@gmail.cn
  * @date 2024/8/7
+ * <p>
+ * See <a href="https://victools.github.io/jsonschema-generator/#introduction">Options</a>
  */
 public class SchemaUtils {
 
