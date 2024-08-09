@@ -24,7 +24,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 @Slf4j
@@ -303,6 +304,11 @@ public class TikTokenUtils {
             } else {
                 List<ChatMessage.ContentItem> items = ListUtils.castList(message.getContent(), ChatMessage.ContentItem.class);
                 if (Preconditions.isNotBlank(items)) {
+                    float visionRatio = 1F;
+                    // half price if model = 2024-08-06
+                    if (ModelType.GPT_4_O_2024_08_06.getName().equals(modelName)) {
+                        visionRatio = 0.5F;
+                    }
                     for (ChatMessage.ContentItem item : items) {
                         if (item.getType() == ChatMessage.ContentType.TEXT) {
                             // 不需要计算type
@@ -311,9 +317,9 @@ public class TikTokenUtils {
                             ChatMessage.ImageUrl imageUrl = item.getImageUrl();
                             // https://openai.com/pricing
                             if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.LOW) {
-                                tokens += 85;
+                                tokens += (int) Math.ceil(85 * visionRatio);
                             } else if (imageUrl.getDetail() == ChatMessage.ImageUrlDetail.HIGH) {
-                                tokens += 85;
+                                tokens += (int) Math.ceil(85 * visionRatio);
                                 int width = 0;
                                 int height = 0;
                                 if (imageUrl.getUrl().startsWith("f")) {
@@ -337,16 +343,16 @@ public class TikTokenUtils {
                                 } else {
                                     // image url
                                     try {
-                                        BufferedImage bi = ImageIO.read(new URL(imageUrl.getUrl()));
+                                        BufferedImage bi = ImageIO.read(new URI(imageUrl.getUrl()).toURL());
                                         width = bi.getWidth();
                                         height = bi.getHeight();
-                                    } catch (IOException e) {
+                                    } catch (IOException | URISyntaxException e) {
                                         throw new RuntimeException(e);
                                     }
                                 }
                                 // 1 per 512x512
                                 int tiles = (int) Math.ceil(width / 512.0) * (int) Math.ceil(height / 512.0);
-                                tokens += 170 * tiles;
+                                tokens += (int) Math.ceil(170 * tiles * visionRatio);
                             }
                         }
                     }
