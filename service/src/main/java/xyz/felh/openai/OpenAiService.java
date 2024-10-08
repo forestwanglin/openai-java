@@ -21,6 +21,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.http.*;
 import xyz.felh.StreamListener;
+import xyz.felh.baidu.chat.ModelType;
 import xyz.felh.openai.assistant.Assistant;
 import xyz.felh.openai.assistant.CreateAssistantRequest;
 import xyz.felh.openai.assistant.ModifyAssistantRequest;
@@ -49,6 +50,8 @@ import xyz.felh.openai.batch.Batch;
 import xyz.felh.openai.batch.CreateBatchRequest;
 import xyz.felh.openai.bean.StreamToolCallsRequest;
 import xyz.felh.openai.chat.ChatCompletion;
+import xyz.felh.openai.chat.ChatMessage;
+import xyz.felh.openai.chat.ChatMessageRole;
 import xyz.felh.openai.chat.CreateChatCompletionRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingRequest;
 import xyz.felh.openai.embedding.CreateEmbeddingResponse;
@@ -206,6 +209,7 @@ public class OpenAiService {
      */
     public ChatCompletion createChatCompletion(CreateChatCompletionRequest request,
                                                Function<ChatCompletion, CreateChatCompletionRequest> toolCallsHandler) {
+        fixO1BetaLimit(request);
         request.setStream(false);
         ChatCompletion chatCompletion = execute(api.createChatCompletion(request));
         if (Preconditions.isBlank(toolCallsHandler)) {
@@ -222,6 +226,17 @@ public class OpenAiService {
         }
     }
 
+    // TODO
+    private void fixO1BetaLimit(CreateChatCompletionRequest request) {
+        List<ChatMessage> messages = request.getMessages();
+        if (request.getModel().equalsIgnoreCase(ChatCompletion.Model.O1_PREVIEW_20240912.getName())
+                || request.getModel().equalsIgnoreCase(ChatCompletion.Model.O1_MINI_20240912.getName())) {
+            if (Preconditions.isNotBlank(messages)
+                    && messages.getFirst().getRole() == ChatMessageRole.SYSTEM) {
+                messages.getFirst().setRole(ChatMessageRole.USER);
+            }
+        }
+    }
 
     /**
      * create chat completion by stream, user-side handled if there is tool_calls
@@ -248,6 +263,7 @@ public class OpenAiService {
                                           CreateChatCompletionRequest request,
                                           @NonNull StreamListener<ChatCompletion> listener,
                                           BiFunction<String, ChatCompletion, StreamToolCallsRequest> toolCallsHandler) {
+        fixO1BetaLimit(request);
         request.setStream(true);
         Request okHttpRequest;
         try {

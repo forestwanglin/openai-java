@@ -6,7 +6,7 @@
 
     <groupId>xyz.felh</groupId>
     <artifactId>openai-java</artifactId>
-    <version>4.0.2024100801</version>
+    <version>4.0.2024100802</version>
     <packaging>pom</packaging>
 
     <name>ChatGPT of OpenAI API for Java</name>
