@@ -72,14 +72,14 @@ public abstract class BaseEncodingRegistryTest<T extends AbstractEncodingRegistr
     public void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt432k() {
         final Optional<Encoding> encoding = registry.getEncodingForModel("gpt-4-32k-0314");
         assertTrue(encoding.isPresent());
-        assertEquals(encoding.get().getName(), ModelType.GPT_4.getEncodingType().getName());
+        assertEquals(encoding.get().getName(), ModelType.GPT_4_0613.getEncodingType().getName());
     }
 
     @Test
     public void getEncodingForModelByPrefixReturnsCorrectEncodingForGpt4() {
         final Optional<Encoding> encoding = registry.getEncodingForModel("gpt-4-0314");
         assertTrue(encoding.isPresent());
-        assertEquals(encoding.get().getName(), ModelType.GPT_4.getEncodingType().getName());
+        assertEquals(encoding.get().getName(), ModelType.GPT_4_0613.getEncodingType().getName());
     }
 
     @Test

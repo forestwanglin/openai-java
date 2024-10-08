@@ -30,12 +30,8 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
             return Optional.of(getEncodingForModel(modelType.get()));
         }
 
-        if (modelName.startsWith(ModelType.GPT_4.getName())) {
-            return Optional.of(getEncodingForModel(ModelType.GPT_4));
-        }
-
-        if (modelName.startsWith(ModelType.GPT_4_32K.getName())) {
-            return Optional.of(getEncodingForModel(ModelType.GPT_4_32K));
+        if (modelName.startsWith(ModelType.GPT_4_0613.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4_0613));
         }
 
         if (modelName.startsWith(ModelType.GPT_3_5_TURBO_0125.getName())) {
@@ -52,6 +48,14 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
 
         if (modelName.equals(ModelType.GPT_4_O_MINI_2024_07_18.getName())) {
             return Optional.of(getEncodingForModel(ModelType.GPT_4_O_MINI_2024_07_18));
+        }
+
+        if (modelName.equals(ModelType.O1_PREVIEW_20240912.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.O1_PREVIEW_20240912));
+        }
+
+        if (modelName.equals(ModelType.O1_MINI_20240912.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.O1_MINI_20240912));
         }
 
         return Optional.empty();

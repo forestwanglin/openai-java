@@ -119,12 +119,13 @@ public class OpenAiServiceTest {
 
     @Test
     public void createChatCompletion() {
+        ModelType modelType = ModelType.O1_PREVIEW_20240912;
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(Arrays.asList(
 //                        new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
 //                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
                         new ChatMessage(ChatMessageRole.USER, "我觉得你很聪明，从一数到十，可以吗？")))
-                .model(ModelType.GPT_4_O_MINI_2024_07_18.getName())
+                .model(modelType.getName())
 //                .logprobs(true)
 //                .topLogprobs(5)
                 .build();

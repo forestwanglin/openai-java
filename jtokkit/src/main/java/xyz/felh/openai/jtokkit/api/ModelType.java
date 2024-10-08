@@ -12,14 +12,16 @@ import java.util.stream.Collectors;
 public enum ModelType {
 
     // chat
-    GPT_4("gpt-4", EncodingType.CL100K_BASE, 8192),
-    GPT_4_32K("gpt-4-32k", EncodingType.CL100K_BASE, 32768),
+    GPT_4_0613("gpt-4-0613", EncodingType.CL100K_BASE, 8192,8192),
 
-    GPT_4_O_2024_08_06("gpt-4o-2024-08-06", EncodingType.O200K_BASE, 128000),
-    GPT_4_O_MINI_2024_07_18("gpt-4o-mini-2024-07-18", EncodingType.O200K_BASE, 128000),
+    GPT_4_O_2024_08_06("gpt-4o-2024-08-06", EncodingType.O200K_BASE, 128000, 16384),
+    GPT_4_O_MINI_2024_07_18("gpt-4o-mini-2024-07-18", EncodingType.O200K_BASE, 128000, 16384),
 
-    GPT_4_TURBO_2024_04_09("gpt-4-turbo-2024-04-09", EncodingType.CL100K_BASE, 128000),
-    GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385),
+    GPT_4_TURBO_2024_04_09("gpt-4-turbo-2024-04-09", EncodingType.CL100K_BASE, 128000, 4096),
+    GPT_3_5_TURBO_0125("gpt-3.5-turbo-0125", EncodingType.CL100K_BASE, 16385, 4096),
+
+    O1_PREVIEW_20240912("o1-preview-2024-09-12", EncodingType.O200K_BASE, 128000, 32768),
+    O1_MINI_20240912("o1-mini-2024-09-12", EncodingType.O200K_BASE, 128000, 65536),
 
     // text
     TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
@@ -89,14 +91,26 @@ public enum ModelType {
      */
     private final int maxContextLength;
 
+    private final int maxOutputLength;
+
     ModelType(
             final String name,
             final EncodingType encodingType,
             final int maxContextLength
     ) {
+        this(name, encodingType, maxContextLength, 0);
+    }
+
+    ModelType(
+            final String name,
+            final EncodingType encodingType,
+            final int maxContextLength,
+            final int maxOutputLength
+    ) {
         this.name = name;
         this.encodingType = encodingType;
         this.maxContextLength = maxContextLength;
+        this.maxOutputLength = maxOutputLength;
     }
 
     /**

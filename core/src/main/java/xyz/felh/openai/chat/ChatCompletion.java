@@ -100,11 +100,8 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
         /**
          * GPT4.0
          */
-        GPT_4("gpt-4"),
-        /**
-         * GPT4.0 超长上下文
-         */
-        GPT_4_32K("gpt-4-32k"),
+        GPT_4_0613("gpt-4-0613"),
+
         /**
          * GPT-4 TurboNew
          * The latest GPT-4 model with improved instruction following, JSON mode, reproducible outputs,
@@ -139,7 +136,13 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
         /**
          * The fastest and most affordable flagship model
          */
-        GPT_4_O_MINI_20240718("gpt-4o-mini-2024-07-18");
+        GPT_4_O_MINI_20240718("gpt-4o-mini-2024-07-18"),
+
+        /**
+         * The o1 series of large language models are trained with reinforcement learning to perform complex reasoning. o1 models think before they answer, producing a long internal chain of thought before responding to the user.
+         */
+        O1_PREVIEW_20240912("o1-preview-2024-09-12"),
+        O1_MINI_20240912("o1-mini-2024-09-12");
 
         private final String name;
 

@@ -47,11 +47,10 @@ public class TikTokenUtils {
         modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_INSTRUCT.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_0125));
         modelMap.put(ChatCompletion.Model.GPT_3_5_TURBO_0125.getName(), registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_0125));
 
-        modelMap.put(ChatCompletion.Model.GPT_4_32K.getName(), registry.getEncodingForModel(ModelType.GPT_4));
-        modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
-        modelMap.put(ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
-        modelMap.put(ChatCompletion.Model.GPT_4_0125_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4));
-        modelMap.put(ChatCompletion.Model.GPT_4_TURBO_20240409.getName(), registry.getEncodingForModel(ModelType.GPT_4));
+        modelMap.put(ChatCompletion.Model.GPT_4_1106_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4_0613));
+        modelMap.put(ChatCompletion.Model.GPT_4_VISION_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4_0613));
+        modelMap.put(ChatCompletion.Model.GPT_4_0125_PREVIEW.getName(), registry.getEncodingForModel(ModelType.GPT_4_0613));
+        modelMap.put(ChatCompletion.Model.GPT_4_TURBO_20240409.getName(), registry.getEncodingForModel(ModelType.GPT_4_0613));
 
         modelMap.put(ChatCompletion.Model.GPT_4_O_20240806.getName(), registry.getEncodingForModel(ModelType.GPT_4_O_2024_08_06));
         modelMap.put(ChatCompletion.Model.GPT_4_O_MINI_20240718.getName(), registry.getEncodingForModel(ModelType.GPT_4_O_MINI_2024_07_18));
@@ -155,7 +154,7 @@ public class TikTokenUtils {
                         encoding = modelMap.get(ModelType.GPT_3_5_TURBO_0125.getName());
                     }
                     if (baseModel.toLowerCase().startsWith("gpt-4")) {
-                        encoding = modelMap.get(ModelType.GPT_4.getName());
+                        encoding = modelMap.get(ModelType.GPT_4_0613.getName());
                     }
                 }
             }

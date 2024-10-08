@@ -39,7 +39,7 @@ public class LazyEncodingRegistryTest extends BaseEncodingRegistryTest<LazyEncod
                 new ChatMessage(ChatMessageRole.USER, "Count 1 to 3"),
                 new ChatMessage(ChatMessageRole.ASSISTANT, "1，2, 3"),
                 new ChatMessage(ChatMessageRole.USER, " 中国和美国距离有多远？😄😄😄✅ "));
-        log.info("{}", TikTokenUtils.estimateTokensInMessage(ChatCompletion.Model.GPT_4.getName(), messages.get(0), 0));
+        log.info("{}", TikTokenUtils.estimateTokensInMessage(ChatCompletion.Model.GPT_4_0613.getName(), messages.getFirst(), 0));
     }
 
 }
