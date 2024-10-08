@@ -63,6 +63,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2024-06-28] Support Baidu AI API, chat(include stream) only for now.  see [Baidu AI API](https://cloud.baidu.com/doc/WENXINWORKSHOP/s/7ltgucw50).
 - [2024-07-19] Add model `gpt-4o-mini-2024-07-18` to instead of `gpt-3.5-turbo` with smarter and cheaper. 
 - [2024-08-08] Add model `gpt-4o-2024-08-06` to instead of `gpt-4o-2024-05-13` to support structure output.
+- [2024-08-08] Add model `o1-preview-2024-09-12` and `o1-mini-2024-09-12`.
 
 ## How to use
 
