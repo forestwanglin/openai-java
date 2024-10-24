@@ -43,7 +43,7 @@ public class ChatMessage implements IOpenAiBean {
      * The contents of the message
      * <p>
      * 1. role=system, string or null, required<br/>
-     * 2. role=user, string or array, required<br/>
+     * 2. role=user, string or Array of content parts, required<br/>
      * 3. role=assistant, string or array, Required unless tool_calls is specified.<br/>
      * 4. role=tool, string or null, required<br/>
      */
@@ -154,6 +154,27 @@ public class ChatMessage implements IOpenAiBean {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class InputAudio implements IOpenAiBean {
+        /**
+         * Base64 encoded audio data.
+         */
+        @NonNull
+        @JSONField(name = "data")
+        @JsonProperty("data")
+        private String data;
+
+        /**
+         * The format of the encoded audio data. Currently supports "wav" and "mp3".
+         */
+        @JSONField(name = "format")
+        @JsonProperty("format")
+        private String format;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ContentItem implements IOpenAiBean {
 
         /**
@@ -171,11 +192,25 @@ public class ChatMessage implements IOpenAiBean {
         private String text;
 
         /**
-         * Image url
+         * type = image_url, Image url
          */
         @JSONField(name = "image_url")
         @JsonProperty("image_url")
         private ImageUrl imageUrl;
+
+        /**
+         * type = input_audio, Input audio
+         */
+        @JSONField(name = "input_audio")
+        @JsonProperty("input_audio")
+        private InputAudio inputAudio;
+
+        /**
+         * type = refusal, Refusal
+         */
+        @JSONField(name = "refusal")
+        @JsonProperty("refusal")
+        private String refusal;
 
         public static ContentItem buildText(String text) {
             return ContentItem.builder().type(ContentType.TEXT).text(text).build();
@@ -196,13 +231,26 @@ public class ChatMessage implements IOpenAiBean {
                     .build();
         }
 
+        public static ContentItem buildInputAudio(String base64, String format) {
+            return ContentItem.builder()
+                    .type(ContentType.INPUT_AUDIO)
+                    .inputAudio(InputAudio.builder().data(base64).format(format).build())
+                    .build();
+        }
+
     }
 
     @Getter
     public enum ContentType {
 
+        // user / assistant
         TEXT("text"),
-        IMAGE_URL("image_url");
+        // user
+        IMAGE_URL("image_url"),
+        // user
+        INPUT_AUDIO("input_audio"),
+        // assistant
+        REFUSAL("refusal");
 
         private final String value;
 

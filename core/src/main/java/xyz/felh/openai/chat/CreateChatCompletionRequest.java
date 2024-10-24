@@ -36,6 +36,24 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     private List<ChatMessage> messages;
 
     /**
+     * boolean or null
+     * <p>
+     * Optional
+     * Defaults to false
+     * Whether or not to store the output of this chat completion request for use in our model distillation or evals products.
+     */
+    @JSONField(name = "store")
+    @JsonProperty("store")
+    private Boolean store;
+
+    /**
+     * Developer-defined tags and values used for filtering completions in the dashboard.
+     */
+    @JsonProperty("metadata")
+    @JSONField(name = "metadata")
+    private Object metadata;
+
+    /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
      * <p>
      * Number or null, Optional, Defaults to 0
@@ -93,6 +111,13 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     private Integer maxTokens;
 
     /**
+     * An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and reasoning tokens.
+     */
+    @JSONField(name = "max_completion_tokens")
+    @JsonProperty("max_completion_tokens")
+    private Integer maxCompletionTokens;
+
+    /**
      * How many chat completion choices to generate for each input message.
      * <p>
      * integer or null, Optional
@@ -102,6 +127,26 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
     @JSONField(name = "n")
     @JsonProperty("n")
     private Integer n;
+
+    /**
+     * Output types that you would like the model to generate for this request. Most models are capable of generating text, which is the default:
+     * <p>
+     * ["text"]
+     * <p>
+     * The gpt-4o-audio-preview model can also be used to generate audio. To request that this model generate both text and audio responses, you can use:
+     * <p>
+     * ["text", "audio"]
+     */
+    @JSONField(name = "modalities")
+    @JsonProperty("modalities")
+    private List<ChatModality> modalities;
+
+    /**
+     * Parameters for audio output. Required when audio output is requested with modalities: ["audio"].
+     */
+    @JSONField(name = "audio")
+    @JsonProperty("audio")
+    private Object audio;
 
     /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
@@ -123,7 +168,6 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      * <p>
      * Important: when using JSON mode, you must also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if finish_reason="length", which indicates the generation exceeded max_tokens or the conversation exceeded the max context length.
      * See {@link RequestResponseFormat}
-     *
      */
     @JSONField(name = "response_format")
     @JsonProperty("response_format")
