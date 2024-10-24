@@ -146,7 +146,7 @@ public class CreateChatCompletionRequest implements IOpenAiApiRequest {
      */
     @JSONField(name = "audio")
     @JsonProperty("audio")
-    private Object audio;
+    private ChatAudio audio;
 
     /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.

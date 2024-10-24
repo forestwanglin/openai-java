@@ -119,13 +119,19 @@ public class OpenAiServiceTest {
 
     @Test
     public void createChatCompletion() {
-        ModelType modelType = ModelType.O1_PREVIEW_20240912;
+        ModelType modelType = ModelType.GPT_4_O_AUDIO_PREVIEW_20241001;
+//        ModelType modelType = ModelType.O1_MINI_20240912;
         CreateChatCompletionRequest chatCompletionRequest = CreateChatCompletionRequest.builder()
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses. Mark code language tag if there is code."),
 //                        new ChatMessage(ChatMessageRole.USER, "Count 1 to 3")))
                         new ChatMessage(ChatMessageRole.USER, "我觉得你很聪明，从一数到十，可以吗？")))
                 .model(modelType.getName())
+                .modalities(Arrays.asList(ChatModality.TEXT, ChatModality.AUDIO))
+                .audio(ChatAudio.builder()
+                        .format(ChatAudioFormat.MP3)
+                        .voice(ChatAudioVoice.ALLOY)
+                        .build())
 //                .logprobs(true)
 //                .topLogprobs(5)
                 .build();

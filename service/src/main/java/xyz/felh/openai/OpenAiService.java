@@ -216,8 +216,8 @@ public class OpenAiService {
             return chatCompletion;
         } else {
             if (Preconditions.isNotBlank(chatCompletion.getChoices())
-                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage())
-                    && Preconditions.isNotBlank(chatCompletion.getChoices().get(0).getMessage().getToolCalls())) {
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getMessage())
+                    && Preconditions.isNotBlank(chatCompletion.getChoices().getFirst().getMessage().getToolCalls())) {
                 CreateChatCompletionRequest newRequest = toolCallsHandler.apply(chatCompletion);
                 return createChatCompletion(newRequest);
             } else {

@@ -58,6 +58,14 @@ abstract class AbstractEncodingRegistry implements EncodingRegistry {
             return Optional.of(getEncodingForModel(ModelType.O1_MINI_20240912));
         }
 
+        if (modelName.equals(ModelType.GPT_4_O_AUDIO_PREVIEW_20241001.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4_O_AUDIO_PREVIEW_20241001));
+        }
+
+        if (modelName.equals(ModelType.GPT_4_O_REALTIME_PREVIEW_20241001.getName())) {
+            return Optional.of(getEncodingForModel(ModelType.GPT_4_O_REALTIME_PREVIEW_20241001));
+        }
+
         return Optional.empty();
     }
 
