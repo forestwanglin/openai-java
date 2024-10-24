@@ -2,7 +2,7 @@
 
 OpenAi API for Java. Including all API from OpenAI official document, and the counting token method.
 
-[![GitHub version](https://img.shields.io/static/v1?label=version&message=v4.0.2024102402&color=blue)](https://github.com/forestwanglin/openai-java)
+[![GitHub version](https://img.shields.io/static/v1?label=version&message=v4.0.2024102403&color=blue)](https://github.com/forestwanglin/openai-java)
 [![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange)](https://github.com/forestwanglin/openai-java/blob/main/LICENSE)
 
 ## Example Application
@@ -56,7 +56,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 - [2024-04-10] Support stream event for Assistant. 
 - [2024-04-17] Add model `gpt-4-turbo-2024-04-09`. Remove `gpt-3-turbo-1106`, `gpt-4-vision-preview`, `gpt-4-1106-preview`, `gpt-4-0125-preview`.
 - [2024-04-21] Add api for [Batch](https://platform.openai.com/docs/api-reference/batch) from version `3.9.2024042101`
-- [2024-04-21] Replace Assistants, Thread, Messages, Runs with new version on Apr 17th, 2024 in version `4.0.2024102402`
+- [2024-04-21] Replace Assistants, Thread, Messages, Runs with new version on Apr 17th, 2024 in version `4.0.2024102403`
 - [2024-05-13] Add model `gpt-4o-2024-05-13` and its new tokenizer `o200k_base`. Add parameter `stream_options`, `logprobs`, `top_logprobs` for `createChatCompletion`.
 - [2024-06-08] Add parameter `parallel_tool_calls` when calling create chat completion.
 --------
@@ -75,7 +75,7 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>4.0.2024102402</version>
+    <version>4.0.2024102403</version>
 </dependency>
 ```
 
@@ -84,22 +84,22 @@ OpenAi API for Java. Including all API from OpenAI official document, and the co
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>jtokkit</artifactId>
-    <version>4.0.2024102402</version>
+    <version>4.0.2024102403</version>
 </dependency>
 ```
  
 ### Gradle
 
 ```yaml
-implementation group: 'xyz.felh', name: 'service', version: '4.0.2024102402'
-implementation group: 'xyz.felh', name: 'jtokkit', version: '4.0.2024102402'
+implementation group: 'xyz.felh', name: 'service', version: '4.0.2024102403'
+implementation group: 'xyz.felh', name: 'jtokkit', version: '4.0.2024102403'
 ```
 
 ### sbt
 
 ```javascript
-libraryDependencies += "xyz.felh" % "service" % "4.0.2024102402"
-libraryDependencies += "xyz.felh" % "jtokkit" % "4.0.2024102402"
+libraryDependencies += "xyz.felh" % "service" % "4.0.2024102403"
+libraryDependencies += "xyz.felh" % "jtokkit" % "4.0.2024102403"
 ```
 
 ## Example (Spring Boot 3)
@@ -111,7 +111,7 @@ libraryDependencies += "xyz.felh" % "jtokkit" % "4.0.2024102402"
 <dependency>
     <groupId>xyz.felh</groupId>
     <artifactId>service</artifactId>
-    <version>4.0.2024102402</version>
+    <version>4.0.2024102403</version>
 </dependency>
 ```
 
