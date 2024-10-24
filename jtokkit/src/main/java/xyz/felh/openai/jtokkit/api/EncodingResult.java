@@ -49,4 +49,5 @@ public final class EncodingResult {
                 + ", truncated=" + truncated
                 + '}';
     }
+
 }

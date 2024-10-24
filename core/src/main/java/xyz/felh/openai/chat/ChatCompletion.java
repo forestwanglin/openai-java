@@ -139,10 +139,21 @@ public class ChatCompletion extends OpenAiApiObjectWithId {
         GPT_4_O_MINI_20240718("gpt-4o-mini-2024-07-18"),
 
         /**
-         * The o1 series of large language models are trained with reinforcement learning to perform complex reasoning. o1 models think before they answer, producing a long internal chain of thought before responding to the user.
+         * The o1 series of large language models are trained with reinforcement learning to perform complex reasoning.
+         * o1 models think before they answer, producing a long internal chain of thought before responding to the user.
          */
         O1_PREVIEW_20240912("o1-preview-2024-09-12"),
-        O1_MINI_20240912("o1-mini-2024-09-12");
+        O1_MINI_20240912("o1-mini-2024-09-12"),
+
+        /**
+         * This is a preview release of the GPT-4o Realtime and Audio models.
+         * The gpt-4o-realtime-* models are capable of responding to audio and text inputs over a WebSocket interface.
+         * Learn more in the Realtime API guide. The gpt-4o-audio-* models below can be used in Chat Completions to generate audio responses.
+         */
+        GPT_4_O_REALTIME_PREVIEW_20241001("gpt-4o-realtime-preview-2024-10-01"),
+        GPT_4_O_AUDIO_PREVIEW_20241001("gpt-4o-audio-preview-2024-10-01"),
+
+        ;
 
         private final String name;
 

@@ -165,4 +165,5 @@ public interface Encoding {
      * @return the name of this encoding
      */
     String getName();
+
 }

@@ -102,7 +102,7 @@ public class OpenAiServiceTest {
                 .messages(Arrays.asList(
                         new ChatMessage(ChatMessageRole.SYSTEM, "You are a helpful assistant. Do not include pleasantries in your responses."),
                         new ChatMessage(ChatMessageRole.USER, "count from 1 to 3")))
-                .model(ModelType.GPT_4_O_2024_08_06.getName())
+                .model(ModelType.O1_PREVIEW_20240912.getName())
                 .streamOptions(CreateChatCompletionRequest.StreamOptions.builder()
                         .includeUsage(true)
                         .build())

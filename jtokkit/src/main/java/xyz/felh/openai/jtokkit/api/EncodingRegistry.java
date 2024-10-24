@@ -65,4 +65,5 @@ public interface EncodingRegistry {
 	 * @throws IllegalArgumentException if the encoding name is already registered
 	 */
 	EncodingRegistry registerCustomEncoding(Encoding encoding);
+
 }

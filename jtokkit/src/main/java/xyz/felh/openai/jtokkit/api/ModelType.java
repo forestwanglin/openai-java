@@ -23,6 +23,9 @@ public enum ModelType {
     O1_PREVIEW_20240912("o1-preview-2024-09-12", EncodingType.O200K_BASE, 128000, 32768),
     O1_MINI_20240912("o1-mini-2024-09-12", EncodingType.O200K_BASE, 128000, 65536),
 
+    GPT_4_O_REALTIME_PREVIEW_20241001("gpt-4o-realtime-preview-2024-10-01", EncodingType.O200K_BASE, 128000, 4096),
+    GPT_4_O_AUDIO_PREVIEW_20241001("gpt-4o-audio-preview-2024-10-01", EncodingType.O200K_BASE, 128000, 16384),
+
     // text
     TEXT_DAVINCI_003("text-davinci-003", EncodingType.P50K_BASE, 4097),
     TEXT_DAVINCI_002("text-davinci-002", EncodingType.P50K_BASE, 4097),
